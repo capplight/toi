@@ -56,6 +56,17 @@
   - Отдельно `seed-empty.ts`.
 - [ ] **Реальные телефоны.** Ссылка из WhatsApp открывается, вход сохраняется. Проверить Android Chrome и iOS Safari; записать заметки для подсказок `auth.install.*`.
 
+## Дополнения по ревью Ф0 (`docs/phases/Ф0-review.md`)
+
+- [ ] **Н3.** `env.ts`:
+  - при `VERCEL_ENV=production` переменная `APP_URL` обязательна явно, без запасного варианта из `VERCEL_URL`;
+  - `SMS_PROVIDER=console` на продакшене запрещён и даёт ошибку при старте.
+- [ ] **Н4.** Для `requestOtp` — проверка «мобильный номер Казахстана» (национальная часть начинается с `7`). `normalizePhone` остаётся общей.
+- [ ] **Н5.** В CI проверка `/api/health` → `db: "ok"` не пропускается, если не задан `DATABASE_URL`, а падает.
+- [ ] **Н6.** e2e работают против standalone-сервера: `scripts/start-standalone.mjs` копирует `.next/static` и `public` и запускает `node .next/standalone/server.js`. `next start` в e2e больше не используется.
+- [ ] `otpDeliveryStatus(challengeId)` берёт телефон для `SmsProvider.status(id, to)` из `otp_challenges`. Полный номер в `sms_log` не хранится.
+- Порядок фаз: если аккаунты основателя задерживаются, Ф7a делается раньше Ф2. В этом случае фикстура `tests/fixtures/sample-event.ts` уже есть, сиды Ф2 используют её.
+
 ## Приёмка
 
 - e2e «вход по ссылке» и «вход по коду» (провайдер `console`) зелёные. Проверяется:
