@@ -34,16 +34,16 @@ export async function requireMember(
   opts: { seating?: boolean } = {},
 ): Promise<Membership & { user: SessionUser }> {
   const user = await requireUser();
-  const m = await authorize(db(), user.userId, eventId, opts.seating ? "seating" : "member");
+  const m = await authorize(db(), user, eventId, opts.seating ? "seating" : "member");
   return { ...m, user };
 }
 
 export async function requireBudget(eventId: string): Promise<Membership & { user: SessionUser }> {
   const user = await requireUser();
-  return { ...(await authorize(db(), user.userId, eventId, "budget")), user };
+  return { ...(await authorize(db(), user, eventId, "budget")), user };
 }
 
 export async function requireOwner(eventId: string): Promise<Membership & { user: SessionUser }> {
   const user = await requireUser();
-  return { ...(await authorize(db(), user.userId, eventId, "owner")), user };
+  return { ...(await authorize(db(), user, eventId, "owner")), user };
 }

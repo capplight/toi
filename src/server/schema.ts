@@ -88,13 +88,33 @@ export const sessions = pgTable(
     deviceLabel: text("device_label"),
     userAgent: text("user_agent"),
     revokedAt: tstz("revoked_at"),
+    /**
+     * Access area (plan 6.1 v1.5, Ф2 review Б1): 'all' — SMS code or the founder's owner link (the phone is
+     * proven); 'events' — a member's login link (only the events listed in session_events).
+     */
+    scope: text("scope").notNull().default("all"),
   },
   (t) => [
     check("sessions_auth_method_check", sql`${t.authMethod} in ('link','sms')`),
+    check("sessions_scope_check", sql`${t.scope} in ('all','events')`),
     index("sessions_user_idx")
       .on(t.userId)
       .where(sql`${t.revokedAt} is null`),
   ],
+);
+
+/** Events a session with scope = 'events' may access (plan 5 v1.5). */
+export const sessionEvents = pgTable(
+  "session_events",
+  {
+    sessionId: text("session_id")
+      .notNull()
+      .references(() => sessions.id, { onDelete: "cascade" }),
+    eventId: uuid("event_id")
+      .notNull()
+      .references((): AnyPgColumn => events.id, { onDelete: "cascade" }),
+  },
+  (t) => [primaryKey({ columns: [t.sessionId, t.eventId] })],
 );
 
 export const otpChallenges = pgTable(
@@ -336,7 +356,10 @@ export const families = pgTable(
     deletedAt: tstz("deleted_at"),
   },
   (t) => [
-    // ON DELETE SET NULL (table_no) is patched in the migration (Drizzle has no column list here).
+    // ⚠ Hand-written in db/migrations/0002_pg15_constraints.sql as
+    //   ON DELETE SET NULL (table_no)  — PostgreSQL 15+, Drizzle cannot express the column list.
+    // Drizzle's snapshot only knows "on delete set null": do NOT let a future `drizzle-kit generate`
+    // drop/recreate this FK (that would also null event_id). Guarded by tests/integration/schema-seed.test.ts.
     foreignKey({
       name: "families_event_table_fk",
       columns: [t.eventId, t.tableNo],

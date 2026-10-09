@@ -7,7 +7,7 @@ import { isLocale, LOCALE_COOKIE } from "@/i18n/config";
 import { db } from "../db";
 import { consumeLink, issueMemberLink, LinkLimitError } from "../auth/loginLinks";
 import { otpDeliveryStatus, requestOtp, verifyOtp, type RequestOtpResult, type VerifyOtpResult } from "../auth/otp";
-import { revokeSessionByToken, revokeUserSessions, SESSION_COOKIE, sessionCookieOptions } from "../auth/session";
+import { revokeMemberEventAccess, revokeSessionByToken, SESSION_COOKIE, sessionCookieOptions } from "../auth/session";
 import { authorize, ForbiddenError } from "../auth/access";
 import { requireUser } from "../authz";
 import { eventMembers } from "../schema";
@@ -39,6 +39,7 @@ export async function consumeLoginLinkAction(formData: FormData): Promise<void> 
     userAgent: ctx.userAgent,
     locale: ctx.locale,
     now: new Date(),
+    currentSessionToken: ctx.store.get(SESSION_COOKIE)?.value,
   });
   if (!r.ok) redirect(`/join/${encodeURIComponent(token)}${r.reason === "tooManyAttempts" ? "?limit=1" : ""}`);
   ctx.store.set(SESSION_COOKIE, r.sessionToken, sessionCookieOptions(r.expiresAt));
@@ -107,7 +108,7 @@ export async function issueLoginLinkAction(
   const [m] = await db().select({ eventId: eventMembers.eventId }).from(eventMembers).where(eq(eventMembers.id, id));
   try {
     if (!m) throw new ForbiddenError();
-    await authorize(db(), user.userId, m.eventId, "owner");
+    await authorize(db(), user, m.eventId, "owner");
     const link = await issueMemberLink(db(), { memberId: id, createdBy: user.userId, now: new Date() });
     return { ok: true, url: link.url, waUrl: link.waUrl, expiresAt: link.expiresAt.toISOString() };
   } catch (err) {
@@ -117,7 +118,10 @@ export async function issueLoginLinkAction(
   }
 }
 
-/** Owner: «Шығару» — revoke every session of a member (plan 6.1 `revokeMemberSessions`). */
+/**
+ * Owner: «Шығару» (plan 6.1 `revokeMemberSessions`, v1.5): removes only access to THIS event —
+ * the person's 'all' (SMS) sessions are never touched by another event's owner.
+ */
 export async function revokeMemberSessionsAction(memberId: string): Promise<{ ok: boolean; revoked: number }> {
   const id = z.string().uuid().parse(memberId);
   const user = await requireUser();
@@ -126,7 +130,8 @@ export async function revokeMemberSessionsAction(memberId: string): Promise<{ ok
     .from(eventMembers)
     .where(eq(eventMembers.id, id));
   if (!m) return { ok: false, revoked: 0 };
-  await authorize(db(), user.userId, m.eventId, "owner");
+  await authorize(db(), user, m.eventId, "owner");
   if (!m.userId) return { ok: true, revoked: 0 };
-  return { ok: true, revoked: await revokeUserSessions(db(), m.userId, new Date()) };
+  const r = await revokeMemberEventAccess(db(), { userId: m.userId, eventId: m.eventId, now: new Date() });
+  return { ok: true, revoked: r.revoked };
 }

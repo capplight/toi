@@ -26,7 +26,14 @@ export default async function globalSetup() {
   await db().delete(rateLimits);
   await db().delete(otpChallenges);
   const s = await seedSample(db());
+  // One member login link per project (links are one-time): Анасы for mobile, Жастар for desktop.
+  const { issueMemberLink } = await import("../../src/server/auth/loginLinks");
+  const now = new Date();
+  const memberLinks = {
+    mobile: new URL((await issueMemberLink(db(), { memberId: s.memberIds.ana, createdBy: null, now })).url).pathname,
+    desktop: new URL((await issueMemberLink(db(), { memberId: s.memberIds.jas, createdBy: null, now })).url).pathname,
+  };
   await closeDb();
   mkdirSync("playwright/.cache", { recursive: true });
-  writeFileSync("playwright/.cache/e2e-seed.json", JSON.stringify({ eventId: s.eventId }));
+  writeFileSync("playwright/.cache/e2e-seed.json", JSON.stringify({ eventId: s.eventId, memberLinks }));
 }

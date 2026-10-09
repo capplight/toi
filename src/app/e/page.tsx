@@ -1,9 +1,10 @@
-import { and, asc, eq, isNull } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, sql } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { logoutAction } from "@/server/actions/auth";
+import { sessionEventIds } from "@/server/auth/session";
 import { currentUser } from "@/server/authz";
 import { db } from "@/server/db";
 import { eventMembers, events } from "@/server/schema";
@@ -17,6 +18,8 @@ export default async function EventsPage() {
   if (!user) redirect("/login");
   const t = await getTranslations();
   const format = await getFormatter();
+  // Scope 'events' (member link login): only the events of this session (plan 6.1 v1.5).
+  const scoped = await sessionEventIds(db(), user);
   const rows = await db()
     .select({
       id: events.id,
@@ -27,7 +30,14 @@ export default async function EventsPage() {
     })
     .from(eventMembers)
     .innerJoin(events, eq(events.id, eventMembers.eventId))
-    .where(and(eq(eventMembers.userId, user.userId), isNull(eventMembers.removedAt), isNull(events.deletedAt)))
+    .where(
+      and(
+        eq(eventMembers.userId, user.userId),
+        isNull(eventMembers.removedAt),
+        isNull(events.deletedAt),
+        scoped === null ? undefined : scoped.length ? inArray(events.id, scoped) : sql`false`,
+      ),
+    )
     .orderBy(asc(events.startsOn));
 
   return (

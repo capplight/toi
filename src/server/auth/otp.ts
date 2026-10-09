@@ -1,7 +1,7 @@
 import { and, desc, eq, isNull } from "drizzle-orm";
 import { isKzMobile, maskPhone, normalizePhone } from "@/domain/guests/phone";
 import { translator } from "@/i18n/messages";
-import { hmacHex, otpCode, safeEqualHex, sha256Hex } from "../crypto";
+import { hmacHex, otpCode, safeEqualHex } from "../crypto";
 import type { Db } from "../db";
 import { env } from "../env";
 import { hit, type Limit } from "../ratelimit";
@@ -15,8 +15,13 @@ export const OTP_MAX_ATTEMPTS = 5;
 export const OTP_LOCK_MS = 10 * 60 * 1000;
 export const RESEND_AFTER_SEC = 60;
 
-const phoneKey = (phone: string) => sha256Hex(`phone:${phone}`).slice(0, 32);
-const ipKey = (ip: string | null) => sha256Hex(`ip:${ip ?? "unknown"}`).slice(0, 32);
+/**
+ * Keyed hashes (Ф2 review Н7): phone numbers are a small space — a bare sha256 is easy to brute-force,
+ * so rate-limit keys and sms_log use HMAC with a server secret.
+ */
+export const keyedHash = (purpose: string, value: string) => hmacHex(env().OTP_HMAC_SECRET, `${purpose}:${value}`);
+const phoneKey = (phone: string) => keyedHash("rl-phone", phone).slice(0, 32);
+const ipKey = (ip: string | null) => keyedHash("rl-ip", ip ?? "unknown").slice(0, 32);
 
 export function phoneLimits(phone: string): Limit[] {
   const k = phoneKey(phone);
@@ -111,7 +116,7 @@ export async function requestOtp(
         provider = sms.name;
         providerMsgId = sent.providerMsgId;
         await db.insert(smsLog).values({
-          phoneHash: sha256Hex(phone),
+          phoneHash: keyedHash("smslog", phone),
           phoneMasked: maskPhone(phone),
           provider: sms.name,
           providerMsgId: sent.providerMsgId,
@@ -121,7 +126,7 @@ export async function requestOtp(
         });
       } catch (err) {
         await db.insert(smsLog).values({
-          phoneHash: sha256Hex(phone),
+          phoneHash: keyedHash("smslog", phone),
           phoneMasked: maskPhone(phone),
           provider: sms.name,
           providerMsgId: null,
@@ -210,7 +215,10 @@ export async function verifyOtp(
       const minutes = Math.max(1, Math.ceil((c.createdAt.getTime() + OTP_LOCK_MS - input.now.getTime()) / 60_000));
       return { ok: false, error: "locked", minutes };
     }
-    const good = safeEqualHex(c.codeHash, hmacHex(e.OTP_HMAC_SECRET, `${phone}|${input.code}`));
+    // Б2: a challenge of an unknown number (provider 'none', no SMS sent) never verifies — answered exactly
+    // like a wrong code (attempts counted), so the response stays the same.
+    const good =
+      c.provider !== "none" && safeEqualHex(c.codeHash, hmacHex(e.OTP_HMAC_SECRET, `${phone}|${input.code}`));
     if (!good) {
       const attempts = c.attempts + 1;
       await tx.update(otpChallenges).set({ attempts }).where(eq(otpChallenges.id, c.id));
@@ -220,22 +228,25 @@ export async function verifyOtp(
     }
     await tx.update(otpChallenges).set({ consumedAt: input.now }).where(eq(otpChallenges.id, c.id));
 
-    const user = await upsertUser(tx, { phone, locale: input.locale, now: input.now });
-    const joined = await tx
-      .update(eventMembers)
-      .set({ userId: user.id, joinedAt: input.now })
-      .where(and(eq(eventMembers.phone, phone), isNull(eventMembers.removedAt), isNull(eventMembers.joinedAt)))
-      .returning({ eventId: eventMembers.eventId });
+    // SMS proves the phone: language updated, all memberships joined, scope 'all' (plan 6.1 v1.5).
+    const user = await upsertUser(tx, { phone, locale: input.locale, now: input.now, updateLocale: true });
     await tx
       .update(eventMembers)
+      .set({ userId: user.id, joinedAt: input.now })
+      .where(and(eq(eventMembers.phone, phone), isNull(eventMembers.removedAt), isNull(eventMembers.joinedAt)));
+    const joined = await tx
+      .update(eventMembers)
       .set({ userId: user.id })
-      .where(and(eq(eventMembers.phone, phone), isNull(eventMembers.removedAt)));
+      .where(and(eq(eventMembers.phone, phone), isNull(eventMembers.removedAt)))
+      .returning({ eventId: eventMembers.eventId });
     const session = await createSession(tx, {
       userId: user.id,
       method: "sms",
+      scope: "all",
       userAgent: input.userAgent,
       now: input.now,
     });
+    // Exactly one event → open it; otherwise «Менің тойларым».
     const redirectTo = joined.length === 1 ? `/e/${joined[0]!.eventId}` : "/e";
     return { ok: true, sessionToken: session.token, expiresAt: session.expiresAt, redirectTo, userId: user.id };
   });

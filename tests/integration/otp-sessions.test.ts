@@ -169,7 +169,7 @@ describe("sessions (plan 6.1, 9)", () => {
 
   it("180 days; sliding renewal at most once a day; only the hash is stored", async () => {
     const userId = await user();
-    const s = await createSession(db(), { userId, method: "sms", userAgent: null, now: T0 });
+    const s = await createSession(db(), { userId, method: "sms", scope: "all", userAgent: null, now: T0 });
     expect(s.expiresAt.getTime() - T0.getTime()).toBe(180 * DAY);
     const [row] = await db().select().from(sessions);
     expect(row!.id).not.toBe(s.token);
@@ -188,7 +188,8 @@ describe("sessions (plan 6.1, 9)", () => {
     const tokens = [];
     for (let i = 0; i < 4; i++)
       tokens.push(
-        (await createSession(db(), { userId, method: "link", userAgent: null, now: addMs(T0, i * MIN) })).token,
+        (await createSession(db(), { userId, method: "sms", scope: "all", userAgent: null, now: addMs(T0, i * MIN) }))
+          .token,
       );
     expect(await validateSession(db(), tokens[0], addMs(T0, HOUR))).toBeNull();
     for (const t of tokens.slice(1)) expect(await validateSession(db(), t, addMs(T0, HOUR))).not.toBeNull();
@@ -196,8 +197,8 @@ describe("sessions (plan 6.1, 9)", () => {
 
   it("logout revokes one session; owner's «Шығару» revokes all of a user", async () => {
     const userId = await user();
-    const a = await createSession(db(), { userId, method: "sms", userAgent: null, now: T0 });
-    const b = await createSession(db(), { userId, method: "sms", userAgent: null, now: T0 });
+    const a = await createSession(db(), { userId, method: "sms", scope: "all", userAgent: null, now: T0 });
+    const b = await createSession(db(), { userId, method: "sms", scope: "all", userAgent: null, now: T0 });
     await revokeSessionByToken(db(), a.token, T0);
     expect(await validateSession(db(), a.token, T0)).toBeNull();
     expect(await validateSession(db(), b.token, T0)).not.toBeNull();

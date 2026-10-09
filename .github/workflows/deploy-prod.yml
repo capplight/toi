@@ -7,6 +7,19 @@ name: Deploy production
 on:
   push:
     branches: [main]
+    # Ф2 review Н11: document-only commits do not redeploy production. content/messages is NOT ignored
+    # (UI texts ship with the app). GitHub skips the run only if every changed file matches these patterns.
+    paths-ignore:
+      - "docs/**"
+      - "architecture/**"
+      - "design/**"
+      - "research/**"
+      - "prototype/**"
+      - "HANDOVER_v2.md"
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - "README.md"
+      - "content/*.md"
   workflow_dispatch:
 
 concurrency:

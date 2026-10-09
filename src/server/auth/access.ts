@@ -1,6 +1,6 @@
 import { and, eq, isNull } from "drizzle-orm";
 import type { DbOrTx } from "../db";
-import { eventMembers, events, families } from "../schema";
+import { eventMembers, events, families, sessionEvents } from "../schema";
 
 /** Plan 5.3. Errors map to HTTP 401 / 403 / 404 in actions and route handlers. */
 export class UnauthorizedError extends Error {
@@ -27,6 +27,12 @@ export class NotFoundError extends Error {
 
 export type Need = "member" | "seating" | "budget" | "owner";
 
+/**
+ * Who is asking: the user and the session's access area (plan 6.1 v1.5). 'all' — every event of the
+ * user; 'events' — only the events in session_events of this session (member link login).
+ */
+export type Principal = { userId: string; scope: "all" | "events"; sessionId: string };
+
 export type Membership = {
   memberId: string;
   eventId: string;
@@ -43,9 +49,18 @@ export type Membership = {
  * - budget: owner or `can_manage_budget`;
  * - owner: `role = 'owner'`.
  * A stranger gets 403 whether the event exists or not (no existence oracle).
+ * A session with scope 'events' passes only for the events listed in session_events (Ф2 review Б1).
  */
-export async function authorize(db: DbOrTx, userId: string, eventId: string, need: Need): Promise<Membership> {
+export async function authorize(db: DbOrTx, who: Principal, eventId: string, need: Need): Promise<Membership> {
   if (!/^[0-9a-f-]{36}$/i.test(eventId)) throw new ForbiddenError();
+  const userId = who.userId;
+  if (who.scope !== "all") {
+    const [allowed] = await db
+      .select({ eventId: sessionEvents.eventId })
+      .from(sessionEvents)
+      .where(and(eq(sessionEvents.sessionId, who.sessionId), eq(sessionEvents.eventId, eventId)));
+    if (!allowed) throw new ForbiddenError("not in session scope");
+  }
   const [m] = await db
     .select({
       memberId: eventMembers.id,

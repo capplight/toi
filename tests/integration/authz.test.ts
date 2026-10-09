@@ -7,6 +7,7 @@ import {
   ForbiddenError,
   guestByToken,
   type Need,
+  type Principal,
   NotFoundError,
 } from "@/server/auth/access";
 import { db } from "@/server/db";
@@ -40,7 +41,12 @@ async function setup() {
     ids[k] = u!.id;
     if (k !== "stranger") await db().update(eventMembers).set({ userId: u!.id }).where(eq(eventMembers.phone, phone));
   }
-  return { s, user: { owner: ids.ake!, parent: ids.ana!, couple: ids.jas!, stranger: ids.stranger! } };
+  // Principals with scope 'all' (SMS login); scope 'events' is covered in session-scope.test.ts.
+  const all = (userId: string): Principal => ({ userId, scope: "all", sessionId: "n/a" });
+  return {
+    s,
+    user: { owner: all(ids.ake!), parent: all(ids.ana!), couple: all(ids.jas!), stranger: all(ids.stranger!) },
+  };
 }
 
 describe("authz 403 matrix (plan 5.3)", () => {

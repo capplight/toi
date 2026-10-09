@@ -15,7 +15,10 @@ const needDb = () =>
   );
 
 const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as { eventId: string };
+  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
+    eventId: string;
+    memberLinks: Record<string, string>;
+  };
 
 /** `pnpm admin:owner-link` (CLI of plan 6.1 flow 4) → the printed URL. */
 function ownerLink(phone: string): string {
@@ -76,6 +79,21 @@ test.describe("login by link (plan 6.1 flow 1/4)", () => {
     needDb();
     await page.goto("/join/notatoken");
     await expect(page.getByTestId("join-expired")).toBeVisible();
+  });
+});
+
+test.describe("member login link (plan 6.1 flow 1, scope 'events' v1.5)", () => {
+  test("the member's link → their event; «Мои тои» lists only it; label from the link", async ({ page }, info) => {
+    needDb();
+    const { eventId, memberLinks } = seed();
+    await page.goto(memberLinks[info.project.name]!);
+    await expect(page.getByTestId("join-valid")).toBeVisible();
+    await expect(page.getByText("Айбек пен Дана")).toBeVisible();
+    await page.getByRole("button", { name: kk.auth.join.submit }).click();
+    await expect(page).toHaveURL(new RegExp(`/e/${eventId}$`));
+    await page.goto("/e");
+    await expect(page.getByRole("link")).toHaveCount(1);
+    await expect(page.getByRole("link").first()).toHaveAttribute("href", `/e/${eventId}`);
   });
 });
 

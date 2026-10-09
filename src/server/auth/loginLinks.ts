@@ -5,7 +5,7 @@ import type { Db, DbOrTx } from "../db";
 import { env } from "../env";
 import { hit, peek } from "../ratelimit";
 import { allowedOwners, eventMembers, events, loginLinks, users } from "../schema";
-import { createSession, upsertUser } from "./session";
+import { addEventToSession, createSession, upsertUser } from "./session";
 
 /** Plan 6.1 flow 1: one-time link, 72 hours, only sha256 stored, a new link revokes older unused ones. */
 export const LINK_HOURS = 72;
@@ -199,7 +199,15 @@ export type ConsumeResult =
  */
 export async function consumeLink(
   db: Db,
-  input: { token: string; ip: string | null; userAgent: string | null; locale: "kk" | "ru"; now: Date },
+  input: {
+    token: string;
+    ip: string | null;
+    userAgent: string | null;
+    locale: "kk" | "ru";
+    now: Date;
+    /** The device's current session cookie, if any (to extend an existing 'events' session). */
+    currentSessionToken?: string;
+  },
 ): Promise<ConsumeResult> {
   const failKey = {
     key: `join:fail:ip:${sha256Hex(input.ip ?? "unknown")}`,
@@ -230,24 +238,68 @@ export async function consumeLink(
         });
       if (!link) return null;
 
-      let redirectTo = "/e";
+      // Scope of access (plan 6.1 v1.5, Ф2 review Б1): the owner can see a member's link, so a member link
+      // proves only that THIS owner admits the phone to THIS event.
       if (link.purpose === "member") {
         const [m] = await tx
           .select({ eventId: eventMembers.eventId })
           .from(eventMembers)
           .innerJoin(events, eq(events.id, eventMembers.eventId))
           .where(and(eq(eventMembers.id, link.memberId!), isNull(eventMembers.removedAt), isNull(events.deletedAt)));
-        if (!m) {
-          tx.rollback();
-        }
-        redirectTo = `/e/${m!.eventId}`;
-      } else {
-        const [allowed] = await tx.select().from(allowedOwners).where(eq(allowedOwners.phone, link.phone));
-        if (!allowed) tx.rollback();
+        if (!m) tx.rollback();
+        const eventId = m!.eventId;
+        // A link never changes an existing user's language.
+        const user = await upsertUser(tx, {
+          phone: link.phone,
+          locale: input.locale,
+          now: input.now,
+          updateLocale: false,
+        });
+        // Only the membership of the link is joined.
+        await tx
+          .update(eventMembers)
+          .set({
+            userId: user.id,
+            joinedAt: sql`coalesce(${eventMembers.joinedAt}, ${input.now.toISOString()}::timestamptz)`,
+          })
+          .where(eq(eventMembers.id, link.memberId!));
+        // Same person already has an 'events' session on this device → add the event to it.
+        const existing = await addEventToSession(tx, {
+          token: input.currentSessionToken,
+          userId: user.id,
+          eventId,
+          now: input.now,
+        });
+        const session =
+          existing ??
+          (await createSession(tx, {
+            userId: user.id,
+            method: "link",
+            scope: "events",
+            eventId,
+            userAgent: input.userAgent,
+            now: input.now,
+          }));
+        const sessionId = sha256Hex(session.token);
+        await tx.update(loginLinks).set({ usedSessionId: sessionId }).where(eq(loginLinks.tokenHash, link.tokenHash));
+        return {
+          ok: true,
+          sessionToken: session.token,
+          expiresAt: session.expiresAt,
+          redirectTo: `/e/${eventId}`,
+          userId: user.id,
+        };
       }
 
-      const user = await upsertUser(tx, { phone: link.phone, locale: input.locale, now: input.now });
-      // Every membership with this phone is joined (the link proves the phone; plan 6.1 flow 1, step 4).
+      // owner_bootstrap (founder's link, plan 6.1 flow 4): the founder sends it to the owner's number → scope 'all'.
+      const [allowed] = await tx.select().from(allowedOwners).where(eq(allowedOwners.phone, link.phone));
+      if (!allowed) tx.rollback();
+      const user = await upsertUser(tx, {
+        phone: link.phone,
+        locale: input.locale,
+        now: input.now,
+        updateLocale: false,
+      });
       await tx
         .update(eventMembers)
         .set({
@@ -258,11 +310,12 @@ export async function consumeLink(
       const session = await createSession(tx, {
         userId: user.id,
         method: "link",
+        scope: "all",
         userAgent: input.userAgent,
         now: input.now,
       });
       await tx.update(loginLinks).set({ usedSessionId: session.id }).where(eq(loginLinks.tokenHash, link.tokenHash));
-      return { ok: true, sessionToken: session.token, expiresAt: session.expiresAt, redirectTo, userId: user.id };
+      return { ok: true, sessionToken: session.token, expiresAt: session.expiresAt, redirectTo: "/e", userId: user.id };
     })
     .catch((err: unknown) => {
       // tx.rollback() throws a TransactionRollbackError — treat as an unusable link.
