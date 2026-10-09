@@ -90,7 +90,7 @@ test.describe("member login link (plan 6.1 flow 1, scope 'events' v1.5)", () => 
     await expect(page.getByTestId("join-valid")).toBeVisible();
     await expect(page.getByText("Айбек пен Дана")).toBeVisible();
     await page.getByRole("button", { name: kk.auth.join.submit }).click();
-    await expect(page).toHaveURL(new RegExp(`/e/${eventId}$`));
+    await expect(page).toHaveURL(new RegExp(`/e/${eventId}/guests$`));
     await page.goto("/e");
     await expect(page.getByRole("link")).toHaveCount(1);
     await expect(page.getByRole("link").first()).toHaveAttribute("href", `/e/${eventId}`);
@@ -111,7 +111,7 @@ test.describe("login by SMS code (console provider, plan 6.1 flow 2)", () => {
     expect(code).toHaveLength(6);
     await page.getByLabel(kk.auth.code.inputLabel).fill(code);
     await page.getByRole("button", { name: kk.auth.join.submit }).click();
-    await expect(page).toHaveURL(new RegExp(`/e/${seed().eventId}$`));
+    await expect(page).toHaveURL(new RegExp(`/e/${seed().eventId}/guests$`));
     await expect(page.getByTestId("event-page")).toContainText("Айбек пен Дана");
   });
 

@@ -1,26 +1,20 @@
 import type { Metadata } from "next";
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { otpStatusAction, requestOtpAction, verifyOtpAction } from "@/server/actions/auth";
 import { env } from "@/server/env";
+import { AuthFrame } from "../AuthFrame";
 import { LoginForm } from "./LoginForm";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
-/** Plan 6.1 flows 2–3 (temporary neutral styles; design v2 in Ф1). */
+/** Plan 6.1 flows 2–3, mockup 09 (`#sms`, `#code`). */
 export default async function LoginPage() {
-  const messages = await getMessages();
-  // Only the namespaces the client form needs (not all 757 strings).
-  const subset = {
-    auth: messages.auth,
-    errors: messages.errors,
-    wa: { requestLink: (messages.wa as Record<string, string>).requestLink },
-  };
   return (
-    <main className="mx-auto max-w-md p-4">
-      <NextIntlClientProvider messages={subset}>
-        <LoginForm consoleMode={env().SMS_PROVIDER === "console"} />
-      </NextIntlClientProvider>
-    </main>
+    <AuthFrame>
+      <LoginForm
+        consoleMode={env().SMS_PROVIDER === "console"}
+        actions={{ requestOtp: requestOtpAction, verifyOtp: verifyOtpAction, otpStatus: otpStatusAction }}
+      />
+    </AuthFrame>
   );
 }

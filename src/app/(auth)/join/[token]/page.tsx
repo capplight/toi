@@ -4,14 +4,13 @@ import { getFormatter, getTranslations } from "next-intl/server";
 import { consumeLoginLinkAction } from "@/server/actions/auth";
 import { inspectLink } from "@/server/auth/loginLinks";
 import { db } from "@/server/db";
+import { Icon } from "@/ui/components/Icon";
+import { AuthFrame } from "../../AuthFrame";
 
-// Temporary neutral styles; design v2 screens arrive in Ф1 (brief Ф2).
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
-const btn = "block w-full min-h-12 rounded border border-neutral-900 px-4 py-3 text-center text-lg";
-
-/** Plan 6.1 flow 1: GET shows the greeting and «Кіру»; nothing is spent until the POST. */
+/** Plan 6.1 flow 1 (mockup 09): GET shows the greeting and «Кіру»; nothing is spent until the POST. */
 export default async function JoinPage({ params, searchParams }: PageProps<"/join/[token]">) {
   const { token } = await params;
   const { limit } = await searchParams;
@@ -20,9 +19,10 @@ export default async function JoinPage({ params, searchParams }: PageProps<"/joi
 
   if (limit) {
     return (
-      <main className="mx-auto max-w-md space-y-4 p-4">
+      <AuthFrame>
+        <h1>{t("auth.join.expired.title")}</h1>
         <p role="alert">{t("auth.join.tooManyAttempts")}</p>
-      </main>
+      </AuthFrame>
     );
   }
 
@@ -35,44 +35,50 @@ export default async function JoinPage({ params, searchParams }: PageProps<"/joi
         )}`
       : null;
     return (
-      <main className="mx-auto max-w-md space-y-4 p-4" data-testid="join-expired">
-        <h1 className="text-2xl font-semibold">{t("auth.join.expired.title")}</h1>
-        <p>{t("auth.join.expired.body")}</p>
-        {ask && (
-          <a className={btn} href={ask}>
-            {t("auth.join.expired.askOwner")}
-          </a>
-        )}
-        <Link className={btn} href="/login">
-          {t("auth.join.expired.smsLogin")}
-        </Link>
-      </main>
+      <AuthFrame>
+        <div data-testid="join-expired">
+          <h1>{t("auth.join.expired.title")}</h1>
+          <p>{t("auth.join.expired.body")}</p>
+          <div className="btns">
+            {ask && (
+              <a className="btn wa" href={ask}>
+                <Icon name="wa" />
+                {t("auth.join.expired.askOwner")}
+              </a>
+            )}
+            <Link className="btn secondary" href="/login">
+              <Icon name="sms" />
+              {t("auth.join.expired.smsLogin")}
+            </Link>
+          </div>
+        </div>
+      </AuthFrame>
     );
   }
 
   const ev = view.event;
+  const eventLine = ev
+    ? t("auth.join.eventKindLine", {
+        eventKind: t("events.kind.select", { kind: ev.kind }),
+        date: format.dateTime(new Date(`${ev.startsOn}T12:00:00Z`), { day: "numeric", month: "long" }),
+        time: ev.startsAt?.slice(0, 5) ?? "",
+        venue: ev.venue ?? "",
+      })
+    : undefined;
   return (
-    <main className="mx-auto max-w-md space-y-4 p-4" data-testid="join-valid">
-      <h1 className="text-2xl font-semibold">{t("auth.join.greeting")}</h1>
-      {ev && <p className="text-xl">{ev.title}</p>}
-      {ev && (
-        <p>
-          {t("auth.join.eventKindLine", {
-            eventKind: t("events.kind.select", { kind: ev.kind }),
-            date: format.dateTime(new Date(`${ev.startsOn}T12:00:00Z`), { day: "numeric", month: "long" }),
-            time: ev.startsAt?.slice(0, 5) ?? "",
-            venue: ev.venue ?? "",
-          })}
-        </p>
-      )}
-      {view.label && <p>{t("auth.join.addedAs", { label: view.label })}</p>}
-      <p>{t("auth.join.body")}</p>
-      <form action={consumeLoginLinkAction}>
-        <input type="hidden" name="token" value={token} />
-        <button type="submit" className={btn}>
-          {t("auth.join.submit")}
-        </button>
-      </form>
-    </main>
+    <AuthFrame eventTitle={ev?.title} eventLine={eventLine}>
+      <div data-testid="join-valid">
+        <h1>{t("auth.join.greeting")}</h1>
+        {view.label && <p>{t("auth.join.addedAs", { label: view.label })}</p>}
+        <p>{t("auth.join.body")}</p>
+        <form action={consumeLoginLinkAction} className="btns">
+          <input type="hidden" name="token" value={token} />
+          <button type="submit" className="btn primary">
+            <Icon name="login" />
+            {t("auth.join.submit")}
+          </button>
+        </form>
+      </div>
+    </AuthFrame>
   );
 }

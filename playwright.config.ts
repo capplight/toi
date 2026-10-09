@@ -27,6 +27,12 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"], viewport: { width: 360, height: 740 }, isMobile: true, hasTouch: true },
     },
     { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } },
+    // Ф1: smallest supported phone, UI checks only.
+    {
+      name: "small",
+      testMatch: /ui.spec.ts/,
+      use: { ...devices["Desktop Chrome"], viewport: { width: 320, height: 640 }, isMobile: true, hasTouch: true },
+    },
   ],
   webServer: {
     // Ф0 review Н6: the standalone server that ships in Docker (`pnpm build` first), not `next start`.

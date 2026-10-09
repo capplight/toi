@@ -29,6 +29,27 @@ export default defineConfig([
       "no-restricted-imports": ["error", { patterns: domainForbidden }],
     },
   },
+  {
+    // Ф1: the UI kit draws; it has no server code and no database access (brief Ф1 §6).
+    files: ["src/ui/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@/server", "@/server/*"],
+              message: "src/ui must not import server code (pass actions as props).",
+            },
+            {
+              group: ["drizzle-orm", "drizzle-orm/*", "pg", "pg/*", "@neondatabase/*"],
+              message: "src/ui has no DB access.",
+            },
+          ],
+        },
+      ],
+    },
+  },
   globalIgnores([
     ".next/**",
     "out/**",

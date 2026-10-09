@@ -1,6 +1,5 @@
 import { and, asc, eq, inArray, isNull, sql } from "drizzle-orm";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { logoutAction } from "@/server/actions/auth";
@@ -8,11 +7,13 @@ import { sessionEventIds } from "@/server/auth/session";
 import { currentUser } from "@/server/authz";
 import { db } from "@/server/db";
 import { eventMembers, events } from "@/server/schema";
+import { EmptyState, LinkRow, LinkRows } from "@/ui/components/Display";
+import { Mark } from "@/ui/ornaments/generated";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
-/** Temporary «Менің тойларым» (neutral styles; the real screen is Ф1/Ф3). */
+/** «Менің тойларым» — simple list in the new style (Ф1); the full screen with «Жаңа той ашу» is Ф3. */
 export default async function EventsPage() {
   const user = await currentUser();
   if (!user) redirect("/login");
@@ -41,31 +42,38 @@ export default async function EventsPage() {
     .orderBy(asc(events.startsOn));
 
   return (
-    <main className="mx-auto max-w-md space-y-4 p-4" data-testid="events-page">
-      <h1 className="text-2xl font-semibold">{t("events.list.title")}</h1>
+    <main className="content" data-testid="events-page" style={{ paddingBottom: 48 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "8px 0 20px" }}>
+        <span className="wordmark">
+          <Mark />
+          <b>{t("meta.appName")}</b>
+        </span>
+      </div>
+      <h1 className="t-h1" style={{ marginBottom: 16 }}>
+        {t("events.list.title")}
+      </h1>
       {rows.length === 0 ? (
-        <div className="space-y-2">
-          <p className="font-semibold">{t("auth.noEvents.title")}</p>
-          <p>{t("auth.noEvents.body")}</p>
-        </div>
+        <EmptyState title={t("auth.noEvents.title")} body={t("auth.noEvents.body")} />
       ) : (
-        <ul className="space-y-2">
+        <LinkRows>
           {rows.map((r) => (
-            <li key={r.id}>
-              <Link className="block min-h-12 rounded border border-neutral-400 p-3" href={`/e/${r.id}`}>
-                {t("events.list.item", {
-                  eventTitle: r.title,
-                  date: format.dateTime(new Date(`${r.startsOn}T12:00:00Z`), { day: "numeric", month: "long" }),
-                  role: r.role === "owner" ? t("roles.owner") : r.label,
-                })}
-              </Link>
-            </li>
+            <LinkRow
+              key={r.id}
+              href={`/e/${r.id}`}
+              icon="cal"
+              title={r.title}
+              subtitle={t("events.list.item", {
+                eventTitle: r.title,
+                date: format.dateTime(new Date(`${r.startsOn}T12:00:00Z`), { day: "numeric", month: "long" }),
+                role: r.role === "owner" ? t("roles.owner") : r.label,
+              })}
+            />
           ))}
-        </ul>
+        </LinkRows>
       )}
-      <form action={logoutAction}>
-        <button type="submit" className="min-h-12 rounded border border-neutral-500 px-4">
-          {t("auth.logout.confirmTitle")}
+      <form action={logoutAction} style={{ marginTop: 24 }}>
+        <button type="submit" className="btn secondary">
+          {t("nav.logout")}
         </button>
       </form>
     </main>
