@@ -135,7 +135,7 @@ check:messages: OK — 757 keys, kk/ru: ICU, variables, tags, select/other, ru p
 ```
 На сломанной фикстуре (`pnpm check:messages --dir tests/fixtures/messages/broken`, то же проверяет unit-тест):
 ```
-check:messages: 4 violation(s) in D:My Project	oi	estsixturesmessagesroken (4 keys)
+check:messages: 4 violation(s) in D:\My Project\toi\tests\fixtures\messages\broken (4 keys)
   [keys] extra: missing in _keys.json
   [keys] extra: missing in ru.json
   [ru-plural] common.seats: {count, plural} is missing few
