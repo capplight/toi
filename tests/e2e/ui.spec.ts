@@ -83,7 +83,11 @@ test.describe("Ф1 UI kit", () => {
   test("130 % text: no horizontal scroll, labels not clipped", async ({ page }) => {
     for (const path of ["/dev/ui", "/dev/ui/hall", "/login"]) {
       await page.goto(path);
+      const before = await page.evaluate(() => parseFloat(getComputedStyle(document.querySelector("h1")!).fontSize));
       await page.addStyleTag({ content: "html { font-size: 130% !important; }" });
+      const after = await page.evaluate(() => parseFloat(getComputedStyle(document.querySelector("h1")!).fontSize));
+      // Text sizes are in rem: the setting really scales them (not a vacuous check).
+      if (path !== "/dev/ui") expect(after / before, `${path} h1 scales`).toBeGreaterThan(1.25);
       const { sw, iw } = await page.evaluate(() => ({
         sw: document.documentElement.scrollWidth,
         iw: window.innerWidth,

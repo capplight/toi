@@ -13,7 +13,7 @@
     margin: 0;
     background: var(--ivory);
     color: var(--ink);
-    font: 400 18px/26px var(--font-ui);
+    font: 400 1.125rem/1.625rem var(--font-ui);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
@@ -73,44 +73,44 @@
 
   /* ---------- typography (DESIGN_v2 3.4) ---------- */
   .t-display {
-    font: 600 34px/38px var(--font-display);
+    font: 600 2.125rem/2.375rem var(--font-display);
     letter-spacing: 0.005em;
     margin: 0;
   }
   .t-h1 {
-    font: 600 24px/30px var(--font-ui);
+    font: 600 1.5rem/1.875rem var(--font-ui);
     letter-spacing: -0.01em;
     margin: 0;
   }
   .t-h2 {
-    font: 600 20px/26px var(--font-ui);
+    font: 600 1.25rem/1.625rem var(--font-ui);
     margin: 0;
   }
   .t-stat {
-    font: 600 32px/36px var(--font-ui);
+    font: 600 2rem/2.25rem var(--font-ui);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
   }
   .t-body {
-    font: 400 16px/24px var(--font-ui);
+    font: 400 1rem/1.5rem var(--font-ui);
   }
   .t-muted {
     color: var(--ink-2);
   }
   .t-group {
-    font: 600 16px/22px var(--font-ui);
+    font: 600 1rem/1.375rem var(--font-ui);
     color: var(--ink-2);
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
   @media (min-width: 1024px) {
     .t-display {
-      font-size: 38px;
-      line-height: 42px;
+      font-size: 2.375rem;
+      line-height: 2.625rem;
     }
     .t-h1.page {
-      font-size: 30px;
-      line-height: 36px;
+      font-size: 1.875rem;
+      line-height: 2.25rem;
     }
   }
 
@@ -130,7 +130,7 @@
     background: var(--bg);
     color: var(--fg);
     border: 1.5px solid var(--bd);
-    font: 600 18px/24px var(--font-ui);
+    font: 600 1.125rem/1.5rem var(--font-ui);
     text-decoration: none;
     text-align: center;
     transition:
@@ -197,7 +197,7 @@
   }
   .btn.row {
     min-height: var(--h-btn-row);
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
   .btn.auto {
     width: auto;
@@ -229,7 +229,7 @@
     border: 0;
     border-radius: var(--r-pill);
     background: transparent;
-    font: 600 16px/1 var(--font-ui);
+    font: 600 1rem/1 var(--font-ui);
     letter-spacing: 0.03em;
     color: var(--ink-2);
     padding: 0 10px;
@@ -266,7 +266,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font: 600 17px/1 var(--font-ui);
+    font: 600 1.0625rem/1 var(--font-ui);
     color: var(--ink-2);
     padding: 0 12px;
   }
@@ -281,7 +281,7 @@
   }
   .segment.compact button {
     height: 48px;
-    font-size: 16px;
+    font-size: 1rem;
     gap: 6px;
   }
   .segment.compact .ico {
@@ -297,7 +297,7 @@
     height: 32px;
     padding: 0 12px 0 9px;
     border-radius: var(--r-pill);
-    font: 600 16px/1 var(--font-ui);
+    font: 600 1rem/1 var(--font-ui);
     white-space: nowrap;
   }
   .badge .ico {
@@ -342,19 +342,19 @@
     box-shadow: var(--sh-hero);
   }
   .event-hero .kicker {
-    font: 600 16px/20px var(--font-ui);
+    font: 600 1rem/1.25rem var(--font-ui);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--gold-bright);
   }
   .event-hero .names {
-    font: 600 34px/38px var(--font-display);
+    font: 600 2.125rem/2.375rem var(--font-display);
     margin: 6px 0 0;
     letter-spacing: 0.005em;
     position: relative;
   }
   .event-hero .meta {
-    font: 400 16px/24px var(--font-ui);
+    font: 400 1rem/1.5rem var(--font-ui);
     color: var(--on-night-muted);
     margin-top: 10px;
   }
@@ -395,8 +395,8 @@
     padding: 14px 16px;
   }
   .event-hero.compact .names {
-    font-size: 28px;
-    line-height: 32px;
+    font-size: 1.75rem;
+    line-height: 2rem;
     margin: 0;
     padding-right: 56px;
   }
@@ -417,8 +417,8 @@
       height: 200px;
     }
     .event-hero .names {
-      font-size: 38px;
-      line-height: 42px;
+      font-size: 2.375rem;
+      line-height: 2.625rem;
     }
   }
 
@@ -447,14 +447,14 @@
     margin-bottom: 2px;
   }
   .counter .val {
-    font: 400 16px/20px var(--font-ui);
+    font: 400 1rem/1.25rem var(--font-ui);
     color: var(--ink-2);
   }
   .counter .val .t-stat {
     color: var(--ink);
   }
   .counter .lbl {
-    font: 600 16px/20px var(--font-ui);
+    font: 600 1rem/1.25rem var(--font-ui);
   }
   .counter.yes .ico {
     color: var(--success);
@@ -498,11 +498,11 @@
   }
   .banner .bt b {
     display: block;
-    font: 600 17px/23px var(--font-ui);
+    font: 600 1.0625rem/1.4375rem var(--font-ui);
   }
   .banner .bt span {
     display: block;
-    font: 400 16px/22px var(--font-ui);
+    font: 400 1rem/1.375rem var(--font-ui);
     color: var(--ink-2);
   }
   .banner.remind {
@@ -558,17 +558,17 @@
     border-radius: var(--r-md);
     background: var(--gold-soft);
     color: var(--gold-ink);
-    font: 600 16px/22px var(--font-ui);
+    font: 600 1rem/1.375rem var(--font-ui);
   }
 
   /* ---------- fields ---------- */
   .field-label {
     display: block;
-    font: 600 17px/22px var(--font-ui);
+    font: 600 1.0625rem/1.375rem var(--font-ui);
     margin: 0 0 8px;
   }
   .field-hint {
-    font: 400 16px/22px var(--font-ui);
+    font: 400 1rem/1.375rem var(--font-ui);
     color: var(--ink-2);
     margin-top: 8px;
   }
@@ -582,7 +582,7 @@
     background: var(--paper);
     border: 1.5px solid var(--line-strong);
     border-radius: var(--r-md);
-    font: 400 18px/1 var(--font-ui);
+    font: 400 1.125rem/1 var(--font-ui);
   }
   .input input {
     border: 0;
@@ -591,7 +591,7 @@
     flex: 1;
     min-width: 0;
     height: 100%;
-    font-size: 18px;
+    font-size: 1.125rem;
   }
   .input input::placeholder {
     color: var(--ink-2);
@@ -621,7 +621,7 @@
     gap: 8px;
     align-items: flex-start;
     color: var(--danger);
-    font: 600 16px/22px var(--font-ui);
+    font: 600 1rem/1.375rem var(--font-ui);
     margin-top: 8px;
   }
   .search {
@@ -676,7 +676,7 @@
     margin-top: 8px;
   }
   .guest .name {
-    font: 600 18px/24px var(--font-ui);
+    font: 600 1.125rem/1.5rem var(--font-ui);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -689,7 +689,7 @@
     align-items: center;
     gap: 6px 12px;
     margin-top: 8px;
-    font: 400 16px/22px var(--font-ui);
+    font: 400 1rem/1.375rem var(--font-ui);
     color: var(--ink-2);
   }
   .guest .row2 .tbl {
@@ -722,7 +722,7 @@
     flex: 1;
   }
   .guest .act .ago {
-    font: 400 16px/20px var(--font-ui);
+    font: 400 1rem/1.25rem var(--font-ui);
     color: var(--ink-2);
     flex: none;
     max-width: 42%;
@@ -734,7 +734,7 @@
     gap: 8px 12px;
     margin-top: 12px;
     color: var(--success-ink);
-    font: 600 16px/22px var(--font-ui);
+    font: 600 1rem/1.375rem var(--font-ui);
   }
   .guest .pending-row .btn {
     width: auto;
@@ -807,7 +807,7 @@
     border-radius: var(--r-md);
     background: var(--paper);
     border: 1.5px solid var(--line-strong);
-    font: 400 17px/22px var(--font-ui);
+    font: 400 1.0625rem/1.375rem var(--font-ui);
     text-align: center;
     color: var(--ink);
     transition:
@@ -878,12 +878,12 @@
     border: 0;
     background: transparent;
     text-align: center;
-    font: 600 36px/40px var(--font-ui);
+    font: 600 2.25rem/2.5rem var(--font-ui);
     font-variant-numeric: tabular-nums;
   }
   .stepper .val span {
     display: block;
-    font: 400 16px/20px var(--font-ui);
+    font: 400 1rem/1.25rem var(--font-ui);
     color: var(--ink-2);
   }
 
@@ -922,18 +922,18 @@
   }
   .link-row .lt b {
     display: block;
-    font: 600 17px/23px var(--font-ui);
+    font: 600 1.0625rem/1.4375rem var(--font-ui);
   }
   .link-row .lt span {
     display: block;
-    font: 400 16px/22px var(--font-ui);
+    font: 400 1rem/1.375rem var(--font-ui);
     color: var(--ink-2);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .link-row .count {
-    font: 600 16px/1 var(--font-ui);
+    font: 600 1rem/1 var(--font-ui);
     color: var(--ink-2);
   }
   .link-row > .ico {
@@ -954,7 +954,7 @@
     padding: 0 16px 0 12px;
     border-radius: var(--r-pill);
     border: 1.5px solid transparent;
-    font: 600 16px/1 var(--font-ui);
+    font: 600 1rem/1 var(--font-ui);
     text-decoration: none;
     white-space: nowrap;
     color: var(--ink);
@@ -1008,7 +1008,7 @@
   }
   .sum-line b {
     display: block;
-    font: 600 17px/21px var(--font-ui);
+    font: 600 1.0625rem/1.3125rem var(--font-ui);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1016,7 +1016,7 @@
   }
   .sum-line .tx > span {
     display: block;
-    font: 400 16px/20px var(--font-ui);
+    font: 400 1rem/1.25rem var(--font-ui);
     color: var(--gold-ink);
     white-space: nowrap;
     overflow: hidden;
@@ -1034,12 +1034,12 @@
     border-top: 1px solid var(--line);
   }
   .sum-body .big {
-    font: 600 26px/32px var(--font-ui);
+    font: 600 1.625rem/2rem var(--font-ui);
     letter-spacing: -0.01em;
     margin-top: 12px;
   }
   .sum-body .sub {
-    font: 400 16px/24px var(--font-ui);
+    font: 400 1rem/1.5rem var(--font-ui);
     color: var(--ink-2);
     margin-top: 2px;
   }
@@ -1052,7 +1052,7 @@
     border-radius: var(--r-md);
     background: var(--gold-soft);
     color: var(--gold-ink);
-    font: 600 16px/22px var(--font-ui);
+    font: 600 1rem/1.375rem var(--font-ui);
   }
 
   /* ---------- accordion (H2-List) ---------- */
@@ -1080,11 +1080,11 @@
     background: transparent;
     text-align: left;
     color: var(--ink);
-    font: 600 18px/24px var(--font-ui);
+    font: 600 1.125rem/1.5rem var(--font-ui);
   }
   .acc-trigger .meta {
     margin-left: auto;
-    font: 400 16px/22px var(--font-ui);
+    font: 400 1rem/1.375rem var(--font-ui);
     color: var(--ink-2);
     white-space: nowrap;
   }
@@ -1139,13 +1139,13 @@
     color: var(--white);
     display: grid;
     place-items: center;
-    font: 600 14px/1 var(--font-ui);
+    font: 600 0.875rem/1 var(--font-ui);
   }
   .fam .nm {
-    font: 600 18px/24px var(--font-ui);
+    font: 600 1.125rem/1.5rem var(--font-ui);
   }
   .fam .mt {
-    font: 400 16px/22px var(--font-ui);
+    font: 400 1rem/1.375rem var(--font-ui);
     color: var(--ink-2);
     margin-top: 2px;
   }
@@ -1154,7 +1154,7 @@
     align-items: center;
     gap: 6px;
     margin-top: 6px;
-    font: 600 16px/22px var(--font-ui);
+    font: 600 1rem/1.375rem var(--font-ui);
     color: var(--ink-2);
   }
   .fam .acts {
@@ -1279,7 +1279,7 @@
     background: var(--ivory);
     border: 0;
     width: 100%;
-    font: 600 18px/24px var(--font-ui);
+    font: 600 1.125rem/1.5rem var(--font-ui);
     color: var(--ink);
     text-decoration: none;
     text-align: left;
@@ -1297,7 +1297,7 @@
     border-radius: var(--r-md);
     border: 1.5px solid var(--line-strong);
     background: var(--paper);
-    font: 600 18px/1 var(--font-ui);
+    font: 600 1.125rem/1 var(--font-ui);
     color: var(--ink);
   }
   .menu-lang button[aria-pressed="true"] {
@@ -1319,7 +1319,7 @@
     background: var(--ink);
     color: var(--white);
     box-shadow: var(--sh-raised);
-    font: 400 16px/22px var(--font-ui);
+    font: 400 1rem/1.375rem var(--font-ui);
     overflow: hidden;
     white-space: nowrap;
     position: relative;
@@ -1338,7 +1338,7 @@
     border: 0;
     background: transparent;
     color: var(--toast-link);
-    font: 600 18px/1 var(--font-ui);
+    font: 600 1.125rem/1 var(--font-ui);
     display: flex;
     align-items: center;
     gap: 6px;
@@ -1420,7 +1420,7 @@
     gap: 3px;
     color: var(--ink-2);
     text-decoration: none;
-    font: 600 16px/18px var(--font-ui);
+    font: 600 1rem/1.125rem var(--font-ui);
     letter-spacing: -0.02em;
     min-width: 0;
   }
@@ -1479,7 +1479,7 @@
     text-decoration: none;
   }
   .wordmark b {
-    font: 600 30px/1 var(--font-display);
+    font: 600 1.875rem/1 var(--font-display);
     letter-spacing: 0.01em;
   }
   .wordmark svg {
@@ -1499,11 +1499,11 @@
     display: none;
   }
   .event-mini .nm {
-    font: 600 23px/28px var(--font-display);
+    font: 600 1.4375rem/1.75rem var(--font-display);
     padding-right: 30px;
   }
   .event-mini .meta {
-    font: 400 16px/22px var(--font-ui);
+    font: 400 1rem/1.375rem var(--font-ui);
     color: var(--ink-2);
     margin-top: 2px;
   }
@@ -1525,10 +1525,10 @@
     margin-top: 8px;
   }
   .who .nm {
-    font: 600 17px/22px var(--font-ui);
+    font: 600 1.0625rem/1.375rem var(--font-ui);
   }
   .who .rl {
-    font: 400 16px/22px var(--font-ui);
+    font: 400 1rem/1.375rem var(--font-ui);
     color: var(--ink-2);
   }
   .avatar {
@@ -1539,7 +1539,7 @@
     place-items: center;
     background: var(--gold-soft);
     color: var(--gold-ink);
-    font: 600 18px/1 var(--font-ui);
+    font: 600 1.125rem/1 var(--font-ui);
     flex: none;
   }
   @media (min-width: 768px) {
@@ -1588,7 +1588,7 @@
       border-radius: var(--r-md);
       color: var(--ink-2);
       text-decoration: none;
-      font: 600 16px/19px var(--font-ui);
+      font: 600 1rem/1.1875rem var(--font-ui);
       text-align: center;
       position: relative;
       letter-spacing: -0.02em;
@@ -1657,7 +1657,7 @@
       gap: 14px;
       padding: 0 14px;
       height: 52px;
-      font-size: 17px;
+      font-size: 1.0625rem;
       text-align: left;
     }
     .nav-item .dot {
@@ -1709,7 +1709,7 @@
   .page-head .ttl p {
     margin: 4px 0 0;
     color: var(--ink-2);
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
   @media (max-width: 1023px) {
     .desk-only {
@@ -1944,7 +1944,7 @@
     gap: 8px 18px;
     justify-content: center;
     padding: 10px 12px 2px;
-    font: 400 16px/22px var(--font-ui);
+    font: 400 1rem/1.375rem var(--font-ui);
     color: var(--ink-2);
   }
   .legend span {
@@ -1981,7 +1981,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font: 600 30px/1 var(--font-display);
+    font: 600 1.875rem/1 var(--font-display);
   }
   .auth-art .wm svg {
     width: 24px;
@@ -1995,12 +1995,12 @@
     gap: 12px;
   }
   .auth-art .ev {
-    font: 600 26px/30px var(--font-display);
+    font: 600 1.625rem/1.875rem var(--font-display);
     margin-top: 6px;
   }
   .auth-art .ev small {
     display: block;
-    font: 400 16px/22px var(--font-ui);
+    font: 400 1rem/1.375rem var(--font-ui);
     color: var(--on-night-muted);
     margin-top: 6px;
   }
@@ -2013,12 +2013,12 @@
   }
   .auth-card h1 {
     margin: 0;
-    font: 600 34px/38px var(--font-display);
+    font: 600 2.125rem/2.375rem var(--font-display);
   }
   .auth-card p {
     margin: 10px 0 0;
     color: var(--ink-2);
-    font: 400 17px/25px var(--font-ui);
+    font: 400 1.0625rem/1.5625rem var(--font-ui);
   }
   .auth-card .btns {
     display: grid;
@@ -2039,7 +2039,7 @@
     background: var(--paper);
     display: grid;
     place-items: center;
-    font: 600 26px/1 var(--font-ui);
+    font: 600 1.625rem/1 var(--font-ui);
     color: var(--ink);
   }
   .code-cells span.cur {
@@ -2055,7 +2055,7 @@
     width: 100%;
     height: 100%;
     opacity: 0;
-    font-size: 26px;
+    font-size: 1.625rem;
     letter-spacing: 1em;
     caret-color: transparent;
   }
@@ -2068,7 +2068,7 @@
     background: var(--gold-soft);
     color: var(--ink);
     margin-top: 18px;
-    font: 400 16px/22px var(--font-ui);
+    font: 400 1rem/1.375rem var(--font-ui);
   }
   .warn .ico {
     color: var(--gold-ink);
@@ -2078,7 +2078,7 @@
     padding: 8px 12px;
     border-radius: var(--r-md);
     background: var(--sand);
-    font: 600 16px/22px var(--font-ui);
+    font: 600 1rem/1.375rem var(--font-ui);
     color: var(--ink-2);
   }
   @media (min-width: 1024px) {
@@ -2102,8 +2102,8 @@
       height: 320px;
     }
     .auth-art .ev {
-      font-size: 40px;
-      line-height: 46px;
+      font-size: 2.5rem;
+      line-height: 2.875rem;
     }
     .auth-card {
       margin: 0;
@@ -2113,8 +2113,8 @@
       padding: 48px 12%;
     }
     .auth-card h1 {
-      font-size: 44px;
-      line-height: 50px;
+      font-size: 2.75rem;
+      line-height: 3.125rem;
     }
   }
 

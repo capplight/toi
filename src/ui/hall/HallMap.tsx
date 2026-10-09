@@ -233,6 +233,8 @@ export function HallMap({
         onClick={onSelectCouple}
         onKeyDown={onSelectCouple ? key(onSelectCouple) : undefined}
       >
+        {/* Target ≥ 48 px even when the map is scaled to 288 px on 320 screens (56 × 0.88 ≈ 49). */}
+        <rect x="76" y="34" width="176" height="56" fill="transparent" />
         <g transform="translate(148 26) scale(.27)" style={{ color: "var(--gold)" }}>
           <KoshkarMuiz width={120} height={64} x={0} y={0} strokeWidth={4.5} />
         </g>
