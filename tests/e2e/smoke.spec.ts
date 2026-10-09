@@ -32,7 +32,8 @@ test.describe("Ф0 smoke", () => {
 
   test("/api/health answers db: ok", async ({ request }) => {
     test.skip(
-      !process.env.DATABASE_URL,
+      // Ф0 review Н5: skipping is allowed only locally; in CI a missing DATABASE_URL fails.
+      !process.env.DATABASE_URL && !process.env.CI,
       "No Postgres: DATABASE_URL is not set (CI uses the postgres:16 service; locally use the Neon `dev` branch).",
     );
     const res = await request.get("/api/health");

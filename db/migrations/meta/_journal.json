@@ -8,6 +8,20 @@
       "when": 1791551899314,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791556264161,
+      "tag": "0001_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791556280944,
+      "tag": "0002_pg15_constraints",
+      "breakpoints": true
     }
   ]
 }

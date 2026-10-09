@@ -18,3 +18,12 @@ export function maskPhone(e164: string): string {
   if (!national) return "***";
   return `+7 ${national.slice(0, 3)} *** ** ${national.slice(8, 10)}`;
 }
+
+/**
+ * Kazakhstan mobile number: national part starts with 7 (+7 7XX …) — the only numbers a login code
+ * is sent to (Ф0 review Н4, plan 9 «накачка SMS»). `normalizePhone` stays general: guests may have
+ * Russian numbers (+7 9XX …).
+ */
+export function isKzMobile(e164: string): boolean {
+  return /^\+77\d{9}$/.test(e164);
+}

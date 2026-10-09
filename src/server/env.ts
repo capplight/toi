@@ -54,6 +54,9 @@ const schema = z.object({
   S3_SECRET_ACCESS_KEY: optionalStr,
 
   SENTRY_DSN: optionalStr,
+
+  /** Set by Vercel: production | preview | development. */
+  VERCEL_ENV: optionalStr,
 });
 
 type Raw = z.infer<typeof schema>;
@@ -88,7 +91,10 @@ export class EnvError extends Error {
 
 export function parseEnv(source: Record<string, string | undefined>): Env {
   // Vercel Preview: each deployment has its own URL, so APP_URL may be left empty there.
-  const appUrl = source.APP_URL?.trim() || (source.VERCEL_URL ? `https://${source.VERCEL_URL}` : undefined);
+  // Production must set APP_URL explicitly (Ф0 review Н3).
+  const production = source.VERCEL_ENV === "production";
+  const appUrl =
+    source.APP_URL?.trim() || (!production && source.VERCEL_URL ? `https://${source.VERCEL_URL}` : undefined);
   const result = schema.safeParse({ ...source, APP_URL: appUrl });
   if (!result.success) {
     // Only variable names and rule descriptions — never values.
@@ -96,6 +102,12 @@ export function parseEnv(source: Record<string, string | undefined>): Env {
     throw new EnvError(issues);
   }
   const raw = result.data;
+  if (production) {
+    // ConsoleProvider writes the SMS text (with the code) to the log — never in production (Н3).
+    if (raw.SMS_PROVIDER === "console") {
+      throw new EnvError(["SMS_PROVIDER: console is not allowed in production (use smsc or mobizon)"]);
+    }
+  }
 
   const smsc =
     raw.SMSC_LOGIN && raw.SMSC_PASSWORD

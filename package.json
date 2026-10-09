@@ -15,14 +15,21 @@
     "lint": "eslint --max-warnings=0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run",
+    "test": "vitest run --project unit",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "check:messages": "tsx scripts/check-messages.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "sms:test": "tsx scripts/sms-test.ts"
+    "sms:test": "tsx scripts/sms-test.ts",
+    "start:standalone": "node scripts/start-standalone.mjs",
+    "test:integration": "vitest run --project integration",
+    "test:all": "vitest run",
+    "db:local": "tsx scripts/db-local.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:seed-empty": "tsx scripts/seed-empty.ts",
+    "admin:owner-link": "tsx scripts/admin-owner-link.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
@@ -36,6 +43,8 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@electric-sql/pglite-socket": "^0.2.11",
     "@formatjs/icu-messageformat-parser": "^3.5.21",
     "@next/env": "16.4.0",
     "@playwright/test": "^1.64.0",

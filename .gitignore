@@ -35,3 +35,6 @@ design/v2/covers/source/
 
 # Sentry
 .sentryclirc
+
+# local PGlite data (pnpm db:local)
+.pglite/

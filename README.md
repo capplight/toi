@@ -16,7 +16,9 @@ pnpm db:migrate               # на ветку Neon `dev` (DATABASE_URL_UNPOOLE
 pnpm dev                      # http://localhost:3000
 ```
 
-Локальная база — ветка **Neon `dev`** (строки pooled → `DATABASE_URL`, direct → `DATABASE_URL_UNPOOLED`, `DATABASE_DRIVER=neon`). Docker не обязателен; `docker-compose.yml` (Postgres 16 + MinIO) лежит для тех, у кого он есть (`DATABASE_DRIVER=pg`).
+Без Docker и без Neon можно поднять локальную базу на PGlite: `pnpm db:local` (порт 5433, данные в `.pglite/`; `--memory` — без сохранения), затем в `.env.local` `DATABASE_DRIVER=pg` и `DATABASE_URL`/`DATABASE_URL_UNPOOLED=postgres://postgres:postgres@127.0.0.1:5433/postgres?sslmode=disable`, `pnpm db:migrate`, `pnpm db:seed --links` (демо-той «Айбек пен Дана» и ссылки входа для Әкесі/Анасы/Жастар).
+
+Основная локальная база — ветка **Neon `dev`** (строки pooled → `DATABASE_URL`, direct → `DATABASE_URL_UNPOOLED`, `DATABASE_DRIVER=neon`). Docker не обязателен; `docker-compose.yml` (Postgres 16 + MinIO) лежит для тех, у кого он есть (`DATABASE_DRIVER=pg`).
 
 Без обязательной переменной сервер не стартует и называет, какой переменной нет. SMS локально — `SMS_PROVIDER=console` (сообщение печатается в лог).
 
@@ -28,9 +30,13 @@ pnpm dev                      # http://localhost:3000
 | `pnpm typecheck` | `next typegen` + `tsc --noEmit` |
 | `pnpm lint` / `pnpm format` | ESLint (с правилом границ `src/domain`) / Prettier |
 | `pnpm test` / `pnpm test:coverage` | unit-тесты Vitest |
+| `pnpm test:integration` | integration-тесты на базе: PGlite в памяти или `TEST_DATABASE_URL` (CI: postgres:16) |
 | `pnpm test:e2e` | Playwright smoke (`mobile` 360×740, `desktop` 1440×900) против `next start`; сначала `pnpm build`. Проверка `db: "ok"` пропускается без `DATABASE_URL` |
 | `pnpm check:messages` | проверка `content/messages` (ключи, ICU, переменные, теги, `select`/`other`, ru `plural`) |
 | `pnpm db:generate` / `pnpm db:migrate` / `pnpm db:studio` | миграции Drizzle в `db/migrations` |
+| `pnpm db:local` / `pnpm db:seed [--links]` / `pnpm db:seed-empty` | локальная база PGlite; сиды из `tests/fixtures/sample-event.ts` (только local/preview) |
+| `pnpm admin:owner-link +7701…` | ссылка входа хозяина пилота (поток 4, только основатель, нужен env прода) |
+| `pnpm start:standalone` | запуск standalone-сборки (как в Docker; e2e работают против неё) |
 | `pnpm sms:test --provider smsc\|mobizon --to +7701… [--lang kk\|ru] [--operator Kcell]` | тестовая SMS на номер из `SMS_TEST_ALLOWLIST` и отчёт о доставке |
 
 ## Где что лежит

@@ -4,9 +4,6 @@ import { defineConfig, devices } from "@playwright/test";
 const PORT = Number(process.env.E2E_PORT ?? 3100);
 const baseURL = `http://localhost:${PORT}`;
 
-/** True when a real Postgres is available for the smoke run (CI service or local Neon `dev`). */
-export const hasDatabase = Boolean(process.env.DATABASE_URL);
-
 // Throw-away values for the test server only (never real secrets).
 const testSecret = () => randomBytes(32).toString("base64");
 
@@ -16,6 +13,8 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : [["list"]],
+  // Migrates and seeds the demo event once (needs DATABASE_URL; in CI it is required — Н5).
+  globalSetup: "./tests/e2e/global-setup.ts",
   use: {
     baseURL,
     trace: "retain-on-failure",
@@ -30,16 +29,17 @@ export default defineConfig({
     { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } },
   ],
   webServer: {
-    // Runs the production build (`pnpm build` first).
-    command: `pnpm start --port ${PORT}`,
+    // Ф0 review Н6: the standalone server that ships in Docker (`pnpm build` first), not `next start`.
+    command: "node scripts/start-standalone.mjs",
     url: `${baseURL}/`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
     env: {
+      PORT: String(PORT),
       APP_URL: baseURL,
       APP_DOMAIN: process.env.APP_DOMAIN || "toi-pilot.vercel.app",
-      DATABASE_DRIVER: hasDatabase ? (process.env.DATABASE_DRIVER ?? "pg") : "pg",
-      // Without a DB the app still starts; /api/health then reports db:"error" and that test is skipped.
+      DATABASE_DRIVER: process.env.DATABASE_DRIVER ?? "pg",
+      // Without a DB the app still starts; DB-dependent tests are skipped locally and fail in CI (Н5).
       DATABASE_URL: process.env.DATABASE_URL || "postgres://e2e:e2e@127.0.0.1:1/none",
       SESSION_SECRET: process.env.SESSION_SECRET || testSecret(),
       OTP_HMAC_SECRET: process.env.OTP_HMAC_SECRET || testSecret(),

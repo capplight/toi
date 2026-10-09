@@ -1,0 +1,55 @@
+name: Deploy production
+
+# Plan 11.3 / brief Ф2: migrations first, then the prebuilt deploy. Vercel's own Git deploy of `main`
+# is switched off in vercel.json (git.deploymentEnabled.main = false).
+# Secrets (added by the founder in GitHub → Settings → Secrets and variables → Actions):
+#   VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID, PROD_DATABASE_URL_UNPOOLED
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+  NEXT_TELEMETRY_DISABLED: "1"
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Check messages
+        run: pnpm check:messages
+
+      # Expand-only migrations (plan 11.3): old and new code both work with the new schema.
+      - name: Migrate production database
+        run: pnpm db:migrate
+        env:
+          DATABASE_URL_UNPOOLED: ${{ secrets.PROD_DATABASE_URL_UNPOOLED }}
+
+      - name: Pull Vercel production settings
+        run: pnpm dlx vercel@63.1.0 pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build
+        run: pnpm dlx vercel@63.1.0 build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy (prebuilt)
+        run: pnpm dlx vercel@63.1.0 deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
