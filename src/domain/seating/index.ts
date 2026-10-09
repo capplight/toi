@@ -9,6 +9,7 @@ export { fullReseat, previewFullReseat, type FullReseatPreview } from "./fullRes
 export { placeIncremental, suggestTable } from "./incremental";
 export {
   setupHall,
+  seatUnplaced,
   addFamily,
   setRsvp,
   setSeats,

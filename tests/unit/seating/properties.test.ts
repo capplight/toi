@@ -10,6 +10,7 @@ import {
   removeFamily,
   reorderCategories,
   restoreFamily,
+  seatUnplaced,
   type SeatingResult,
   type SeatingState,
   seatsOf,
@@ -47,7 +48,7 @@ type Op = { name: string; subject: string | null; run: (s: SeatingState) => Seat
 const opArb = (s: SeatingState): fc.Arbitrary<Op> =>
   fc
     .tuple(
-      fc.integer({ min: 0, max: 9 }),
+      fc.integer({ min: 0, max: 10 }),
       fc.nat(),
       fc.integer({ min: 1, max: 20 }),
       fc.constantFrom<Family["rsvp"]>("yes", "no", "pending"),
@@ -123,12 +124,21 @@ const opArb = (s: SeatingState): fc.Arbitrary<Op> =>
                 x.families.filter((_, k) => (k + j) % 3 === 0).map((y) => y.id),
               ),
           };
-        default:
+        case 9:
+          return { name: "seatUnplaced", subject: null, run: (x: SeatingState) => seatUnplaced(x) };
+        default: {
+          // Only families that need seats can be moved (0 seats → SeatingError, Д3).
+          const m = pick(
+            s.families.filter((y) => seatsOf(y) > 0),
+            i,
+          );
+          if (!m) return { name: "seatUnplaced", subject: null, run: (x: SeatingState) => seatUnplaced(x) };
           return {
             name: "moveFamily",
-            subject: id,
-            run: (x: SeatingState) => moveFamily(x, id!, (j % x.hall!.tables) + 1, { force }),
+            subject: m.id,
+            run: (x: SeatingState) => moveFamily(x, m.id, (j % x.hall!.tables) + 1, { force }),
           };
+        }
       }
     });
 
@@ -244,8 +254,9 @@ describe(`seating invariants 7.4 (fast-check, ${RUNS} runs each)`, () => {
     fc.assert(
       fc.property(opsArb, ([s, kind, i, n]) => {
         let after: SeatingState;
-        if (kind === 0 && s.families.length) {
-          after = moveFamily(s, s.families[i % s.families.length]!.id, (i % s.hall!.tables) + 1, { force: true }).state;
+        const movable = s.families.filter((f) => seatsOf(f) > 0);
+        if (kind === 0 && movable.length) {
+          after = moveFamily(s, movable[i % movable.length]!.id, (i % s.hall!.tables) + 1, { force: true }).state;
         } else if (kind === 1) {
           after = reorderCategories(
             s,
@@ -259,6 +270,50 @@ describe(`seating invariants 7.4 (fast-check, ${RUNS} runs each)`, () => {
         const u = undoChange(after, buildDiff(s, after));
         expect(u.state).toEqual(s);
         expect(u.warnings.some((w) => w.kind === "undo_skipped")).toBe(false);
+      }),
+      params,
+    );
+  });
+
+  /** Every seated family sits at an existing table and needs seats (Д1, Д3). */
+  function assertSeatsValid(r: SeatingState, label: string) {
+    const tables = r.hall ? r.hall.tables : 0;
+    for (const f of r.families) {
+      if (f.tableNo === null) continue;
+      expect(f.tableNo >= 1 && f.tableNo <= tables, `${label}: ${f.id}@${f.tableNo} of ${tables}`).toBe(true);
+      expect(seatsOf(f), `${label}: ${f.id} seated with 0 seats`).toBeGreaterThan(0);
+    }
+  }
+
+  it("8. after any operation no family sits at a non-existent table, none with 0 seats sits at all", () => {
+    fc.assert(
+      fc.property(stateAndOp, ([s, op]) => {
+        assertSeatsValid(op.run(s).state, op.name);
+      }),
+      params,
+    );
+  });
+
+  it("8b. undo of a hall change after an intermediate operation: no family left at a missing table (Д1)", () => {
+    const arb = seatedStateArb.chain((s) =>
+      fc.tuple(fc.integer({ min: 1, max: 24 }), fc.integer({ min: 4, max: 16 })).chain(([tables, seats]) => {
+        const changed = setupHall(s, { ...s.hall!, tables, seatsPerTable: seats }).state;
+        return opArb(changed).map((op) => ({ s, changed, op }));
+      }),
+    );
+    fc.assert(
+      fc.property(arb, ({ s, changed, op }) => {
+        const diff = buildDiff(s, changed);
+        const mid = op.run(changed).state;
+        const u = undoChange(mid, diff);
+        assertSeatsValid(u.state, `undo hall after ${op.name}`);
+        // Families seated on tables that still exist and were not part of the diff do not move.
+        const touched = new Set(diff.families.map((d) => d.id));
+        const after = tablesOf(u.state);
+        for (const f of mid.families) {
+          if (touched.has(f.id) || f.tableNo === null || !u.state.hall || f.tableNo > u.state.hall.tables) continue;
+          expect(after[f.id], f.id).toBe(f.tableNo);
+        }
       }),
       params,
     );

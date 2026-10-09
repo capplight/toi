@@ -1,3 +1,5 @@
+import { seatsOf } from "./family";
+import { applyHall } from "./hall";
 import { overflowWarnings } from "./stats";
 import type { Category, Family, HallConfig, SeatingResult, SeatingState, Warning } from "./types";
 import { collectDeltas } from "./util";
@@ -55,7 +57,9 @@ export function undoChange(state: SeatingState, diff: SeatingDiff): SeatingResul
   const current = new Map(state.families.map((f) => [f.id, f]));
   for (const d of diff.families) {
     const f = current.get(d.id);
-    if (f && sameSeat(seatState(f), d.after)) restore.set(d.id, d.before);
+    // A family that now needs 0 seats («Келмейміз» after the change) is never put back at a table.
+    const seatsGone = f !== undefined && d.before.tableNo !== null && seatsOf(f) === 0;
+    if (f && sameSeat(seatState(f), d.after) && !seatsGone) restore.set(d.id, d.before);
     else skipped.push(d.id);
   }
 
@@ -78,15 +82,21 @@ export function undoChange(state: SeatingState, diff: SeatingDiff): SeatingResul
     const r = restore.get(f.id);
     return r ? { ...f, tableNo: r.tableNo, locked: r.locked, lockedBy: r.lockedBy } : f;
   });
-  const after: SeatingState = { hall, categories, families };
+  const restored: SeatingState = { hall, categories, families };
   const warnings: Warning[] = [];
   if (skipped.length || orderSkipped || hallSkipped) {
     warnings.push({ kind: "undo_skipped", familyIds: skipped, order: orderSkipped, hall: hallSkipped });
   }
+  // Undo of a hall change goes through the hall logic (plan 7.6 v1.4, Д1): families on tables that no
+  // longer exist (e.g. seated there after the change) are unseated (lock dropped) and re-placed.
+  // Only those are re-placed, so a plain undo restores exactly the recorded state.
+  const applied = applyHall(restored, hall, "displaced-only");
+  warnings.push(...applied.warnings);
+  const after = applied.state;
   warnings.push(...overflowWarnings(after));
   return {
     state: after,
-    deltas: collectDeltas(state.families, families),
+    deltas: collectDeltas(state.families, after.families),
     warnings,
     applied: buildDiff(state, after),
   };

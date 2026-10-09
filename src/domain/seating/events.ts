@@ -1,6 +1,6 @@
 import { findFamily, seatsOf, validateFamily, validateHall, validateState } from "./family";
 import { placeIncremental } from "./incremental";
-import { layoutTables } from "./layout";
+import { applyHall } from "./hall";
 import { overflowWarnings, tableStats } from "./stats";
 import {
   type Category,
@@ -36,28 +36,27 @@ function placeThen(before: SeatingState, mid: SeatingState, ids: string[], extra
 }
 
 /**
- * Hall setup / change.
- * - First setup: every unseated family → placeIncremental as one batch.
- * - Bigger hall: nobody moves; new tables are empty.
- * - Removed tables: their families (locks dropped) → placeIncremental.
- * - Smaller capacity: nobody moves; overflow warnings.
+ * Hall setup / change (plan 7.2 v1.4).
+ * - Removed tables: their families (locks dropped, `lock_dropped`) are unseated.
+ * - Then every unseated family with seats > 0 → placeIncremental as one batch: first setup,
+ *   «Үстел қосу» (more tables), larger tables — also seats «Отырғызылмағандар» (Д2).
+ * - Seated families on remaining tables never move; smaller capacity → overflow warnings only.
  */
 export function setupHall(state: SeatingState, hall: HallConfig): SeatingResult {
   validateState(state);
   validateHall(hall);
-  const first = state.hall === null;
-  const existing = new Set(layoutTables(hall).tables.map((t) => t.no));
-  const extra: Warning[] = [];
-  const families = state.families.map((f) => {
-    if (f.tableNo === null || existing.has(f.tableNo)) return f;
-    if (f.locked) extra.push({ kind: "lock_dropped", familyId: f.id });
-    return { ...f, tableNo: null, locked: false, lockedBy: null };
-  });
-  const mid: SeatingState = { ...state, hall, families };
-  const ids = first
-    ? families.filter((f) => f.tableNo === null).map((f) => f.id)
-    : families.filter((f, i) => f.tableNo === null && state.families[i]!.tableNo !== null).map((f) => f.id);
-  return placeThen(state, mid, ids, extra);
+  const r = applyHall(state, hall, "all-unseated");
+  return finish(state, r.state, r.warnings);
+}
+
+/**
+ * «Отырғызылмағандар → отырғызу» (plan 6.5): placeIncremental for every unseated family with seats > 0.
+ * Seated families never move.
+ */
+export function seatUnplaced(state: SeatingState): SeatingResult {
+  validateState(state);
+  const ids = state.families.filter((f) => f.tableNo === null && seatsOf(f) > 0).map((f) => f.id);
+  return placeThen(state, state, ids);
 }
 
 /** New guest → placeIncremental([f]). */
@@ -159,6 +158,8 @@ export function moveFamily(
   validateState(state);
   if (!state.hall) throw new SeatingError("hall is not set up");
   const f = findFamily(state, familyId);
+  // Families with 0 seats («Келмейміз») never sit at a table (Д3).
+  if (seatsOf(f) === 0) throw new SeatingError(`family ${familyId} needs no seats and cannot be moved to a table`);
   const table = tableStats(state).tables.find((t) => t.no === to);
   if (!table) throw new SeatingError(`unknown table ${to}`);
   const freeAfter = table.free + (f.tableNo === to ? seatsOf(f) : 0) - seatsOf(f);
