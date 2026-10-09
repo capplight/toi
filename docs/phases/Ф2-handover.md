@@ -305,3 +305,86 @@ pnpm admin:owner-link +77XXXXXXXXX --note "семья-пилот"
 - [x] Персональные данные не попадают в логи и в `sms_log`; Sentry чистит события (Ф0).
 - [x] `dangerouslySetInnerHTML` нет.
 - [x] unit 143, integration 39, e2e 24 — зелёные.
+
+---
+
+## 12. Правки по ревью (`docs/phases/Ф2-review.md`, вердикт «нужны правки»)
+
+Перед правками вся цепочка перебазирована на `main` (`887cdb3`, ревью и план v1.5): `phase/F0-setup` → `phase/F7a-seating` → `phase/F2-foundation`, все три — `Successfully rebased`.
+
+Коммит **`1a13633` `fix(F2): review Б1–Б3 …`**:
+```
+$ git diff --stat 1a13633~1 1a13633   (без snapshot-файлов drizzle)
+ .github/workflows/deploy-prod.yml       |   13 +
+ db/migrations/0003_session_scope.sql    |   10 +   (новая, расширяющая)
+ src/app/api/cron/cleanup/route.ts       |   22 +   (новый)
+ src/app/e/page.tsx                      |   14 +-
+ src/server/actions/auth.ts              |   15 +-
+ src/server/auth/access.ts               |   19 +-
+ src/server/auth/loginLinks.ts           |   79 +-
+ src/server/auth/otp.ts                  |   35 +-
+ src/server/auth/session.ts              |  174 +++-
+ src/server/authz.ts                     |    6 +-
+ src/server/cleanup.ts                   |   41 +   (новый)
+ src/server/schema.ts                    |   25 +-
+ tests/e2e/auth.spec.ts, tests/e2e/global-setup.ts
+ tests/integration/session-scope.test.ts |  223 +++++  (новый)
+ tests/integration/cleanup.test.ts       |  106 +++  (новый)
+ tests/integration/authz.test.ts, otp-sessions.test.ts (новые сигнатуры)
+ vercel.json                             |    8 +-   (crons)
+```
+
+| № | Что сделано | Где | Тесты |
+|---|---|---|---|
+| **Б1** | `sessions.scope` (`'all'` \| `'events'`, CHECK) и таблица `session_events` — миграция `0003_session_scope.sql`, только расширяющая. Внешний ключ из `0002` не трогается. | `schema.ts`, `0003` | — |
+| | Ссылка составителя: привязывается **только** членство из ссылки; сессия `scope = 'events'` с этим событием. Если на устройстве уже есть сессия того же человека со `scope = 'events'` (cookie `toi_session`), событие добавляется в неё. Cookie другого человека не используется. | `loginLinks.ts` (`consumeLink`), `session.ts` (`addEventToSession`) | «две ссылки разных событий на одном устройстве → одна сессия с двумя событиями»; «cookie другого человека → новая сессия» |
+| | SMS и ссылка основателя (`owner_bootstrap`) → `scope = 'all'`, привязываются все членства телефона. | `otp.ts`, `loginLinks.ts` | «SMS → доступ к A и B»; «owner_bootstrap → 'all'» |
+| | `authorize` принимает `Principal {userId, scope, sessionId}`: при `'events'` событие должно быть в `session_events`. `requireUser` возвращает `scope` и `sessionId`. | `access.ts`, `authz.ts` | **«хозяин A открыл ссылку P → в B 403»**, в двух вариантах: P ещё не входил в B; P уже работает в B со своего телефона (тот же `users.id`) |
+| | `/e` для `'events'` показывает только события сессии. | `src/app/e/page.tsx` (`sessionEventIds`) | e2e «ссылка составителя → «Мои тои» содержит только его событие» |
+| | «Шығару» (`revokeMemberEventAccess`): событие убирается из `session_events` сессий этого человека, сессии без событий отзываются; сессии `'all'` не трогаются. | `session.ts`, `actions/auth.ts` | «Шығару в A не трогает SMS-сессию P» |
+| | Лимит 3 сессий считается отдельно: для `'all'` — на человека, для `'events'` — на событие (старейшая теряет событие). | `session.ts` (`createSession`, `enforceEventCap`) | «4 ссылки → старейшая ссылочная сессия отозвана, SMS-сессия жива; 3 новых SMS → уходит старая SMS, ссылочные живы» |
+| | Вход по ссылке не меняет `users.locale` существующего пользователя (у нового пользователя язык ставится); SMS обновляет язык. | `session.ts` (`upsertUser({updateLocale})`) | «ссылка не меняет язык; SMS меняет» |
+| **Б2** | `verifyOtp` не принимает проверку с `provider = 'none'`: ответ как на неверный код, попытки считаются. | `otp.ts` | в проверку неизвестного номера подложен известный код → `{error: "wrong", left: 4}`, ни пользователя, ни сессии |
+| **Б3** | `/api/cron/cleanup`: `Authorization: Bearer CRON_SECRET` (хэши сравниваются за постоянное время), ответ — только счётчики. Vercel Cron раз в сутки в 22:00 UTC (03:00 Алматы). Удаляет: `otp_challenges` старше 24 ч; `rate_limits` старше 2 суток; `login_links` использованные, отозванные или истёкшие больше 30 дней назад; `sessions` отозванные или истёкшие больше 30 дней назад; `session_events` — каскадом. | `cleanup.ts`, `route.ts`, `vercel.json` | по каждой таблице: удаляется только старое, свежее остаётся; каскад `session_events`; 401 без заголовка, с неверным секретом и без `Bearer `; 200 только со счётчиками |
+| **Н13** | Комментарий у `families_event_table_fk`: ограничение задано вручную в `0002`, Drizzle его не пересоздаёт; регрессию ловит тест. | `schema.ts` | `schema-seed` (`SET NULL (table_no)`) |
+| **Н7** | Ключи `rate_limits` и `sms_log.phone_hash` — HMAC с серверным секретом (`OTP_HMAC_SECRET`, отдельная метка назначения) вместо голого sha256. | `otp.ts` (`keyedHash`) | существующие тесты лимитов и `sms_log` |
+| **Н11** | `deploy-prod.yml`: `paths-ignore` для `docs/**`, `architecture/**`, `design/**`, `research/**`, `prototype/**`, корневых `*.md`, `content/*.md`. `content/messages/**` **не** игнорируется. | `deploy-prod.yml` | — (сработает на GitHub) |
+
+**Найдено при прогоне e2e:** после SMS-входа переход открывал событие, только если членство было привязано именно сейчас. Если человек уже входил в это событие по ссылке, его отправляло на `/e`. Теперь правило такое: у человека ровно одно событие → открываем его, иначе «Менің тойларым».
+
+**Проверка, что тесты Б1 и Б2 ловят ошибки** (мутации, после проверки откачены):
+- выключил проверку scope в `authorize` → первый вариант теста (P ещё не входил в B) **не упал**: членство P в B не было привязано, и 403 получалось и без scope. Поэтому добавлен второй вариант «P уже работает в B»; с мутацией он падает;
+- убрал условие `provider !== "none"` → тест Б2 падает.
+
+**Проверки после правок (реальный вывод):**
+```
+$ pnpm check:messages
+check:messages: OK — 757 keys, kk/ru: ICU, variables, tags, select/other, ru plural forms
+$ pnpm typecheck
+✓ Types generated successfully
+$ pnpm lint
+$ eslint --max-warnings=0
+$ pnpm format:check
+All matched files use Prettier code style!
+$ pnpm test
+ Test Files  16 passed (16)
+      Tests  143 passed (143)
+$ pnpm test:integration          (PGlite, миграции 0000–0003 с нуля)
+ Test Files  6 passed (6)
+      Tests  51 passed (51)
+$ pnpm build
+✓ Compiled successfully   … ├ ƒ /api/cron/cleanup
+$ E2E_CHANNEL=chrome DATABASE_URL=postgres://…@127.0.0.1:5435/… pnpm test:e2e   (standalone, PGlite)
+  26 passed (45.8s)
+$ gitleaks protect --staged
+INF no leaks found
+```
+
+**Известное, не исправлялось в этом круге** (по ревью, раздел 5):
+- Н8: разница во времени ответа `requestOtp` для известного и неизвестного номера — до коммерческого запуска;
+- Н9: IP из `x-forwarded-for` за прокси в KZ — Ф12;
+- Н10: `APP_ENV=production` для KZ — Ф12;
+- Н12: на первом preview проверить, что Neon отдаёт `DATABASE_URL_UNPOOLED` на этапе сборки;
+- точный список мобильных кодов (отклонение 9) — до коммерческого запуска.
+
+**Новое отклонение:** секрет HMAC для ключей лимитов и `sms_log` — `OTP_HMAC_SECRET` (с меткой назначения), а не отдельная переменная. Если этот секрет сменить, старые записи `sms_log` перестанут находиться по номеру; для журнала это допустимо.
