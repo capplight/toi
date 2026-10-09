@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кіру · Той v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<style>
+  /* /join/{token} (по умолчанию), #expired — «Сілтеме ескірген», #sms — /login телефон, #code — ввод кода и «Код келмеді» */
+  html:not([data-state=""]):not([data-state="join"]) .s-join, html:not([data-state="expired"]) .s-expired, html:not([data-state="sms"]) .s-sms, html:not([data-state="code"]) .s-code { display: none !important; }
+  body { min-height: 100vh; }
+  .auth { min-height: 100vh; display: grid; grid-template-rows: auto 1fr; }
+  .auth-art { position: relative; overflow: hidden; color: var(--on-night); padding: 22px 20px 64px; text-align: center;
+    background: radial-gradient(90% 120% at 50% 0%, #24496F 0%, var(--night) 70%); }
+  .auth-art .shanyraq { width: 150px; height: 150px; margin: 6px auto 0; color: var(--gold-bright); }
+  .auth-art .wm { display: inline-flex; align-items: center; gap: 8px; font: 600 30px/1 var(--font-display); }
+  .wm-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .auth-lang { background: rgba(255,255,255,.12); }
+  .auth-lang button { color: #E9DFCC; }
+  .auth-lang button[aria-pressed="true"] { color: var(--lapis); }
+  @media (min-width: 1024px) { .wm-row { position: absolute; top: 24px; left: 32px; right: 32px; } }
+  .auth-art .wm svg { width: 24px; height: 24px; color: var(--gold-bright); }
+  .auth-art .ev { font: 600 26px/30px var(--font-display); margin-top: 6px; }
+  .auth-art .ev small { display: block; font: 400 16px/22px var(--font-ui); color: rgba(244,235,218,.85); margin-top: 6px; }
+  .auth-card { background: var(--ivory); border-radius: 28px 28px 0 0; margin-top: -32px; position: relative; padding: 28px 20px 32px; }
+  .auth-card h1 { margin: 0; font: 600 34px/38px var(--font-display); }
+  .auth-card p { margin: 10px 0 0; color: var(--ink-2); font: 400 17px/25px var(--font-ui); }
+  .auth-card .btns { display: grid; gap: 12px; margin-top: 28px; }
+  .code { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 18px; }
+  .code span { height: 60px; border-radius: 14px; border: 1.5px solid var(--line-strong); background: var(--paper); display: grid; place-items: center; font: 600 26px/1 var(--font-ui); }
+  .code span.cur { border: 2.5px solid var(--lapis); box-shadow: 0 0 0 4px rgba(28,59,94,.1); }
+  .muted-row { display: flex; align-items: center; gap: 8px; margin-top: 16px; color: var(--ink-2); font: 400 16px/22px var(--font-ui); }
+  .warn { display: grid; grid-template-columns: 24px 1fr; gap: 10px; padding: 14px; border-radius: var(--r-lg); background: var(--gold-soft); color: var(--ink); margin-top: 18px; font: 400 16px/22px var(--font-ui); }
+  .warn .ico { color: var(--gold-ink); }
+  @media (min-width: 1024px) {
+    .auth { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; }
+    .auth-art { display: grid; place-content: center; padding: 48px; }
+    .auth-art .shanyraq { width: 320px; height: 320px; }
+    .auth-art .ev { font-size: 40px; line-height: 46px; }
+    .auth-card { margin: 0; border-radius: 0; display: grid; align-content: center; padding: 48px 12%; }
+    .auth-card h1 { font-size: 44px; line-height: 50px; }
+  }
+</style>
+</head>
+<body>
+<div class="auth">
+  <section class="auth-art" aria-hidden="false">
+    <div class="wm-row"><div class="wm"><span data-orn="mark"></span>Той</div><div class="lang auth-lang" role="group" aria-label="Тіл"><button aria-pressed="true">ҚАЗ</button><button aria-pressed="false">РУС</button></div></div>
+    <span data-orn="shanyraq" class="shanyraq draw"></span>
+    <!-- Заголовок = events.title как его ввёл хозяин; падежи к именам не строим (план 6.1) -->
+    <div class="ev">Айбек пен Дана<small>Үйлену тойы · 15 қараша, 18:00 · «Шаңырақ» мейрамханасы</small></div>
+  </section>
+
+  <main class="auth-card">
+    <!-- /join: первый вход по ссылке (GET ничего не тратит; вход по нажатию) -->
+    <div class="s-join">
+      <h1>Сәлеметсіз бе!</h1>
+      <p>Сізді бұл тойға «Анасы» ретінде қосты.</p>
+      <p>Қонақ тізімін толтыру үшін кіріңіз. Келесі жолы бұл телефоннан бірден ашылады.</p>
+      <div class="btns"><button class="btn primary"><svg class="ico"><use href="#i-login"/></svg>Кіру</button></div>
+    </div>
+    <!-- Сілтеме ескірген -->
+    <div class="s-expired">
+      <h1>Сілтеме жарамсыз</h1>
+      <p>Бұл сілтеме бұрын қолданылған немесе мерзімі өтіп кеткен. Той иесінен жаңасын сұраңыз немесе SMS-кодпен кіріңіз.</p>
+      <div class="btns">
+        <button class="btn wa"><svg class="ico fill"><use href="#i-wa"/></svg>Той иесінен сілтеме сұрау</button>
+        <button class="btn secondary"><svg class="ico"><use href="#i-sms"/></svg>SMS-кодпен кіру</button>
+      </div>
+    </div>
+    <!-- /login: телефон -->
+    <div class="s-sms">
+      <h1>Кіру</h1>
+      <p>Телефон нөміріңізге SMS-код жібереміз.</p>
+      <div style="margin-top:22px"><label class="field-label" for="ph">Телефон нөміріңіз</label>
+        <div class="input focus"><span class="prefix">+7</span><input id="ph" inputmode="tel" value="702 381 07 66"></div></div>
+      <div class="btns"><button class="btn primary">Код жіберу</button><button class="btn text" style="width:100%"><svg class="ico fill" style="color:var(--success)"><use href="#i-wa"/></svg>Той иесінен сілтеме сұрау</button></div>
+    </div>
+    <!-- /login: код -->
+    <div class="s-code">
+      <h1>Кодты жазыңыз</h1>
+      <p>+7 702 381 •• 66 нөміріне 6 таңбалы код жіберілді.</p>
+      <div class="code" aria-label="SMS-код"><span>4</span><span>8</span><span class="cur"></span><span></span><span></span><span></span></div>
+      <div class="muted-row"><svg class="ico sm"><use href="#i-clock"/></svg>Қайта жіберуге 0:42 қалды</div>
+      <div class="warn"><svg class="ico"><use href="#i-alert"/></svg><span><b>Код келмеді ме?</b><br>Кейбір операторларға SMS жетпейді. Той иесінен WhatsApp арқылы жаңа сілтеме сұраңыз.</span></div>
+      <div class="btns"><button class="btn wa"><svg class="ico fill"><use href="#i-wa"/></svg>Той иесінен сілтеме сұрау</button><button class="btn text" style="width:100%">Жаңа код сұрау</button></div>
+    </div>
+  </main>
+</div>
+<script src="js/mock.js"></script>
+</body>
+</html>

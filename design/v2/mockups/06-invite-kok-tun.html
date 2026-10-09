@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0F2338">
+<title>Шақыру «Көк түн» · Той v2</title>
+<!-- Шрифты: свои woff2-подмножества (≈ 30 КБ на два файла); preload только Cormorant — имя семьи на конверте = LCP -->
+<!-- в продукте (https): <link rel="preload" href="/fonts/cormorant-garamond-600-kk.woff2" as="font" type="font/woff2" crossorigin>
+     в статичном макете выключено: file:// блокирует CORS-preload; сам шрифт грузится через @font-face в invite.css -->
+<link rel="stylesheet" href="css/invite.css">
+</head>
+<body class="inv tpl-kok">
+<!-- ===== Конверт: первый экран. Нажатие «Ашу» запускает музыку (автозапуск запрещён браузерами) ===== -->
+<section class="scene" aria-label="Шақыру конверті">
+  <div class="scene-decor"><svg class="sky" viewBox="0 0 400 300" preserveAspectRatio="xMidYMin slice" style="position:absolute;inset:0;width:100%;height:100%;color:#F1DEB0;opacity:.8" aria-hidden="true"><g transform="translate(39.0 48.0) scale(0.43)"><path class="twinkle" style="--d:5s;--dl:-1s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(104.0 28.799999999999997) scale(0.29)"><path class="twinkle" style="--d:6s;--dl:-2s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(156.0 84.0) scale(0.36)"><path class="twinkle" style="--d:4s;--dl:-3s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(260.0 36.0) scale(0.51)"><path class="twinkle" style="--d:7s;--dl:-1.5s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(338.0 72.0) scale(0.29)"><path class="twinkle" style="--d:5s;--dl:-4s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(312.0 144.0) scale(0.36)"><path class="twinkle" style="--d:6s;--dl:-0.5s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(52.0 144.0) scale(0.29)"><path class="twinkle" style="--d:4.5s;--dl:-2.5s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(208.0 48.0) scale(0.29)"><path class="twinkle" style="--d:5.5s;--dl:-3.5s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(364.0 180.0) scale(0.43)"><path class="twinkle" style="--d:6.5s;--dl:-1s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(130.0 168.0) scale(0.26)"><path class="twinkle" style="--d:5s;--dl:-0.2s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(26.0 228.0) scale(0.32)"><path class="twinkle" style="--d:7s;--dl:-2.2s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(240.5 114.0) scale(0.23)"><path class="twinkle" style="--d:4s;--dl:-1.1s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g></svg>
+    <svg class="corner c-tl draw" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner c-tr draw" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner c-bl draw" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner c-br draw" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg>
+  </div>
+  <div class="scene-inner">
+    <p class="env-hello">Сізге тойға шақыру келді</p>
+    <p class="env-to">Ерлан ағай отбасы</p>
+    <div class="env" aria-hidden="true">
+      <div class="env-back"><svg viewBox="0 0 400 282" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="lp-kok" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(0)"><path fill="currentColor" d="M20 12 C20.6 17 21 17.4 26 18 C21 18.6 20.6 19 20 24 C19.4 19 19 18.6 14 18 C19 17.4 19.4 17 20 12Z"/><circle cx="4" cy="34" r="1.2" fill="currentColor"/></pattern></defs><rect width="400" height="282" fill="url(#lp-kok)"/></svg></div>
+      <div class="letter"><span class="l-kick">Үйлену тойы</span><span class="l-names">Айбек пен Дана</span><svg class="" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg></div>
+      <div class="pocket"></div>
+      <div class="flap"><i class="f"></i><i class="b"></i></div>
+      <span class="seal-glow"></span>
+      <span class="seal"><span class="mono">А<i></i>Д</span></span>
+    </div>
+    <button class="open-btn" id="open">Ашу</button>
+    <p class="env-hint" id="hint"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Ашқанда музыка қосылады</p>
+    <div class="lang-pill" role="group" aria-label="Тіл"><button aria-pressed="true">ҚАЗ</button><button aria-pressed="false">РУС</button></div>
+  </div>
+</section>
+
+<!-- ===== Приглашение ===== -->
+<div class="page-bg"></div>
+<div class="side-decor l" aria-hidden="true" data-ambient><svg viewBox="0 0 400 1000" preserveAspectRatio="xMinYMin slice" width="100%" height="100%" aria-hidden="true">
+<g opacity=".9"><g transform="translate(60 80) scale(1.16)"><path class="twinkle" style="--d:5s;--dl:-1s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(180 140) scale(0.87)"><path class="twinkle" style="--d:6s;--dl:-2s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(300 60) scale(1.44)"><path class="twinkle" style="--d:7s;--dl:-3s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(90 260) scale(0.72)"><path class="twinkle" style="--d:4s;--dl:-0.5s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(250 320) scale(1.01)"><path class="twinkle" style="--d:6s;--dl:-1.5s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(130 420) scale(0.58)"><path class="twinkle" style="--d:5s;--dl:-2.5s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(320 500) scale(1.16)"><path class="twinkle" style="--d:6.5s;--dl:-1s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(60 560) scale(0.87)"><path class="twinkle" style="--d:5s;--dl:-3.2s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(220 640) scale(0.72)"><path class="twinkle" style="--d:4.5s;--dl:-0.8s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(330 760) scale(1.01)"><path class="twinkle" style="--d:7s;--dl:-2s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(100 820) scale(0.81)"><path class="twinkle" style="--d:5.5s;--dl:-1.2s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(260 900) scale(0.58)"><path class="twinkle" style="--d:4s;--dl:-0.3s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(40 950) scale(0.87)"><path class="twinkle" style="--d:6s;--dl:-2.6s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(190 240) scale(0.58)"><path class="twinkle" style="--d:5s;--dl:-1.9s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(340 380) scale(0.64)"><path class="twinkle" style="--d:4.2s;--dl:-0.7s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g></g>
+<g transform="translate(330 150)"><circle r="48" fill="currentColor" opacity=".08"/><circle r="28" fill="currentColor" opacity=".85"/></g>
+<g class="draw" opacity=".7"><g transform="translate(200 560) scale(2.6)" fill="none" stroke="currentColor" stroke-width="0.46" stroke-linecap="round"><path pathLength="1" d="M0 -40 A40 40 0 1 1 0 40 A40 40 0 1 1 0 -40"/><path pathLength="1" class="d2" d="M0 -34 A34 34 0 1 0 0 34 A34 34 0 1 0 0 -34"/><path pathLength="1" class="d3" d="M-13 -31.4 Q-18 0 -13 31.4"/><path pathLength="1" class="d3" d="M13 -31.4 Q18 0 13 31.4"/><path pathLength="1" class="d4" d="M-31.4 -13 Q0 -18 31.4 -13"/><path pathLength="1" class="d4" d="M-31.4 13 Q0 18 31.4 13"/><path pathLength="1" class="ray" style="--dd:600ms" d="M45.00 0.00 L62.00 0.00"/><path pathLength="1" class="ray" style="--dd:625ms" d="M44.14 8.78 L53.94 10.73"/><path pathLength="1" class="ray" style="--dd:650ms" d="M41.57 17.22 L57.28 23.73"/><path pathLength="1" class="ray" style="--dd:675ms" d="M37.42 25.00 L45.73 30.56"/><path pathLength="1" class="ray" style="--dd:700ms" d="M31.82 31.82 L43.84 43.84"/><path pathLength="1" class="ray" style="--dd:725ms" d="M25.00 37.42 L30.56 45.73"/><path pathLength="1" class="ray" style="--dd:750ms" d="M17.22 41.57 L23.73 57.28"/><path pathLength="1" class="ray" style="--dd:775ms" d="M8.78 44.14 L10.73 53.94"/><path pathLength="1" class="ray" style="--dd:800ms" d="M0.00 45.00 L0.00 62.00"/><path pathLength="1" class="ray" style="--dd:825ms" d="M-8.78 44.14 L-10.73 53.94"/><path pathLength="1" class="ray" style="--dd:850ms" d="M-17.22 41.57 L-23.73 57.28"/><path pathLength="1" class="ray" style="--dd:875ms" d="M-25.00 37.42 L-30.56 45.73"/><path pathLength="1" class="ray" style="--dd:900ms" d="M-31.82 31.82 L-43.84 43.84"/><path pathLength="1" class="ray" style="--dd:925ms" d="M-37.42 25.00 L-45.73 30.56"/><path pathLength="1" class="ray" style="--dd:950ms" d="M-41.57 17.22 L-57.28 23.73"/><path pathLength="1" class="ray" style="--dd:975ms" d="M-44.14 8.78 L-53.94 10.73"/><path pathLength="1" class="ray" style="--dd:1000ms" d="M-45.00 0.00 L-62.00 0.00"/><path pathLength="1" class="ray" style="--dd:1025ms" d="M-44.14 -8.78 L-53.94 -10.73"/><path pathLength="1" class="ray" style="--dd:1050ms" d="M-41.57 -17.22 L-57.28 -23.73"/><path pathLength="1" class="ray" style="--dd:1075ms" d="M-37.42 -25.00 L-45.73 -30.56"/><path pathLength="1" class="ray" style="--dd:1100ms" d="M-31.82 -31.82 L-43.84 -43.84"/><path pathLength="1" class="ray" style="--dd:1125ms" d="M-25.00 -37.42 L-30.56 -45.73"/><path pathLength="1" class="ray" style="--dd:1150ms" d="M-17.22 -41.57 L-23.73 -57.28"/><path pathLength="1" class="ray" style="--dd:1175ms" d="M-8.78 -44.14 L-10.73 -53.94"/><path pathLength="1" class="ray" style="--dd:1200ms" d="M-0.00 -45.00 L-0.00 -62.00"/><path pathLength="1" class="ray" style="--dd:1225ms" d="M8.78 -44.14 L10.73 -53.94"/><path pathLength="1" class="ray" style="--dd:1250ms" d="M17.22 -41.57 L23.73 -57.28"/><path pathLength="1" class="ray" style="--dd:1275ms" d="M25.00 -37.42 L30.56 -45.73"/><path pathLength="1" class="ray" style="--dd:1300ms" d="M31.82 -31.82 L43.84 -43.84"/><path pathLength="1" class="ray" style="--dd:1325ms" d="M37.42 -25.00 L45.73 -30.56"/><path pathLength="1" class="ray" style="--dd:1350ms" d="M41.57 -17.22 L57.28 -23.73"/><path pathLength="1" class="ray" style="--dd:1375ms" d="M44.14 -8.78 L53.94 -10.73"/></g></g></svg></div>
+<div class="side-decor r" aria-hidden="true" data-ambient><svg viewBox="0 0 400 1000" preserveAspectRatio="xMinYMin slice" width="100%" height="100%" aria-hidden="true">
+<g opacity=".9"><g transform="translate(60 80) scale(1.16)"><path class="twinkle" style="--d:5s;--dl:-1s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(180 140) scale(0.87)"><path class="twinkle" style="--d:6s;--dl:-2s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(300 60) scale(1.44)"><path class="twinkle" style="--d:7s;--dl:-3s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(90 260) scale(0.72)"><path class="twinkle" style="--d:4s;--dl:-0.5s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(250 320) scale(1.01)"><path class="twinkle" style="--d:6s;--dl:-1.5s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(130 420) scale(0.58)"><path class="twinkle" style="--d:5s;--dl:-2.5s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(320 500) scale(1.16)"><path class="twinkle" style="--d:6.5s;--dl:-1s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(60 560) scale(0.87)"><path class="twinkle" style="--d:5s;--dl:-3.2s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(220 640) scale(0.72)"><path class="twinkle" style="--d:4.5s;--dl:-0.8s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(330 760) scale(1.01)"><path class="twinkle" style="--d:7s;--dl:-2s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(100 820) scale(0.81)"><path class="twinkle" style="--d:5.5s;--dl:-1.2s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(260 900) scale(0.58)"><path class="twinkle" style="--d:4s;--dl:-0.3s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(40 950) scale(0.87)"><path class="twinkle" style="--d:6s;--dl:-2.6s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(190 240) scale(0.58)"><path class="twinkle" style="--d:5s;--dl:-1.9s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(340 380) scale(0.64)"><path class="twinkle" style="--d:4.2s;--dl:-0.7s" fill="currentColor" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g></g>
+<g transform="translate(330 150)"><circle r="48" fill="currentColor" opacity=".08"/><circle r="28" fill="currentColor" opacity=".85"/></g>
+<g class="draw" opacity=".7"><g transform="translate(200 560) scale(2.6)" fill="none" stroke="currentColor" stroke-width="0.46" stroke-linecap="round"><path pathLength="1" d="M0 -40 A40 40 0 1 1 0 40 A40 40 0 1 1 0 -40"/><path pathLength="1" class="d2" d="M0 -34 A34 34 0 1 0 0 34 A34 34 0 1 0 0 -34"/><path pathLength="1" class="d3" d="M-13 -31.4 Q-18 0 -13 31.4"/><path pathLength="1" class="d3" d="M13 -31.4 Q18 0 13 31.4"/><path pathLength="1" class="d4" d="M-31.4 -13 Q0 -18 31.4 -13"/><path pathLength="1" class="d4" d="M-31.4 13 Q0 18 31.4 13"/><path pathLength="1" class="ray" style="--dd:600ms" d="M45.00 0.00 L62.00 0.00"/><path pathLength="1" class="ray" style="--dd:625ms" d="M44.14 8.78 L53.94 10.73"/><path pathLength="1" class="ray" style="--dd:650ms" d="M41.57 17.22 L57.28 23.73"/><path pathLength="1" class="ray" style="--dd:675ms" d="M37.42 25.00 L45.73 30.56"/><path pathLength="1" class="ray" style="--dd:700ms" d="M31.82 31.82 L43.84 43.84"/><path pathLength="1" class="ray" style="--dd:725ms" d="M25.00 37.42 L30.56 45.73"/><path pathLength="1" class="ray" style="--dd:750ms" d="M17.22 41.57 L23.73 57.28"/><path pathLength="1" class="ray" style="--dd:775ms" d="M8.78 44.14 L10.73 53.94"/><path pathLength="1" class="ray" style="--dd:800ms" d="M0.00 45.00 L0.00 62.00"/><path pathLength="1" class="ray" style="--dd:825ms" d="M-8.78 44.14 L-10.73 53.94"/><path pathLength="1" class="ray" style="--dd:850ms" d="M-17.22 41.57 L-23.73 57.28"/><path pathLength="1" class="ray" style="--dd:875ms" d="M-25.00 37.42 L-30.56 45.73"/><path pathLength="1" class="ray" style="--dd:900ms" d="M-31.82 31.82 L-43.84 43.84"/><path pathLength="1" class="ray" style="--dd:925ms" d="M-37.42 25.00 L-45.73 30.56"/><path pathLength="1" class="ray" style="--dd:950ms" d="M-41.57 17.22 L-57.28 23.73"/><path pathLength="1" class="ray" style="--dd:975ms" d="M-44.14 8.78 L-53.94 10.73"/><path pathLength="1" class="ray" style="--dd:1000ms" d="M-45.00 0.00 L-62.00 0.00"/><path pathLength="1" class="ray" style="--dd:1025ms" d="M-44.14 -8.78 L-53.94 -10.73"/><path pathLength="1" class="ray" style="--dd:1050ms" d="M-41.57 -17.22 L-57.28 -23.73"/><path pathLength="1" class="ray" style="--dd:1075ms" d="M-37.42 -25.00 L-45.73 -30.56"/><path pathLength="1" class="ray" style="--dd:1100ms" d="M-31.82 -31.82 L-43.84 -43.84"/><path pathLength="1" class="ray" style="--dd:1125ms" d="M-25.00 -37.42 L-30.56 -45.73"/><path pathLength="1" class="ray" style="--dd:1150ms" d="M-17.22 -41.57 L-23.73 -57.28"/><path pathLength="1" class="ray" style="--dd:1175ms" d="M-8.78 -44.14 L-10.73 -53.94"/><path pathLength="1" class="ray" style="--dd:1200ms" d="M-0.00 -45.00 L-0.00 -62.00"/><path pathLength="1" class="ray" style="--dd:1225ms" d="M8.78 -44.14 L10.73 -53.94"/><path pathLength="1" class="ray" style="--dd:1250ms" d="M17.22 -41.57 L23.73 -57.28"/><path pathLength="1" class="ray" style="--dd:1275ms" d="M25.00 -37.42 L30.56 -45.73"/><path pathLength="1" class="ray" style="--dd:1300ms" d="M31.82 -31.82 L43.84 -43.84"/><path pathLength="1" class="ray" style="--dd:1325ms" d="M37.42 -25.00 L45.73 -30.56"/><path pathLength="1" class="ray" style="--dd:1350ms" d="M41.57 -17.22 L57.28 -23.73"/><path pathLength="1" class="ray" style="--dd:1375ms" d="M44.14 -8.78 L53.94 -10.73"/></g></g></svg></div>
+<div class="inv-bar">
+  <div class="lang-pill" role="group" aria-label="Тіл"><button aria-pressed="true">ҚАЗ</button><button aria-pressed="false">РУС</button></div>
+  <button class="pill-btn" aria-label="Музыканы өшіру" aria-pressed="true"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>Музыка</button>
+</div>
+
+<main class="invite">
+  <div class="inv-col paper">
+    <header class="hero">
+      <div class="kicker">Үйлену тойы</div>
+      <div class="arch-wrap">
+        <div class="arch" data-ambient><svg class="cover" viewBox="0 0 300 370" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs><linearGradient id="sk2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0B1C2E"/><stop offset=".6" stop-color="#1D4268"/><stop offset="1" stop-color="#2E5A82"/></linearGradient>
+<mask id="moon"><rect width="300" height="370" fill="#fff"/><circle cx="236" cy="78" r="21" fill="#000"/></mask></defs>
+<rect width="300" height="370" fill="url(#sk2)"/><g transform="translate(30 40) scale(0.33)"><path class="twinkle" style="--d:5s;--dl:-1s" fill="#F1DEB0" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(80 24) scale(0.22)"><path class="twinkle" style="--d:6s;--dl:-2s" fill="#F1DEB0" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(120 70) scale(0.28)"><path class="twinkle" style="--d:4s;--dl:-3s" fill="#F1DEB0" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(200 30) scale(0.39)"><path class="twinkle" style="--d:7s;--dl:-1.5s" fill="#F1DEB0" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(260 60) scale(0.22)"><path class="twinkle" style="--d:5s;--dl:-4s" fill="#F1DEB0" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(240 120) scale(0.28)"><path class="twinkle" style="--d:6s;--dl:-0.5s" fill="#F1DEB0" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(40 120) scale(0.22)"><path class="twinkle" style="--d:4.5s;--dl:-2.5s" fill="#F1DEB0" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(160 40) scale(0.22)"><path class="twinkle" style="--d:5.5s;--dl:-3.5s" fill="#F1DEB0" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(280 150) scale(0.33)"><path class="twinkle" style="--d:6.5s;--dl:-1s" fill="#F1DEB0" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(100 140) scale(0.20)"><path class="twinkle" style="--d:5s;--dl:-0.2s" fill="#F1DEB0" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(20 190) scale(0.24)"><path class="twinkle" style="--d:7s;--dl:-2.2s" fill="#F1DEB0" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g><g transform="translate(185 95) scale(0.18)"><path class="twinkle" style="--d:4s;--dl:-1.1s" fill="#F1DEB0" d="M0 -9 C1 -1.5 1.5 -1 9 0 C1.5 1 1 1.5 0 9 C-1 1.5 -1.5 1 -9 0 C-1.5 -1 -1 -1.5 0 -9Z"/></g>
+<circle cx="226" cy="84" r="34" fill="#F1DEB0" opacity=".12"/><circle cx="226" cy="84" r="20" fill="#F1DEB0"/>
+<g class="draw" style="color:#D8B26A" opacity=".85"><g transform="translate(150 206) scale(1.15)" fill="none" stroke="currentColor" stroke-width="1.30" stroke-linecap="round"><path pathLength="1" d="M0 -40 A40 40 0 1 1 0 40 A40 40 0 1 1 0 -40"/><path pathLength="1" class="d2" d="M0 -34 A34 34 0 1 0 0 34 A34 34 0 1 0 0 -34"/><path pathLength="1" class="d3" d="M-13 -31.4 Q-18 0 -13 31.4"/><path pathLength="1" class="d3" d="M13 -31.4 Q18 0 13 31.4"/><path pathLength="1" class="d4" d="M-31.4 -13 Q0 -18 31.4 -13"/><path pathLength="1" class="d4" d="M-31.4 13 Q0 18 31.4 13"/><path pathLength="1" class="ray" style="--dd:600ms" d="M45.00 0.00 L62.00 0.00"/><path pathLength="1" class="ray" style="--dd:625ms" d="M44.14 8.78 L53.94 10.73"/><path pathLength="1" class="ray" style="--dd:650ms" d="M41.57 17.22 L57.28 23.73"/><path pathLength="1" class="ray" style="--dd:675ms" d="M37.42 25.00 L45.73 30.56"/><path pathLength="1" class="ray" style="--dd:700ms" d="M31.82 31.82 L43.84 43.84"/><path pathLength="1" class="ray" style="--dd:725ms" d="M25.00 37.42 L30.56 45.73"/><path pathLength="1" class="ray" style="--dd:750ms" d="M17.22 41.57 L23.73 57.28"/><path pathLength="1" class="ray" style="--dd:775ms" d="M8.78 44.14 L10.73 53.94"/><path pathLength="1" class="ray" style="--dd:800ms" d="M0.00 45.00 L0.00 62.00"/><path pathLength="1" class="ray" style="--dd:825ms" d="M-8.78 44.14 L-10.73 53.94"/><path pathLength="1" class="ray" style="--dd:850ms" d="M-17.22 41.57 L-23.73 57.28"/><path pathLength="1" class="ray" style="--dd:875ms" d="M-25.00 37.42 L-30.56 45.73"/><path pathLength="1" class="ray" style="--dd:900ms" d="M-31.82 31.82 L-43.84 43.84"/><path pathLength="1" class="ray" style="--dd:925ms" d="M-37.42 25.00 L-45.73 30.56"/><path pathLength="1" class="ray" style="--dd:950ms" d="M-41.57 17.22 L-57.28 23.73"/><path pathLength="1" class="ray" style="--dd:975ms" d="M-44.14 8.78 L-53.94 10.73"/><path pathLength="1" class="ray" style="--dd:1000ms" d="M-45.00 0.00 L-62.00 0.00"/><path pathLength="1" class="ray" style="--dd:1025ms" d="M-44.14 -8.78 L-53.94 -10.73"/><path pathLength="1" class="ray" style="--dd:1050ms" d="M-41.57 -17.22 L-57.28 -23.73"/><path pathLength="1" class="ray" style="--dd:1075ms" d="M-37.42 -25.00 L-45.73 -30.56"/><path pathLength="1" class="ray" style="--dd:1100ms" d="M-31.82 -31.82 L-43.84 -43.84"/><path pathLength="1" class="ray" style="--dd:1125ms" d="M-25.00 -37.42 L-30.56 -45.73"/><path pathLength="1" class="ray" style="--dd:1150ms" d="M-17.22 -41.57 L-23.73 -57.28"/><path pathLength="1" class="ray" style="--dd:1175ms" d="M-8.78 -44.14 L-10.73 -53.94"/><path pathLength="1" class="ray" style="--dd:1200ms" d="M-0.00 -45.00 L-0.00 -62.00"/><path pathLength="1" class="ray" style="--dd:1225ms" d="M8.78 -44.14 L10.73 -53.94"/><path pathLength="1" class="ray" style="--dd:1250ms" d="M17.22 -41.57 L23.73 -57.28"/><path pathLength="1" class="ray" style="--dd:1275ms" d="M25.00 -37.42 L30.56 -45.73"/><path pathLength="1" class="ray" style="--dd:1300ms" d="M31.82 -31.82 L43.84 -43.84"/><path pathLength="1" class="ray" style="--dd:1325ms" d="M37.42 -25.00 L45.73 -30.56"/><path pathLength="1" class="ray" style="--dd:1350ms" d="M41.57 -17.22 L57.28 -23.73"/><path pathLength="1" class="ray" style="--dd:1375ms" d="M44.14 -8.78 L53.94 -10.73"/></g></g>
+<path d="M0 276 L38 236 L66 254 L108 204 L148 250 L184 222 L220 246 L258 210 L300 240 V370 H0Z" fill="#163556"/>
+<path d="M108 204 L96 218 L106 214 L116 222 L120 214 Z M258 210 L248 222 L258 218 L266 224 Z" fill="#C9D6E3" opacity=".55"/>
+<path d="M0 306 L50 280 L96 298 L150 270 L210 300 L260 282 L300 296 V370 H0Z" fill="#0F2742"/>
+<path d="M0 340 C90 322 190 346 300 328 V370 H0Z" fill="#0A1B2E"/></svg></div>
+      </div>
+      <h1 class="names serif">Айбек<span class="amp">пен</span>Дана</h1>
+      <div class="divider"><i class="ln"></i><svg class="draw" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg><i class="ln"></i></div>
+    </header>
+
+    <section class="sec reveal">
+      <p class="greet">Құрметті<br>Ерлан ағай отбасы!</p>
+      <p class="body-text">Сіздерді ұлымыз Айбек пен келініміз Дананың үйлену тойына арналған салтанатты ақ дастарханымыздың қадірлі қонағы болуға шақырамыз.</p>
+    </section>
+
+    <section class="sec reveal" aria-label="Күні мен уақыты">
+      <div class="datebox">
+        <div class="side">Жексенбі</div>
+        <div class="mid"><div class="day">15</div><div class="mon">қараша</div></div>
+        <div class="side">18:00</div>
+      </div>
+      <div class="count">Тойға <b>37</b> күн қалды</div>
+    </section>
+
+    <section class="sec reveal">
+      <div class="card venue">
+        <svg class="corner k1" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner k2" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg>
+        <svg class="ico-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        <h3>«Шаңырақ» мейрамханасы</h3>
+        <p>Атырау қ., Абай даңғылы, 15</p>
+        <a class="btn-i" href="#" style="margin-top:20px"><svg viewBox="0 0 24 24" ><path d="M14.1 6 9.9 4 3 6.6v13.4l6.9-2.6 4.2 2 6.9-2.6V3.4Z"/><path d="M9.9 4v13.4"/><path d="M14.1 6v13.4"/></svg>Картаны ашу</a>
+      </div>
+    </section>
+
+    <section class="sec reveal hosts">
+      <div class="lbl">Той иелері</div>
+      <div class="nm">Серік — Гүлжан</div>
+    </section>
+
+    <section class="sec reveal" id="rsvp">
+      <!-- Обычная форма POST /i/{token}: работает и без JS; JS только даёт −/+ и скрывает число мест при «Келмейміз» -->
+      <form class="card rsvp st-form" method="post" action="#rsvp">
+        <h2>Тойға келесіз бе?</h2>
+        <p class="sub">Жауабыңызды осы жерде белгілеңізші</p>
+        <fieldset class="choice" style="border:0;padding:0;margin:0"><legend class="sr-only">Жауабыңыз</legend>
+          <label><input type="radio" name="attending" value="yes" checked><svg viewBox="0 0 24 24" ><circle cx="12" cy="12" r="10"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>Келеміз</label>
+          <label><input type="radio" name="attending" value="no"><svg viewBox="0 0 24 24" ><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Келе алмаймыз</label>
+        </fieldset>
+        <div class="seats">
+          <label class="q" for="seats">Неше орын керек?</label>
+          <div class="stepper-i"><button type="button" data-step="-1" aria-label="Орынды азайту"><svg viewBox="0 0 24 24" ><path d="M5 12h14"/></svg></button><div class="v"><input id="seats" name="seats" type="number" inputmode="numeric" min="1" max="30" value="4"><small>орын</small></div><button type="button" data-step="1" aria-label="Орынды көбейту"><svg viewBox="0 0 24 24" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div>
+          <p class="hint">Кішкентай балаларды санамаңыз.</p>
+        </div>
+        <button class="btn-i fill" type="submit"><svg viewBox="0 0 24 24" ><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>Жіберу</button>
+        <p class="note">Жауапты той күніне дейін өзгертуге болады.</p>
+      </form>
+
+      <div class="card rsvp st-answered keep">
+        <svg class="done-orn draw" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg>
+        <h2>Рақмет! Сізді күтеміз</h2>
+        <div class="done-sum"><svg class="check-draw" viewBox="0 0 24 24"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg>Келеміз · 4 орын</div>
+        <p class="note">Жауапты той күніне дейін өзгертуге болады.</p>
+        <a class="btn-i" href="#" style="margin-top:16px"><svg viewBox="0 0 24 24" ><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>Жауапты өзгерту</a>
+      </div>
+
+      <div class="card tableno st-table" style="margin-top:16px">
+        <svg class="corner k1" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner k2" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner k3" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner k4" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg>
+        <div class="lbl">Сіздің үстеліңіз</div>
+        <div class="n">10</div>
+        <div class="unit">үстел</div>
+        <svg class="minimap" viewBox="0 0 220 230" aria-label="Залдағы үстеліңіз: 10-үстел" role="img"><text x="110" y="12">ТӨР</text><rect class="yt" x="75" y="22" width="70" height="14" rx="7"/><circle class="t" cx="35" cy="66" r="11"/><circle class="t" cx="85" cy="66" r="11"/><circle class="t" cx="135" cy="66" r="11"/><circle class="t" cx="185" cy="66" r="11"/><circle class="t" cx="35" cy="108" r="11"/><circle class="t" cx="85" cy="108" r="11"/><circle class="t" cx="135" cy="108" r="11"/><circle class="t" cx="185" cy="108" r="11"/><circle class="t" cx="35" cy="150" r="11"/><circle class="me-ring" cx="85" cy="150" r="13"/><circle class="me" cx="85" cy="150" r="13"/><text x="85" y="154" style="fill:var(--on-accent);font-size:12px;letter-spacing:0;font-weight:400">10</text><circle class="t" cx="135" cy="150" r="11"/><circle class="t" cx="185" cy="150" r="11"/><circle class="t" cx="35" cy="192" r="11"/><circle class="t" cx="85" cy="192" r="11"/><circle class="t" cx="135" cy="192" r="11"/><circle class="t" cx="185" cy="192" r="11"/><text x="110" y="224">КІРЕБЕРІС</text></svg>
+        <p class="note">Кіреберісте көмекшіміз Сізді қарсы алып, үстеліңізге апарады.</p>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="wm"><svg viewBox="-32 -32 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><circle r="17"/><path d="M-6 -15.8 Q-8.5 0 -6 15.8 M6 -15.8 Q8.5 0 6 15.8 M-15.8 -6 Q0 -8.5 15.8 -6 M-15.8 6 Q0 8.5 15.8 6"/><path d="M22.0 0.0 L29.0 0.0 M19.1 11.0 L25.1 14.5 M11.0 19.1 L14.5 25.1 M0.0 22.0 L0.0 29.0 M-11.0 19.1 L-14.5 25.1 M-19.1 11.0 L-25.1 14.5 M-22.0 0.0 L-29.0 0.0 M-19.1 -11.0 L-25.1 -14.5 M-11.0 -19.1 L-14.5 -25.1 M-0.0 -22.0 L-0.0 -29.0 M11.0 -19.1 L14.5 -25.1 M19.1 -11.0 L25.1 -14.5"/></svg>Той</div>
+      <div style="margin-top:6px">«Той» қызметінде жасалған</div>
+    </footer>
+  </div>
+</main>
+
+<!-- Ванильный JS-островок (в продукте ≤ 10 КБ, без React): конверт + музыка + −/+ + пауза анимаций вне экрана.
+     Без JS: форма уходит обычным POST; сервер для no-JS отдаёт сразу открытое приглашение (<noscript> со стилем .scene{display:none}). -->
+<noscript><style>.scene{display:none}.invite{opacity:1}</style></noscript>
+<script>
+  (function () {
+    var h = document.documentElement, st = (location.hash || '').slice(1);
+    h.dataset.state = st === 'mid' ? '' : st;
+    if (st === 'open' || st === 'answered' || st === 'table') h.classList.add('is-open');
+    if (st === 'lite') h.classList.add('lite');
+    if (st === 'mid') { h.classList.add('is-opening'); setTimeout(function () { h.dataset.state = 'mid'; }, 1150); }
+    document.getElementById('open').addEventListener('click', function () {
+      h.classList.add('is-opening');                         /* + audio.play() в продукте */
+      setTimeout(function () { h.classList.add('opened'); }, 2300);
+    });
+    document.querySelectorAll('[data-step]').forEach(function (b) {
+      b.addEventListener('click', function () { var i = document.getElementById('seats'); i.value = Math.min(30, Math.max(1, (+i.value || 1) + +b.dataset.step)); });
+    });
+    document.querySelectorAll('input[name=attending]').forEach(function (r) {
+      r.addEventListener('change', function () { document.querySelector('.seats').hidden = (r.value === 'no' && r.checked); });
+    });
+    if ('IntersectionObserver' in window) {   /* N4: пауза бесконечных анимаций вне экрана */
+      var io = new IntersectionObserver(function (es) { es.forEach(function (e) { e.target.classList.toggle('paused', !e.isIntersecting); }); });
+      document.querySelectorAll('[data-ambient], .tableno').forEach(function (el) { io.observe(el); });
+    }
+    document.addEventListener('visibilitychange', function () { h.classList.toggle('page-hidden', document.hidden); });
+  })();
+</script>
+</body>
+</html>

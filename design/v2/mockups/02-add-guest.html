@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Жаңа қонақ · Той v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/screens.css">
+<style>
+  /* Состояния макета: #error, #phone, #dup, #ok (по умолчанию — заполненная форма) */
+  html:not([data-state="error"]) .s-error, html:not([data-state="phone"]) .s-phone, html:not([data-state="dup"]) .s-dup, html:not([data-state="ok"]) .s-ok { display: none !important; }
+  html[data-state="error"] .s-fill, html[data-state="phone"] .s-fill, html[data-state="phone"] .s-fill-phone, html[data-state="dup"] .s-fill { display: none !important; }
+  html:not([data-state="dup"]) .s-dupname { display: none !important; }
+  .found { margin-top: 10px; padding: 14px 16px; border-radius: var(--r-lg); background: var(--paper); border: 2px solid var(--danger); }
+  .found b { font: 600 18px/24px var(--font-ui); }
+  .dupcard { padding: 14px 16px; border-radius: var(--r-lg); border: 2px solid var(--dup); background: var(--paper); margin: 8px 0 14px; }
+  .dupcard .h { display: flex; gap: 10px; align-items: center; font: 600 18px/24px var(--font-ui); }
+  .dupcard .h .ico { color: var(--dup); }
+  .dupcard p { margin: 4px 0 10px 34px; color: var(--ink-2); font-size: 16px; line-height: 22px; }
+  .dupcard .row { margin-left: 34px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 16px; }
+  @media (min-width: 1024px) { .content { max-width: 1180px; } .page { grid-template-columns: minmax(0, 1fr) 340px; } }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" aria-label="Мәзір">
+    <a class="wordmark brand" href="#"><span data-orn="mark"></span><b>Той</b></a>
+    <div class="event-mini"><span data-orn="shanyraq" class="deco"></span><div class="nm">Айбек пен Дана</div><div class="meta">Үйлену тойы · 15 қараша, 18:00</div></div>
+    <a class="nav-item" href="01-guests.html" aria-current="page"><svg class="ico"><use href="#i-users"/></svg>Қонақтар</a>
+    <a class="nav-item" href="03-hall.html"><svg class="ico"><use href="#i-grid"/></svg>Зал<span class="dot"></span></a>
+    <a class="nav-item" href="#"><svg class="ico"><use href="#i-chart"/></svg>Қорытынды</a>
+    <a class="nav-item" href="#"><svg class="ico"><use href="#i-wallet"/></svg>Шығындар</a>
+    <div class="side-foot"><button class="nav-item menu-item" aria-haspopup="dialog"><svg class="ico"><use href="#i-more"/></svg><span>Той мәзірі</span></button>
+      <div class="who"><span class="avatar">С</span><div><b style="font-weight:600">Серік</b><div class="t-body t-muted">Әкесі</div></div></div></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <a class="icon-btn" href="01-guests.html" aria-label="Артқа"><svg class="ico"><use href="#i-back"/></svg></a>
+      <h1 class="t-h1">Жаңа қонақ</h1>
+    </header>
+
+    <main class="content no-tabs">
+      <div class="page">
+        <div class="col-main">
+          <form class="form-card" onsubmit="return false">
+            <div class="form-sec">
+              <label class="field-label" for="nm">Аты</label>
+              <div class="input focus s-fill"><input id="nm" value="Асқар ағай отбасы" autocapitalize="words" autocomplete="off" enterkeyhint="next"></div>
+              <div class="input focus s-dupname"><input value="Ерлан"></div>
+              <div class="input error s-error"><input aria-invalid="true" aria-describedby="nm-err" placeholder="Мысалы: Ерлан ағай отбасы"></div>
+              <div class="field-error s-error" id="nm-err"><svg class="ico sm"><use href="#i-alert"/></svg>Атын жазыңыз.</div>
+              <div class="input s-phone"><input value="Күләш"></div>
+              <p class="field-hint">Бір отбасы немесе бір адам</p>
+            </div>
+
+            <div class="form-sec">
+              <label class="field-label" for="ph">Телефон (міндетті емес)</label>
+              <div class="input s-fill-phone"><span class="prefix">+7</span><input id="ph" inputmode="tel" value="705 123 45 67"></div>
+              <div class="input error s-phone"><span class="prefix">+7</span><input inputmode="tel" value="701 555 12 34" aria-invalid="true"></div>
+              <div class="s-phone">
+                <div class="field-error"><svg class="ico sm"><use href="#i-alert"/></svg>Бұл нөмір Анасының тізімінде бар</div>
+                <div class="found"><b>Күләш апай</b> <span class="t-muted">· Нағашылар</span>
+                  <div style="display:flex;gap:10px;align-items:center;margin-top:8px"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 2</span><b style="font-size:16px">11-үстел</b></div></div>
+                <p class="field-hint">Бір нөмір екі қонақта болмайды. Нөмірді өзгертіңіз немесе өшіріңіз.</p>
+              </div>
+              <p class="field-hint s-fill-phone">Нөмір болса, WhatsApp бірден осы адамның чатын ашады.</p>
+            </div>
+
+            <div class="form-sec">
+              <span class="field-label" id="cat-l">Санаты</span>
+              <div class="cats" role="radiogroup" aria-labelledby="cat-l">
+                <button class="cat" role="radio" aria-checked="false"><i class="sw" style="background:var(--cat-kuda)"></i>Құдалар</button>
+                <button class="cat" role="radio" aria-checked="true"><i class="sw" style="background:var(--cat-oz)"></i><svg class="ico sm"><use href="#i-check"/></svg>Өз туыстар</button>
+                <button class="cat" role="radio" aria-checked="false"><i class="sw" style="background:var(--cat-nagashy)"></i>Нағашылар</button>
+                <button class="cat" role="radio" aria-checked="false"><i class="sw" style="background:var(--cat-dos)"></i>Достар</button>
+                <button class="cat" role="radio" aria-checked="false"><i class="sw" style="background:var(--cat-ariptes)"></i>Әріптестер</button>
+                <button class="cat" role="radio" aria-checked="false"><i class="sw" style="background:var(--cat-korshi)"></i>Көршілер</button>
+                <button class="cat" role="radio" aria-checked="false"><i class="sw" style="background:var(--cat-synyp)"></i>Сыныптастар / курстастар</button>
+                <button class="cat" role="radio" aria-checked="false"><i class="sw" style="background:var(--cat-baska)"></i>Басқа</button>
+                <button class="cat add"><svg class="ico sm"><use href="#i-plus"/></svg>Санат қосу</button>
+              </div>
+            </div>
+
+            <div class="form-sec">
+              <span class="field-label">Неше орын керек?</span>
+              <div class="stepper">
+                <button aria-label="Орынды азайту"><svg class="ico"><use href="#i-minus"/></svg></button>
+                <div class="val"><b class="num">4</b><span>орын</span></div>
+                <button aria-label="Орынды көбейту"><svg class="ico"><use href="#i-plus"/></svg></button>
+              </div>
+              <p class="field-hint" style="text-align:center">Кішкентай балаларды санамаңыз.</p>
+            </div>
+
+            <div class="form-actions desk-only">
+              <button class="btn primary">Қосу</button>
+              <a class="btn text" href="01-guests.html">Бас тарту</a>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-aside desk-only">
+          <div class="tip preview-card">
+            <h3>Шақыру қалай барады?</h3>
+            <p>Қонақ WhatsApp-та жеке сілтеме алады. Ашқанда өз аты жазылған шақыруды көреді.</p>
+            <div class="mini-env"><span class="seal"><span data-orn="mark"></span></span><span class="to">Асқар ағай отбасы</span></div>
+          </div>
+          <div class="tip">
+            <h3>Санат не үшін керек?</h3>
+            <p>Залда кім қайда отыратынын санат шешеді: құдалар төрге жақын, достар мен әріптестер кіреберіске жақынырақ.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="sticky-cta bottom mob-only"><button class="btn primary">Қосу</button></div>
+
+<!-- S2-Dup: «Бұл сол адам ба?» -->
+<div class="scrim s-dup"></div>
+<div class="sheet center s-dup" role="dialog" aria-modal="true" aria-labelledby="dup-t">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="dup-t">Бұл сол адам ба?</h2><button class="icon-btn" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></button></div>
+  <div class="sheet-body">
+    <p style="margin:0 0 8px">Сіз жазған: «Ерлан»</p>
+    <p class="t-body t-muted" style="margin:0">Тізімде ұқсас қонақ бар:</p>
+    <div class="dupcard"><div class="h"><svg class="ico"><use href="#i-users"/></svg>Ерлан ағай отбасы</div><p>Анасының тізімі · Нағашылар</p>
+      <div class="row"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 4</span><span>10-үстелде отыр</span></div></div>
+    <p class="t-body t-muted" style="margin:0">Бір адамды екі рет қоспау үшін тексеріңіз. Аттас адамдар да болады.</p>
+  </div>
+  <div class="sheet-foot"><button class="btn primary">Иә, сол адам. Қоспаймын</button><button class="btn secondary">Жоқ, басқа адам. Қосу</button></div>
+</div>
+
+<!-- S2-OK: «Қосылды!» -->
+<div class="scrim s-ok"></div>
+<div class="sheet center s-ok" role="dialog" aria-modal="true" aria-labelledby="ok-t">
+  <div class="handle"></div>
+  <div class="sheet-head" style="justify-content:flex-end"><button class="icon-btn" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></button></div>
+  <div class="sheet-body" style="padding-bottom:12px">
+    <span data-orn="horn" class="success-orn draw"></span>
+    <h2 class="success-ttl" id="ok-t">Қосылды!</h2>
+    <p class="success-sub">Асқар ағай отбасы · Өз&nbsp;туыстар · 4&nbsp;орын</p>
+    <p class="t-body t-muted" style="text-align:center;margin:14px 0 0">Енді шақыруды жіберіңіз</p>
+  </div>
+  <div class="sheet-foot" style="border-top:0"><button class="btn wa"><svg class="ico fill"><use href="#i-wa"/></svg>WhatsApp-қа жіберу</button><button class="btn secondary">Тағы қонақ қосу</button><a class="btn text" style="width:100%" href="01-guests.html">Тізімге оралу</a></div>
+</div>
+
+<script src="js/mock.js"></script>
+</body>
+</html>

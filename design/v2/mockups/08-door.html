@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0F2338">
+<title>Кіреберістегі көмекші · Той v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/screens.css">
+<style>
+  /* /d/{token}: одна задача — найти семью и отметить «Келді». Без вкладок, без меню. #offline — нет сети */
+  body { background: var(--ivory); }
+  .door-top { position: relative; overflow: hidden; color: var(--on-night); padding: 16px 16px 76px; background: radial-gradient(100% 140% at 100% 0%, #24496F 0%, var(--night) 62%); }
+  .door-top .shanyraq { position: absolute; right: -70px; top: -60px; width: 200px; height: 200px; color: var(--gold-bright); opacity: .4; }
+  .door-top .row { display: flex; align-items: center; gap: 10px; position: relative; }
+  .door-top .ev { flex: 1; min-width: 0; }
+  .door-top .ev b { display: block; font: 600 28px/32px var(--font-display); }
+  .door-top .ev span { font: 400 16px/22px var(--font-ui); color: rgba(244,235,218,.85); }
+  .net { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 8px 12px; border-radius: var(--r-pill); background: rgba(255,255,255,.1); font: 400 16px/22px var(--font-ui); position: relative; }
+  .net .ico { width: 18px; height: 18px; color: #9FD8B5; }
+  .net.off { background: #FBF0D9; color: var(--gold-ink); }
+  .net.off .ico { color: var(--gold-ink); }
+  html:not([data-state="offline"]) .s-off, html[data-state="offline"] .s-on { display: none !important; }
+  .door-main { max-width: 1180px; margin: -60px auto 0; padding: 0 16px 40px; position: relative; }
+  .search-big { height: 64px; border-radius: 18px; border: 2.5px solid var(--lapis); background: var(--paper); box-shadow: var(--sh-raised); font-size: 22px; padding: 0 14px 0 18px; }
+  .search-big input { font-size: 22px; }
+  .search-big .clear { width: 48px; height: 48px; border: 0; background: var(--sand); border-radius: 12px; display: grid; place-items: center; }
+  .stat-line { display: flex; align-items: center; gap: 12px; margin: 14px 2px 6px; font: 400 16px/22px var(--font-ui); color: var(--ink-2); }
+  .stat-line b { color: var(--ink); font-weight: 600; }
+  .bar { flex: 1; height: 8px; border-radius: 4px; background: var(--sand); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 37%; background: var(--success); border-radius: 4px; }
+  .res { background: var(--paper); border-radius: var(--r-lg); box-shadow: var(--sh-card); padding: 16px; display: grid; grid-template-columns: 1fr auto; gap: 4px 14px; align-items: center; }
+  .res + .res { margin-top: 10px; }
+  .res .nm { font: 600 21px/27px var(--font-ui); }
+  .res .nm mark { background: none; color: inherit; text-decoration: underline 3px var(--gold); text-underline-offset: 5px; }
+  .res .meta { font: 400 17px/24px var(--font-ui); color: var(--ink-2); }
+  .tno { grid-row: 1 / span 2; grid-column: 2; width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center; text-align: center; background: var(--cat-nagashy); border: 2px solid rgba(23,32,44,.15); position: relative; }
+  .tno b { display: block; font: 600 32px/30px var(--font-ui); font-variant-numeric: tabular-nums; }
+  .tno span { display: block; font: 400 16px/17px var(--font-ui); color: var(--ink-2); }
+  .res .acts { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; margin-top: 10px; }
+  .res .acts .btn { flex: 1; }
+  .res.arrived { background: var(--success-soft); box-shadow: none; border: 1.5px solid #BFE0CB; }
+  .arr { display: inline-flex; align-items: center; gap: 8px; font: 600 18px/24px var(--font-ui); color: var(--success-ink); white-space: nowrap; }
+  .res .acts .btn.text { margin-left: auto; width: auto; flex: none; }
+  @media (min-width: 1024px) { .res .acts .btn.come { flex: none; width: 260px; } .res .acts { margin-top: 4px; } }
+  .pending { order: 3; width: 100%; }
+  .arr .ico { animation: pop .25s var(--ease-out) both; }
+  @keyframes pop { from { transform: scale(.6); opacity: 0; } }
+  .btn.come { --bg: var(--success); box-shadow: 0 6px 16px -8px rgba(29,116,71,.6); font-size: 20px; }
+  .pending { display: inline-flex; align-items: center; gap: 6px; font: 400 16px/22px var(--font-ui); color: var(--gold-ink); }
+  .hint-line { margin: 18px 4px 0; font: 400 16px/22px var(--font-ui); color: var(--ink-2); text-align: center; }
+  .recent h3 { margin: 0 0 10px; font: 600 18px/24px var(--font-ui); }
+  .recent li { display: flex; justify-content: space-between; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); font: 400 17px/22px var(--font-ui); }
+  .recent ul { list-style: none; margin: 0; padding: 0; }
+  .recent li span:last-child { color: var(--ink-2); white-space: nowrap; }
+  .door-grid { display: block; }
+  @media (min-width: 1024px) {
+    .door-top { padding: 24px 40px 96px; }
+    .door-top .row, .door-top .net-wrap { max-width: 1180px; margin: 0 auto; }
+    .door-main { padding: 0 40px 48px; margin-top: -72px; }
+    .door-grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 32px; align-items: start; }
+    .door-side { margin-top: 0; }
+    .door-side .card { padding: 20px; }
+    .res .nm { font-size: 22px; }
+  }
+  @media (max-width: 1023px) { .door-side { display: none; } }
+</style>
+</head>
+<body>
+<header class="door-top">
+  <span data-orn="shanyraq" class="shanyraq"></span>
+  <div class="row">
+    <div class="ev"><b>Айбек пен Дана</b><span>Кіреберіс · қонақтарды қарсы алу</span></div>
+    <button class="icon-btn" aria-label="Той мәзірі" aria-haspopup="dialog" style="color:var(--on-night);background:rgba(255,255,255,.12)"><svg class="ico"><use href="#i-more"/></svg></button>
+  </div>
+  <div class="net-wrap">
+    <div class="net s-on" role="status"><svg class="ico"><use href="#i-check"/></svg>Тізім телефонға сақталды · 173 адам · 14:05</div>
+    <div class="net off s-off" role="status"><svg class="ico"><use href="#i-offline"/></svg>Интернет жоқ · әлі жіберілмеді: 3</div>
+  </div>
+</header>
+
+<main class="door-main">
+  <div class="door-grid">
+    <div>
+      <label class="input search-big"><svg class="ico"><use href="#i-search"/></svg><span class="sr-only">Аты бойынша іздеу</span><input value="Ер" placeholder="Атының 2–3 әрпін жазыңыз" autocomplete="off"><button class="clear" aria-label="Іздеуді тазалау"><svg class="ico"><use href="#i-x"/></svg></button></label>
+      <div class="stat-line"><span>Келді: <b class="num">64</b> / 173 адам</span><span class="bar" aria-hidden="true"><i></i></span></div>
+
+      <div class="res">
+        <div class="nm"><mark>Ер</mark>лан ағай отбасы</div>
+        <div class="meta">4 адам · Нағашылар</div>
+        <div class="tno" style="background:var(--cat-nagashy)"><div><b>10</b><span>үстел</span></div></div>
+        <div class="acts"><button class="btn come"><svg class="ico"><use href="#i-check"/></svg>Келді</button></div>
+      </div>
+      <div class="res arrived">
+        <div class="nm"><mark>Ер</mark>бол нағашы отбасы</div>
+        <div class="meta">5 адам · Нағашылар</div>
+        <div class="tno" style="background:var(--cat-oz)"><div><b>8</b><span>үстел</span></div></div>
+        <div class="acts"><span class="arr"><svg class="ico"><use href="#i-yes"/></svg>Келді · 18:42</span><span class="pending s-off"><svg class="ico xs"><use href="#i-clock"/></svg>Әлі жіберілмеді</span><button class="btn text">Белгіні алу</button></div>
+      </div>
+      <div class="res">
+        <div class="nm"><mark>Ер</mark>жан отбасы</div>
+        <div class="meta">3 адам · Достар</div>
+        <div class="tno" style="background:var(--cat-dos)"><div><b>9</b><span>үстел</span></div></div>
+        <div class="acts"><button class="btn come"><svg class="ico"><use href="#i-check"/></svg>Келді</button></div>
+      </div>
+      <div class="res">
+        <div class="nm"><mark>Ер</mark>мек отбасы</div>
+        <div class="meta">3 адам · Өз туыстар</div>
+        <div class="tno" style="background:var(--cat-oz)"><div><b>6</b><span>үстел</span></div></div>
+        <div class="acts"><button class="btn come"><svg class="ico"><use href="#i-check"/></svg>Келді</button></div>
+      </div>
+      <p class="hint-line">Таппадыңыз ба? Тек атын жазыңыз: «ағай», «апай» деп емес.</p>
+    </div>
+
+    <aside class="door-side">
+      <div class="card recent">
+        <h3>Соңғы келгендер</h3>
+        <ul>
+          <li><span>Ербол нағашы отбасы</span><span>8-үстел · 18:42</span></li>
+          <li><span>Сапарбаевтар (бас құда)</span><span>2-үстел · 18:39</span></li>
+          <li><span>Күләш апай</span><span>11-үстел · 18:37</span></li>
+          <li><span>Бауыржан ағай отбасы</span><span>6-үстел · 18:35</span></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div class="toast top" role="status" aria-live="polite"><span class="msg">Келді: Ербол нағашы отбасы</span><button class="undo"><svg class="ico sm"><use href="#i-undo"/></svg>Қайтару</button><i class="timer"></i></div>
+<script src="js/mock.js"></script>
+</body>
+</html>

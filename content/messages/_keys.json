@@ -1,0 +1,1071 @@
+{
+  "common": {
+    "actions": {
+      "save": "",
+      "cancel": "",
+      "close": "",
+      "back": "",
+      "continue": "",
+      "done": "",
+      "yes": "",
+      "no": "",
+      "undo": "",
+      "edit": "",
+      "delete": "",
+      "add": "",
+      "retry": "",
+      "view": "",
+      "showAll": "",
+      "copy": "",
+      "copied": "",
+      "clear": ""
+    },
+    "status": {
+      "notSent": "",
+      "noAnswer": "",
+      "yes": "",
+      "yesWithSeats": "",
+      "no": "",
+      "answeredByPhone": ""
+    },
+    "units": {
+      "seats": "",
+      "seatsApprox": "",
+      "seatsExpected": "",
+      "families": "",
+      "people": "",
+      "tables": "",
+      "free": ""
+    },
+    "table": {
+      "label": "",
+      "labelInline": ""
+    },
+    "time": {
+      "today": "",
+      "yesterday": "",
+      "sentDaysAgo": "",
+      "sentToday": "",
+      "sentYesterday": "",
+      "lastChange": ""
+    },
+    "lang": {
+      "label": "",
+      "kk": "",
+      "ru": "",
+      "kkFull": "",
+      "ruFull": ""
+    },
+    "list": {
+      "andMore": ""
+    },
+    "loading": "",
+    "a11y": {
+      "statusYesSeats": "",
+      "opensWhatsApp": ""
+    }
+  },
+  "roles": {
+    "father": "",
+    "mother": "",
+    "couple": "",
+    "other": "",
+    "owner": "",
+    "listOf": {
+      "father": "",
+      "mother": "",
+      "couple": "",
+      "custom": ""
+    },
+    "inList": {
+      "father": "",
+      "mother": "",
+      "couple": "",
+      "custom": ""
+    },
+    "permission": {
+      "listOnly": "",
+      "listAndSeating": "",
+      "budget": ""
+    }
+  },
+  "nav": {
+    "guests": "",
+    "hall": "",
+    "summary": "",
+    "budget": "",
+    "settings": "",
+    "eventMenu": "",
+    "myEvents": "",
+    "logout": "",
+    "a11y": {
+      "sections": "",
+      "sidebar": "",
+      "attention": ""
+    },
+    "userCard": ""
+  },
+  "meta": {
+    "appName": "",
+    "titleTemplate": "",
+    "pages": {
+      "login": "",
+      "join": "",
+      "events": "",
+      "guests": "",
+      "guestNew": "",
+      "noAnswer": "",
+      "hall": "",
+      "summary": "",
+      "budget": "",
+      "settings": "",
+      "newEvent": "",
+      "tableQueue": "",
+      "print": "",
+      "door": "",
+      "invite": "",
+      "notFound": ""
+    }
+  },
+  "auth": {
+    "join": {
+      "eventKindLine": "",
+      "greeting": "",
+      "addedAs": "",
+      "body": "",
+      "submit": "",
+      "alreadySignedIn": "",
+      "tooManyAttempts": "",
+      "expired": {
+        "title": "",
+        "body": "",
+        "askOwner": "",
+        "smsLogin": ""
+      }
+    },
+    "login": {
+      "title": "",
+      "subtitle": "",
+      "phoneLabel": "",
+      "phoneHint": "",
+      "submit": "",
+      "askOwner": "",
+      "sentNote": "",
+      "errors": {
+        "phoneIncomplete": "",
+        "phoneNotMobile": "",
+        "tooSoon": "",
+        "tooMany": "",
+        "sendFailed": ""
+      }
+    },
+    "code": {
+      "title": "",
+      "sentTo": "",
+      "inputLabel": "",
+      "resendIn": "",
+      "resend": "",
+      "notArrivedTitle": "",
+      "notArrivedBody": "",
+      "askOwner": "",
+      "changePhone": "",
+      "errors": {
+        "wrong": "",
+        "expired": "",
+        "locked": "",
+        "incomplete": ""
+      }
+    },
+    "install": {
+      "title": "",
+      "androidStep1": "",
+      "androidStep2": "",
+      "androidStep3": "",
+      "iosStep1": "",
+      "iosStep2": "",
+      "dismiss": ""
+    },
+    "logout": {
+      "confirmTitle": "",
+      "confirmBody": ""
+    },
+    "sessionEnded": "",
+    "noEvents": {
+      "title": "",
+      "body": ""
+    }
+  },
+  "sms": {
+    "otp": ""
+  },
+  "wa": {
+    "invite": "",
+    "reminder": "",
+    "tableNumber": "",
+    "memberLogin": "",
+    "requestLink": "",
+    "doorLink": ""
+  },
+  "og": {
+    "invite": {
+      "title": "",
+      "description": "",
+      "imageTitle": "",
+      "imageAlt": ""
+    },
+    "join": {
+      "title": "",
+      "description": ""
+    },
+    "door": {
+      "title": ""
+    },
+    "siteName": ""
+  },
+  "events": {
+    "list": {
+      "title": "",
+      "create": "",
+      "empty": "",
+      "createRestricted": "",
+      "item": ""
+    },
+    "kind": {
+      "uilenuToi": "",
+      "kyzUzatu": "",
+      "sundet": "",
+      "besik": "",
+      "merey": "",
+      "other": "",
+      "select": ""
+    }
+  },
+  "wizard": {
+    "progress": "",
+    "kind": {
+      "title": ""
+    },
+    "who": {
+      "title": "",
+      "namesLabel": "",
+      "namesPlaceholder": "",
+      "namesHint": "",
+      "hostsLabel": "",
+      "hostsPlaceholder": "",
+      "dateLabel": "",
+      "timeLabel": ""
+    },
+    "venue": {
+      "title": "",
+      "nameLabel": "",
+      "addressLabel": "",
+      "mapLabel": "",
+      "mapHint": "",
+      "mapError": ""
+    },
+    "text": {
+      "title": "",
+      "intro": "",
+      "edit": "",
+      "kkLabel": "",
+      "ruLabel": "",
+      "ruMissing": "",
+      "tooLong": ""
+    },
+    "template": {
+      "title": "",
+      "akShanyrak": "",
+      "kokTun": "",
+      "kyzgaldak": "",
+      "akShanyrakHint": "",
+      "kokTunHint": "",
+      "kyzgaldakHint": "",
+      "preview": ""
+    },
+    "music": {
+      "title": "",
+      "upload": "",
+      "hint": "",
+      "rights": "",
+      "uploading": "",
+      "processing": "",
+      "ready": "",
+      "failed": "",
+      "tooBig": "",
+      "wrongType": "",
+      "playerLabel": "",
+      "replace": "",
+      "remove": "",
+      "later": ""
+    },
+    "done": {
+      "title": "",
+      "body": "",
+      "inviteFamily": "",
+      "toList": ""
+    },
+    "leave": {
+      "title": ""
+    }
+  },
+  "settings": {
+    "title": "",
+    "sections": {
+      "event": "",
+      "invitation": "",
+      "members": "",
+      "door": ""
+    },
+    "showTableNo": {
+      "label": "",
+      "hint": ""
+    },
+    "rsvpCloses": {
+      "label": "",
+      "hint": ""
+    },
+    "retention": "",
+    "saved": "",
+    "conflict": "",
+    "deleteEvent": {
+      "button": "",
+      "confirmTitle": "",
+      "confirmBody": "",
+      "confirmYes": ""
+    }
+  },
+  "members": {
+    "title": "",
+    "intro": "",
+    "card": {
+      "title": "",
+      "joined": "",
+      "notJoined": "",
+      "linkExpired": "",
+      "sendLink": "",
+      "newLink": "",
+      "newLinkToast": "",
+      "signOut": "",
+      "signOutConfirm": "",
+      "remove": "",
+      "removeConfirm": "",
+      "ownerCannotRemove": ""
+    },
+    "add": {
+      "button": "",
+      "title": "",
+      "phoneLabel": "",
+      "whoLabel": "",
+      "customLabel": "",
+      "nameLabel": "",
+      "permissionLabel": "",
+      "listOnlyHint": "",
+      "listAndSeatingHint": "",
+      "budgetLabel": "",
+      "budgetHint": "",
+      "defaultCategoryLabel": "",
+      "submit": "",
+      "errors": {
+        "alreadyMember": "",
+        "linkLimit": ""
+      }
+    },
+    "door": {
+      "title": "",
+      "hint": "",
+      "send": "",
+      "rotate": "",
+      "rotateConfirm": ""
+    }
+  },
+  "guests": {
+    "list": {
+      "title": "",
+      "total": "",
+      "subtitleWithTotal": "",
+      "counters": {
+        "label": "",
+        "yes": "",
+        "noAnswer": "",
+        "no": ""
+      },
+      "remindBanner": {
+        "title": "",
+        "action": ""
+      },
+      "search": {
+        "label": "",
+        "placeholder": "",
+        "empty": "",
+        "addWithName": ""
+      },
+      "filter": {
+        "active": "",
+        "clear": "",
+        "empty": ""
+      },
+      "group": {
+        "header": ""
+      },
+      "addButton": "",
+      "empty": {
+        "title": "",
+        "body": ""
+      },
+      "offline": "",
+      "loadError": "",
+      "otherLists": {
+        "title": "",
+        "item": ""
+      },
+      "newAnswers": ""
+    },
+    "card": {
+      "phoneIcon": "",
+      "seats": "",
+      "seatsApprox": "",
+      "table": "",
+      "sendWhatsApp": "",
+      "remind": "",
+      "pendingConfirm": "",
+      "pendingYes": "",
+      "a11y": ""
+    }
+  },
+  "send": {
+    "ask": {
+      "title": "",
+      "body": "",
+      "bodyReminder": "",
+      "bodyLoginLink": "",
+      "yes": "",
+      "no": ""
+    },
+    "toast": {
+      "invite": "",
+      "reminder": ""
+    },
+    "noPhoneHint": "",
+    "waUnavailable": ""
+  },
+  "guestForm": {
+    "title": {
+      "new": "",
+      "edit": ""
+    },
+    "name": {
+      "label": "",
+      "placeholder": "",
+      "hint": "",
+      "required": "",
+      "tooLong": ""
+    },
+    "phone": {
+      "label": "",
+      "hint": "",
+      "incomplete": "",
+      "duplicate": "",
+      "duplicateHint": ""
+    },
+    "category": {
+      "label": "",
+      "addCustom": ""
+    },
+    "seats": {
+      "label": "",
+      "unit": "",
+      "hint": "",
+      "min": "",
+      "max": "",
+      "decrease": "",
+      "increase": "",
+      "editHint": ""
+    },
+    "submit": "",
+    "saveEdit": "",
+    "savedToast": "",
+    "leave": {
+      "title": "",
+      "yes": "",
+      "no": ""
+    },
+    "aside": {
+      "howTitle": "",
+      "howBody": "",
+      "categoryTitle": "",
+      "categoryBody": ""
+    },
+    "errors": {
+      "save": ""
+    },
+    "dup": {
+      "title": "",
+      "youTyped": "",
+      "similar": "",
+      "candidateMeta": "",
+      "seatedAt": "",
+      "notSeated": "",
+      "hint": "",
+      "same": "",
+      "different": "",
+      "notAddedToast": ""
+    },
+    "success": {
+      "title": "",
+      "summary": "",
+      "next": "",
+      "send": "",
+      "addAnother": "",
+      "backToList": ""
+    }
+  },
+  "category": {
+    "names": {
+      "kuda": "",
+      "oz": "",
+      "nagashy": "",
+      "dos": "",
+      "ariptes": "",
+      "korshi": "",
+      "synyp": "",
+      "baska": ""
+    },
+    "after": {
+      "kuda": "",
+      "oz": "",
+      "nagashy": "",
+      "dos": "",
+      "ariptes": "",
+      "korshi": "",
+      "synyp": "",
+      "baska": "",
+      "custom": "",
+      "last": ""
+    },
+    "new": {
+      "title": "",
+      "nameLabel": "",
+      "namePlaceholder": "",
+      "ruNameLabel": "",
+      "positionLabel": "",
+      "hint": "",
+      "required": "",
+      "exists": "",
+      "tooLong": "",
+      "addedToast": ""
+    }
+  },
+  "guestSheet": {
+    "fields": {
+      "category": "",
+      "seats": "",
+      "phone": "",
+      "table": "",
+      "addedBy": "",
+      "notSeated": ""
+    },
+    "answer": {
+      "title": "",
+      "yes": "",
+      "no": "",
+      "seatsLabel": "",
+      "save": "",
+      "toastYes": "",
+      "toastNo": ""
+    },
+    "actions": {
+      "send": "",
+      "remind": "",
+      "resend": "",
+      "newLink": "",
+      "newLinkConfirm": ""
+    },
+    "delete": {
+      "confirm": "",
+      "yes": "",
+      "no": "",
+      "toast": ""
+    }
+  },
+  "noAnswer": {
+    "title": "",
+    "intro": "",
+    "count": "",
+    "card": {
+      "meta": "",
+      "remindedToday": "",
+      "remindAgain": "",
+      "remindedDaysAgo": ""
+    },
+    "notSent": {
+      "title": ""
+    },
+    "empty": {
+      "title": "",
+      "body": "",
+      "back": ""
+    }
+  },
+  "summary": {
+    "title": "",
+    "restaurant": "",
+    "restaurantA11y": "",
+    "restaurantHint": "",
+    "tiles": {
+      "yes": "",
+      "pending": "",
+      "no": ""
+    },
+    "byCategory": {
+      "title": "",
+      "row": ""
+    },
+    "funnel": {
+      "title": "",
+      "sent": "",
+      "opened": "",
+      "answered": "",
+      "hint": ""
+    },
+    "byList": {
+      "title": ""
+    },
+    "budgetLink": "",
+    "empty": "",
+    "tableQueueEntry": ""
+  },
+  "invite": {
+    "envelope": {
+      "a11y": "",
+      "headline": "",
+      "open": "",
+      "musicHint": ""
+    },
+    "header": {
+      "musicOff": "",
+      "musicOn": "",
+      "musicLabel": "",
+      "musicLoading": ""
+    },
+    "greeting": "",
+    "date": {
+      "a11y": "",
+      "countdown": "",
+      "tomorrow": "",
+      "today": "",
+      "past": ""
+    },
+    "venue": {
+      "map": ""
+    },
+    "hosts": {
+      "label": ""
+    },
+    "rsvp": {
+      "title": "",
+      "hint": "",
+      "legend": "",
+      "yes": "",
+      "no": "",
+      "seatsLabel": "",
+      "seatsUnit": "",
+      "seatsHint": "",
+      "seatsDecrease": "",
+      "seatsIncrease": "",
+      "seatsInvalid": "",
+      "chooseAnswer": "",
+      "submit": "",
+      "sending": "",
+      "changeNote": "",
+      "networkError": "",
+      "rateLimited": "",
+      "consent": ""
+    },
+    "thanks": {
+      "yesTitle": "",
+      "yesSummary": "",
+      "noTitle": "",
+      "change": ""
+    },
+    "table": {
+      "title": "",
+      "unit": "",
+      "mapA11y": "",
+      "youAreHere": "",
+      "hint": "",
+      "notYet": ""
+    },
+    "closed": "",
+    "footer": {
+      "madeWith": "",
+      "privacy": ""
+    },
+    "notFound": {
+      "title": "",
+      "body": ""
+    },
+    "noRuText": ""
+  },
+  "errors": {
+    "network": "",
+    "server": "",
+    "forbidden": "",
+    "notFound": "",
+    "conflict": "",
+    "rateLimited": "",
+    "unknown": "",
+    "goHome": "",
+    "field": {
+      "required": "",
+      "tooLong": "",
+      "number": ""
+    }
+  },
+  "legal": {
+    "pilotBanner": "",
+    "ownerTerms": "",
+    "guestDataNote": "",
+    "privacy": {
+      "title": "",
+      "link": ""
+    }
+  },
+  "hall": {
+    "setup": {
+      "title": "",
+      "columns": {
+        "title": "",
+        "option": "",
+        "hint": ""
+      },
+      "tables": {
+        "title": "",
+        "min": "",
+        "max": ""
+      },
+      "seats": {
+        "title": "",
+        "min": "",
+        "max": ""
+      },
+      "summary": {
+        "total": "",
+        "formula": "",
+        "guests": "",
+        "breakdown": "",
+        "enough": "",
+        "short": ""
+      },
+      "submit": "",
+      "savedToast": "",
+      "previewTitle": "",
+      "notConfigured": ""
+    },
+    "map": {
+      "title": "",
+      "view": {
+        "label": "",
+        "map": "",
+        "list": ""
+      },
+      "meta": "",
+      "summary": {
+        "line": "",
+        "restaurantShort": "",
+        "restaurant": "",
+        "full": "",
+        "over": "",
+        "expand": ""
+      },
+      "chips": {
+        "overflow": "",
+        "overflowA11y": "",
+        "dups": "",
+        "dupsA11y": "",
+        "unplaced": "",
+        "unplacedA11y": ""
+      },
+      "banners": {
+        "overflowTitle": "",
+        "overflowItem": "",
+        "dupsTitle": "",
+        "dupsAction": "",
+        "unplaced": "",
+        "viewOnly": "",
+        "seatsGrew": "",
+        "moveToFree": ""
+      },
+      "othersChanged": "",
+      "othersChangedAction": "",
+      "moveConflict": "",
+      "a11y": "",
+      "tor": "",
+      "entrance": "",
+      "coupleTable": "",
+      "coupleTableA11y": "",
+      "tableA11y": "",
+      "tableLabel": "",
+      "legend": {
+        "label": "",
+        "taken": "",
+        "free": "",
+        "overflow": ""
+      },
+      "links": {
+        "order": "",
+        "orderSub": "",
+        "history": "",
+        "setup": ""
+      },
+      "empty": {
+        "body": "",
+        "add": ""
+      },
+      "couple": {
+        "title": "",
+        "body": ""
+      },
+      "listHeader": "",
+      "listHeaderOverflow": ""
+    },
+    "unplaced": {
+      "title": "",
+      "addTable": "",
+      "move": "",
+      "seatFree": ""
+    },
+    "table": {
+      "title": "",
+      "graphicUnit": "",
+      "overflowTitle": "",
+      "overflowBody": "",
+      "ok": "",
+      "empty": "",
+      "stat": "",
+      "whoSits": "",
+      "familyMeta": "",
+      "familyMetaPending": "",
+      "locked": "",
+      "move": "",
+      "unlock": "",
+      "unlockToast": "",
+      "next": ""
+    },
+    "move": {
+      "title": "",
+      "family": "",
+      "current": "",
+      "currentNone": "",
+      "hint": "",
+      "mapFree": "",
+      "mapCurrent": "",
+      "suitable": "",
+      "suitableItem": "",
+      "others": "",
+      "confirm": {
+        "title": "",
+        "family": "",
+        "route": "",
+        "free": "",
+        "short": "",
+        "yes": "",
+        "force": ""
+      },
+      "toast": ""
+    },
+    "order": {
+      "title": "",
+      "intro": "",
+      "rowMeta": "",
+      "up": "",
+      "down": "",
+      "viewOnly": "",
+      "savedTitle": "",
+      "savedBody": "",
+      "toast": "",
+      "fullReseat": "",
+      "preview": {
+        "title": "",
+        "moves": "",
+        "locked": "",
+        "item": "",
+        "none": "",
+        "unplaced": "",
+        "yes": "",
+        "stale": "",
+        "doneToast": ""
+      }
+    },
+    "dups": {
+      "title": "",
+      "intro": "",
+      "meta": "",
+      "seats": "",
+      "showOnMap": "",
+      "deleteOne": "",
+      "keepBoth": "",
+      "whichOne": "",
+      "deletedToast": "",
+      "keptToast": "",
+      "none": "",
+      "panelItem": ""
+    },
+    "history": {
+      "title": "",
+      "intro": "",
+      "entryMeta": "",
+      "guestAnswer": "",
+      "move": "",
+      "order": "",
+      "hall": "",
+      "unlocked": "",
+      "relocked": "",
+      "fullReseat": "",
+      "answerSeats": "",
+      "answerNo": "",
+      "warning": "",
+      "guestNoUndo": "",
+      "reverted": "",
+      "revertEntry": "",
+      "footer": "",
+      "empty": "",
+      "partialUndo": ""
+    }
+  },
+  "tableQueue": {
+    "title": "",
+    "intro": "",
+    "start": "",
+    "progress": "",
+    "current": {
+      "table": "",
+      "noPhone": "",
+      "previewLabel": ""
+    },
+    "open": "",
+    "next": "",
+    "skip": "",
+    "stop": "",
+    "resume": "",
+    "statusSent": "",
+    "statusSkipped": "",
+    "done": "",
+    "notSeatedNote": ""
+  },
+  "door": {
+    "header": {
+      "subtitle": ""
+    },
+    "status": {
+      "saved": "",
+      "offline": "",
+      "syncing": "",
+      "firstLoadNeedsNet": "",
+      "linkRevoked": ""
+    },
+    "search": {
+      "label": "",
+      "placeholder": "",
+      "clear": ""
+    },
+    "counter": "",
+    "card": {
+      "meta": "",
+      "table": "",
+      "noTable": "",
+      "declined": "",
+      "arrive": "",
+      "arrivedAt": "",
+      "pendingSync": "",
+      "unmark": ""
+    },
+    "toast": "",
+    "notFound": "",
+    "recent": {
+      "title": "",
+      "item": ""
+    }
+  },
+  "budget": {
+    "title": "",
+    "total": "",
+    "totalEdit": "",
+    "totalNotSet": "",
+    "bar": "",
+    "overBudget": "",
+    "categories": {
+      "title": "",
+      "restaurant": "",
+      "asaba": "",
+      "clothes": "",
+      "gifts": "",
+      "decor": "",
+      "photo": "",
+      "transport": "",
+      "other": "",
+      "row": ""
+    },
+    "upcoming": {
+      "title": "",
+      "left": "",
+      "overdue": ""
+    },
+    "add": "",
+    "restaurant": {
+      "auto": "",
+      "formula": "",
+      "hint": "",
+      "priceLabel": ""
+    },
+    "item": {
+      "changedBy": "",
+      "fields": {
+        "title": "",
+        "category": "",
+        "planned": "",
+        "paid": "",
+        "due": "",
+        "note": ""
+      },
+      "save": "",
+      "delete": "",
+      "deleteConfirm": "",
+      "errors": {
+        "amount": "",
+        "titleRequired": ""
+      }
+    },
+    "empty": ""
+  },
+  "print": {
+    "button": "",
+    "header": "",
+    "table": {
+      "title": "",
+      "colFamily": "",
+      "colSeats": "",
+      "colArrived": "",
+      "total": ""
+    },
+    "alpha": {
+      "title": ""
+    },
+    "generatedAt": "",
+    "pageOf": ""
+  },
+  "export": {
+    "button": "",
+    "sheets": {
+      "tables": "",
+      "guests": ""
+    },
+    "columns": {
+      "table": "",
+      "name": "",
+      "category": "",
+      "seats": "",
+      "status": "",
+      "list": ""
+    }
+  }
+}

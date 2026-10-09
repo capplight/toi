@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Менің тізімім · Той v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/screens.css">
+<style>
+  /* Состояния: #ask — шторка «Жіберілді ме?» после возврата из WhatsApp; #pending — закрыли без ответа, строка у карточки */
+  html:not([data-state="ask"]) .s-ask { display: none !important; }
+  html:not([data-state="menu"]) .s-menu { display: none !important; }
+  html:not([data-state="pending"]) .s-pending { display: none !important; }
+  html[data-state="pending"] .s-not-pending { display: none !important; }
+  html:not([data-state="toast"]) .toast { display: none; }
+  .asked { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .asked .q { display: inline-flex; align-items: center; gap: 6px; color: var(--success-ink); font: 600 16px/22px var(--font-ui); flex: 1 1 200px; }
+  .asked .btn { width: auto; padding: 0 18px; flex: none; }
+</style>
+</head>
+<body class="has-cta">
+<div class="shell">
+  <!-- Боковая навигация: ≥768 рейка, ≥1024 полная -->
+  <aside class="sidebar" aria-label="Мәзір">
+    <a class="wordmark brand" href="#"><span data-orn="mark"></span><b>Той</b></a>
+    <div class="event-mini">
+      <span data-orn="shanyraq" class="deco"></span>
+      <div class="nm">Айбек пен Дана</div>
+      <div class="meta">Үйлену тойы · 15 қараша, 18:00</div>
+    </div>
+    <a class="nav-item" href="#" aria-current="page"><svg class="ico"><use href="#i-users"/></svg>Қонақтар</a>
+    <a class="nav-item" href="03-hall.html"><svg class="ico"><use href="#i-grid"/></svg>Зал<span class="dot" aria-label="Залда назар аударатын жер бар"></span></a>
+    <a class="nav-item" href="#"><svg class="ico"><use href="#i-chart"/></svg>Қорытынды</a>
+    <a class="nav-item" href="#"><svg class="ico"><use href="#i-wallet"/></svg>Шығындар</a>
+    <div class="side-foot">
+      <button class="nav-item menu-item" aria-haspopup="dialog"><svg class="ico"><use href="#i-more"/></svg><span>Той мәзірі</span></button>
+      <div class="who"><span class="avatar">С</span><div><b style="font-weight:600">Серік</b><div class="t-body t-muted">Әкесі · Тізім және отырғызу</div></div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar desk-hide">
+      <h1 class="t-h1 with-sub">Менің тізімім<small>Әкесінің тізімі</small></h1>
+      <button class="icon-btn menu-btn" aria-label="Той мәзірі" aria-haspopup="dialog"><svg class="ico"><use href="#i-more"/></svg></button>
+    </header>
+
+    <main class="content">
+      <div class="page">
+        <div class="col-main">
+          <div class="page-head desk-only o1">
+            <div class="ttl"><h2 class="t-h1">Менің тізімім</h2><p>Әкесінің тізімі · Барлығы: 31 отбасы · шамамен 96 орын</p></div>
+            <a class="btn primary" href="02-add-guest.html"><svg class="ico"><use href="#i-plus"/></svg>Қонақ қосу</a>
+          </div>
+
+          <label class="input search o5" style="margin-top:16px">
+            <svg class="ico"><use href="#i-search"/></svg>
+            <span class="sr-only">Іздеу</span><input placeholder="Аты бойынша іздеу">
+          </label>
+
+          <div class="o6">
+            <div class="group-head"><span class="t-group"><i class="sw" style="background:var(--cat-kuda)"></i>Құдалар</span><span class="cnt">7 отбасы · 28 орын</span></div>
+            <button class="guest">
+              <div class="name">Тимур құда отбасы</div>
+              <div class="row2"><span class="badge inv"><svg class="ico"><use href="#i-clock"/></svg>Жауап жоқ</span><span>~4 орын</span><span class="tbl">3-үстел</span></div>
+              <svg class="ico sm phone" aria-label="Телефон нөмірі бар"><use href="#i-phone"/></svg>
+              <div class="act"><span class="btn wa-outline row"><svg class="ico"><use href="#i-bell"/></svg>Еске салу</span><span class="ago">3 күн бұрын жіберілді</span></div>
+            </button>
+            <button class="guest"><div class="name">Әділбек құда отбасы</div><div class="row2"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 4</span><span class="tbl">3-үстел</span></div><svg class="ico sm phone"><use href="#i-phone"/></svg></button>
+            <button class="guest"><div class="name">Жұпар құдағи</div><div class="row2"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 2</span><span class="tbl">1-үстел</span></div></button>
+            <button class="guest"><div class="name">Нұрболат құда отбасы</div><div class="row2"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 5</span><span class="tbl">2-үстел</span></div><svg class="ico sm phone"><use href="#i-phone"/></svg></button>
+            <button class="guest"><div class="name">Райхан құдағи отбасы</div><div class="row2"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 3</span><span class="tbl">1-үстел</span></div><svg class="ico sm phone"><use href="#i-phone"/></svg></button>
+            <button class="guest"><div class="name">Сапарбаевтар (бас құда)</div><div class="row2"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 6</span><span class="tbl">2-үстел</span></div><svg class="ico sm phone"><use href="#i-phone"/></svg></button>
+            <button class="guest"><div class="name">Сәкен құда отбасы</div><div class="row2"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 4</span><span class="tbl">3-үстел</span></div><svg class="ico sm phone"><use href="#i-phone"/></svg></button>
+
+            <div class="group-head"><span class="t-group"><i class="sw" style="background:var(--cat-oz)"></i>Өз туыстар</span><span class="cnt">11 отбасы · 42 орын</span></div>
+            <button class="guest">
+              <div class="name">Болат ағай отбасы</div>
+              <div class="row2"><span class="badge new"><svg class="ico"><use href="#i-send"/></svg>Жіберілмеген</span><span>~4 орын</span><span class="tbl">5-үстел</span></div>
+              <div class="act s-not-pending"><span class="btn wa row"><svg class="ico fill"><use href="#i-wa"/></svg>WhatsApp-қа жіберу</span></div>
+              <div class="asked s-pending"><span class="q"><svg class="ico xs"><use href="#i-wa"/></svg>WhatsApp ашылды · Жіберілді ме?</span><span class="btn secondary row">Иә, жіберілді</span></div>
+            </button>
+            <button class="guest">
+              <div class="name">Ермек отбасы</div>
+              <div class="row2"><span class="badge inv"><svg class="ico"><use href="#i-clock"/></svg>Жауап жоқ</span><span>~3 орын</span><span class="tbl">6-үстел</span></div>
+              <svg class="ico sm phone"><use href="#i-phone"/></svg>
+              <div class="act"><span class="btn wa-outline row"><svg class="ico"><use href="#i-bell"/></svg>Еске салу</span><span class="ago">5 күн бұрын жіберілді</span></div>
+            </button>
+            <button class="guest flash"><div class="name">Асқар ағай отбасы</div><div class="row2"><span class="badge inv"><svg class="ico"><use href="#i-clock"/></svg>Жауап жоқ</span><span>~4 орын</span><span class="tbl">16-үстел</span></div><svg class="ico sm phone"><use href="#i-phone"/></svg>
+              <div class="act"><span class="btn wa-outline row"><svg class="ico"><use href="#i-bell"/></svg>Еске салу</span><span class="ago">Бүгін жіберілді</span></div></button>
+            <button class="guest"><div class="name">Бауыржан ағай отбасы</div><div class="row2"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 4</span><span class="tbl">6-үстел</span></div><svg class="ico sm phone"><use href="#i-phone"/></svg></button>
+            <button class="guest"><div class="name">Ғабит ағай отбасы</div><div class="row2"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 5</span><span class="tbl">6-үстел</span></div><svg class="ico sm phone"><use href="#i-phone"/></svg></button>
+            <button class="guest"><div class="name">Жанар апай</div><div class="row2"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 1</span><span class="tbl">4-үстел</span></div></button>
+            <button class="guest"><div class="name">Жомарт отбасы</div><div class="row2"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 4</span><span class="tbl">8-үстел</span></div><svg class="ico sm phone"><use href="#i-phone"/></svg></button>
+            <button class="guest"><div class="name">Қайрат отбасы</div><div class="row2"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 6</span><span class="tbl">4-үстел</span></div><svg class="ico sm phone"><use href="#i-phone"/></svg></button>
+
+            <div class="group-head"><span class="t-group"><i class="sw" style="background:var(--cat-ariptes)"></i>Әріптестер</span><span class="cnt">6 отбасы · 9 орын</span></div>
+            <button class="guest">
+              <div class="name">Ғалым отбасы</div>
+              <div class="row2"><span class="badge inv"><svg class="ico"><use href="#i-clock"/></svg>Жауап жоқ</span><span>~2 орын</span><span class="tbl">15-үстел</span></div>
+              <svg class="ico sm phone"><use href="#i-phone"/></svg>
+              <div class="act"><span class="btn wa-outline row"><svg class="ico"><use href="#i-bell"/></svg>Еске салу</span><span class="ago">2 күн бұрын жіберілді</span></div>
+            </button>
+            <button class="guest"><div class="name">Асхат</div><div class="row2"><span class="badge yes"><svg class="ico"><use href="#i-yes"/></svg>Келеді · 1</span><span class="tbl">14-үстел</span></div><svg class="ico sm phone"><use href="#i-phone"/></svg></button>
+            <button class="guest"><div class="name">Гүлмира</div><div class="row2"><span class="badge no"><svg class="ico"><use href="#i-no"/></svg>Келмейді</span></div><svg class="ico sm phone"><use href="#i-phone"/></svg></button>
+          </div>
+        </div>
+
+        <div class="col-aside">
+          <section class="event-hero compact-phone o1" aria-label="Той">
+            <span data-orn="shanyraq" class="shanyraq draw spin-slow"></span>
+            <div class="kicker">Үйлену тойы</div>
+            <div class="names">Айбек пен Дана</div>
+            <div class="divider"><i></i><span data-orn="horn" class="draw"></span><i></i></div>
+            <div class="meta"><b>15 қараша, 18:00</b><br>«Шаңырақ» мейрамханасы</div>
+          </section>
+
+          <div class="o3" style="margin-top:12px">
+            <div class="counters" role="group" aria-label="Жауаптар бойынша сүзгі">
+              <button class="counter yes" aria-pressed="false"><svg class="ico"><use href="#i-yes"/></svg><span class="cv"><span class="t-stat num">78</span><span class="unit">орын</span></span><span class="lbl">Келеді</span></button>
+              <button class="counter inv" aria-pressed="false"><svg class="ico"><use href="#i-clock"/></svg><span class="cv"><span class="t-stat num">4</span><span class="unit">отбасы</span></span><span class="lbl">Жауап жоқ</span></button>
+              <button class="counter no" aria-pressed="false"><svg class="ico"><use href="#i-no"/></svg><span class="cv"><span class="t-stat num">1</span><span class="unit">отбасы</span></span><span class="lbl">Келмейді</span></button>
+            </div>
+            <p class="totals-line">Барлығы: 31 отбасы · шамамен 96 орын</p>
+          </div>
+          <a class="banner remind o4" href="#">
+            <span class="bi"><svg class="ico"><use href="#i-bell"/></svg></span>
+            <span class="bt"><b>Жауап бермегендер: 4</b><span>Еске салу</span></span>
+            <svg class="ico"><use href="#i-right"/></svg>
+          </a>
+          <div class="links desk-only"><div style="padding:14px 16px 0;font:600 16px/22px var(--font-ui);color:var(--ink-2)">Басқа тізімдер</div>
+            <a class="link-row" href="#"><span class="li"><svg class="ico"><use href="#i-users"/></svg></span><span class="lt"><b>Анасының тізімі</b><span>21 отбасы · ~58 орын</span></span><svg class="ico"><use href="#i-right"/></svg></a>
+            <a class="link-row" href="#"><span class="li"><svg class="ico"><use href="#i-users"/></svg></span><span class="lt"><b>Жастардың тізімі</b><span>13 отбасы · ~16 орын</span></span><svg class="ico"><use href="#i-right"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="sticky-cta"><a class="btn primary" href="02-add-guest.html"><svg class="ico"><use href="#i-plus"/></svg>Қонақ қосу</a></div>
+
+<nav class="tabbar" aria-label="Бөлімдер" style="--tabs:3">
+  <a class="tab" href="#" aria-current="page"><span class="pill"><svg class="ico"><use href="#i-users"/></svg></span><span>Қонақтар</span></a>
+  <a class="tab" href="03-hall.html"><span class="pill"><svg class="ico"><use href="#i-grid"/></svg></span><span>Зал</span><i class="dot"></i></a>
+  <a class="tab" href="#"><span class="pill"><svg class="ico"><use href="#i-chart"/></svg></span><span>Қорытынды</span></a>
+</nav>
+
+<div class="toast" role="status" aria-live="polite"><span class="msg">Шақыру жіберілді</span></div>
+
+<div class="scrim s-ask"></div>
+<div class="sheet center s-ask" role="dialog" aria-modal="true" aria-labelledby="ask-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="ask-t">Жіберілді ме?</h2><button class="icon-btn" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></button></div>
+  <div class="sheet-body"><p style="margin:0;font-weight:600">Болат ағай отбасы</p><p class="t-body t-muted" style="margin:6px 0 0">Шақыруды WhatsApp-та жібердіңіз бе?</p></div>
+  <div class="sheet-foot" style="border-top:0"><button class="btn primary" autofocus>Иә, жіберілді</button><button class="btn secondary">Жоқ, әлі жібермедім</button></div>
+</div>
+<div class="scrim s-menu"></div>
+<div class="sheet s-menu" role="dialog" aria-modal="true" aria-labelledby="menu-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="menu-t">Той мәзірі</h2><button class="icon-btn" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></button></div>
+  <div class="sheet-body">
+    <p class="field-label">Тіл</p>
+    <div class="menu-lang" role="group" aria-label="Тіл"><button aria-pressed="true" lang="kk">Қазақша</button><button aria-pressed="false" lang="ru">Русский</button></div>
+    <div class="menu-list" style="margin-top:20px">
+      <a class="row" href="#"><svg class="ico"><use href="#i-heart"/></svg>Менің тойларым</a>
+      <a class="row" href="#"><svg class="ico"><use href="#i-login"/></svg>Шығу</a>
+    </div>
+  </div>
+</div>
+<script src="js/mock.js"></script>
+</body>
+</html>

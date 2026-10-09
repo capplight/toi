@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Той v2 · макеты</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root { --ivory: #F7F2E9; --paper: #FFFDF8; --ink: #17202C; --ink-2: #535C69; --line: #E3D9C7; --gold: #B48A3E; --lapis: #1C3B5E; --night: #0F2338; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ivory); color: var(--ink); font: 400 17px/26px "Onest", system-ui, sans-serif; }
+  header { background: radial-gradient(90% 140% at 100% 0%, #24496F, var(--night) 65%); color: #F4EBDA; padding: 40px 20px 48px; position: relative; overflow: hidden; }
+  header .in, main { max-width: 1200px; margin: 0 auto; }
+  h1 { font: 600 48px/1.05 "Cormorant Garamond", Georgia, serif; margin: 0; }
+  header p { max-width: 720px; color: rgba(244,235,218,.88); margin: 12px 0 0; }
+  header svg { position: absolute; right: -60px; top: -60px; width: 280px; height: 280px; color: #D8B26A; opacity: .5; }
+  main { padding: 28px 20px 64px; }
+  h2 { font: 600 30px/1.2 "Cormorant Garamond", Georgia, serif; margin: 36px 0 6px; }
+  .lead { color: var(--ink-2); margin: 0 0 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+  .item { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
+  .shots { display: grid; grid-template-columns: 1fr 2.2fr; gap: 8px; padding: 12px; background: #EEE6D6; align-items: start; }
+  .shots img { width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 14px -8px rgba(0,0,0,.4); display: block; background: #fff; }
+  .meta { padding: 14px 16px 16px; }
+  .meta b { font-weight: 600; font-size: 18px; }
+  .meta p { margin: 4px 0 10px; color: var(--ink-2); font-size: 15px; line-height: 22px; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px; }
+  .links a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--lapis); color: var(--lapis); text-decoration: none; font-weight: 600; font-size: 15px; }
+  .links a.p { background: var(--lapis); color: #fff; }
+  .note { background: #FBF0D9; border-radius: 16px; padding: 14px 16px; color: #3a2b10; margin-top: 18px; font-size: 16px; }
+  code { background: #EEE6D6; color: #17202C; padding: 1px 6px; border-radius: 6px; font-size: 15px; }
+  header code { background: rgba(255,255,255,.14); color: #F4EBDA; }
+</style>
+</head>
+<body>
+<header><div class="in">
+  <svg viewBox="-64 -64 128 128" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true"><circle r="40"/><circle r="34"/><path d="M-13 -31.4 Q-18 0 -13 31.4 M13 -31.4 Q18 0 13 31.4 M-31.4 -13 Q0 -18 31.4 -13 M-31.4 13 Q0 18 31.4 13"/></svg>
+  <h1>Той · дизайн v2</h1>
+  <p>Статичные макеты (HTML + CSS + инлайновый SVG, без сборки). Откройте любой и меняйте ширину окна от 360 до 1440 px. Состояния переключаются через <code>#хэш</code> в адресе — ссылки ниже. Спецификация: <code>design/DESIGN_v2.md</code> (v2.1 — правки по ревью, раздел 17).</p>
+</div></header>
+<main>
+  <h2>Рабочие экраны составителя</h2>
+  <p class="lead">Родители 50+: крупно, спокойно, праздник только в шапке события и у стола молодых. Анимации ≤ 300 мс.</p>
+  <div class="grid">
+    <div class="item"><div class="shots"><img src="screenshots/01-guests_360.png" alt=""><img src="screenshots/01-guests_1440.png" alt=""></div>
+      <div class="meta"><b>S1 · «Менің тізімім»</b><p>Счётчики-фильтры, баннер «Жауап бермегендер», группы по категориям. Десктоп: таблицеподобные строки + правая колонка.</p>
+      <div class="links"><a class="p" href="mockups/01-guests.html">Открыть</a><a href="mockups/01-guests.html#toast">Тост</a><a href="mockups/01-guests.html#ask">Жіберілді ме?</a><a href="mockups/01-guests.html#pending">Строка у карточки</a></div></div></div>
+    <div class="item"><div class="shots"><img src="screenshots/02-add-guest_360.png" alt=""><img src="screenshots/02-add-guest_1440.png" alt=""></div>
+      <div class="meta"><b>S2 · «Жаңа қонақ»</b><p>Форма, плитки категорий, степпер. Состояния: ошибка, телефон занят, похожее имя, «Қосылды!».</p>
+      <div class="links"><a class="p" href="mockups/02-add-guest.html">Форма</a><a href="mockups/02-add-guest.html#error">Атын жазыңыз</a><a href="mockups/02-add-guest.html#phone">S2-Phone</a><a href="mockups/02-add-guest.html#dup">S2-Dup</a><a href="mockups/02-add-guest.html#ok">S2-OK</a></div></div></div>
+    <div class="item"><div class="shots"><img src="screenshots/03-hall_all_360.png" alt=""><img src="screenshots/03-hall_1440.png" alt=""></div>
+      <div class="meta"><b>H2 · «Зал»</b><p>v2.1: сводка одной строкой, статус-чипы, сегмент в шапке — «ТӨР», стол молодых и первый ряд видны сразу даже при всех проблемах. Десктоп: схема + сводка рядом.</p>
+      <div class="links"><a class="p" href="mockups/03-hall.html">Схема</a><a href="mockups/03-hall.html#all">Все проблемы (B1)</a><a href="mockups/03-hall.html#seen">Чип «орынсыз»</a><a href="mockups/03-hall.html#sum">Сводка раскрыта</a><a href="mockups/03-hall.html#dup">H6 · дубли</a></div></div></div>
+    <div class="item"><div class="shots"><img src="screenshots/04-table-sheet_360.png" alt=""><img src="screenshots/04-table-sheet_1440.png" alt=""></div>
+      <div class="meta"><b>H3 · шторка стола</b><p>Телефон: шторка Vaul снизу. Десктоп: шторка Vaul справа 480 px.</p>
+      <div class="links"><a class="p" href="mockups/04-table-sheet.html">Открыть</a></div></div></div>
+    <div class="item"><div class="shots"><img src="screenshots/08-door_360.png" alt=""><img src="screenshots/08-door_1440.png" alt=""></div>
+      <div class="meta"><b>Помощник на входе /d/…</b><p>Поиск по 2–3 буквам, крупный номер стола, «Келді» + «Қайтару», работа без сети.</p>
+      <div class="links"><a class="p" href="mockups/08-door.html">Онлайн</a><a href="mockups/08-door.html#offline">Желі жоқ</a></div></div></div>
+    <div class="item"><div class="shots"><img src="screenshots/09-join-login_360.png" alt=""><img src="screenshots/09-join-login_1440.png" alt=""></div>
+      <div class="meta"><b>Вход: /join и /login</b><p>Ссылка из WhatsApp → «Кіру»; «Сілтеме ескірген»; SMS-код и «Код келмеді».</p>
+      <div class="links"><a class="p" href="mockups/09-join-login.html">/join</a><a href="mockups/09-join-login.html#expired">Ескірген</a><a href="mockups/09-join-login.html#sms">/login</a><a href="mockups/09-join-login.html#code">Код</a></div></div></div>
+  </div>
+
+  <h2>Приглашение гостя: 3 шаблона</h2>
+  <p class="lead">Конверт с именем семьи → «Ашу» (включается музыка) → клапан открывается, письмо выезжает, орнамент рисуется линией. Только CSS/SVG. <code>#mid</code> — кадр середины анимации, <code>#open</code> — открыто, <code>#answered</code> — ответ отправлен, <code>#table</code> — номер стола.</p>
+  <div class="grid">
+    <div class="item"><div class="shots"><img src="screenshots/05-invite-ak-shanyraq_360.png" alt=""><img src="screenshots/05-invite-ak-shanyraq_open_1440.png" alt=""></div>
+      <div class="meta"><b>«Ақ шаңырақ»</b><p>Дневной: слоновая кость, золото, рассвет над степью, шаңырақ-солнце.</p>
+      <div class="links"><a class="p" href="mockups/05-invite-ak-shanyraq.html">Конверт</a><a href="mockups/05-invite-ak-shanyraq.html#mid">#mid</a><a href="mockups/05-invite-ak-shanyraq.html#open">#open</a><a href="mockups/05-invite-ak-shanyraq.html#answered">#answered</a><a href="mockups/05-invite-ak-shanyraq.html#table">#table</a><a href="mockups/05-invite-ak-shanyraq.html#lite">#lite (без 3D)</a></div></div></div>
+    <div class="item"><div class="shots"><img src="screenshots/06-invite-kok-tun_360.png" alt=""><img src="screenshots/06-invite-kok-tun_open_1440.png" alt=""></div>
+      <div class="meta"><b>«Көк түн»</b><p>Вечерний: ночное небо, мерцающие звёзды, горы, золото.</p>
+      <div class="links"><a class="p" href="mockups/06-invite-kok-tun.html">Конверт</a><a href="mockups/06-invite-kok-tun.html#mid">#mid</a><a href="mockups/06-invite-kok-tun.html#open">#open</a><a href="mockups/06-invite-kok-tun.html#answered">#answered</a><a href="mockups/06-invite-kok-tun.html#table">#table</a></div></div></div>
+    <div class="item"><div class="shots"><img src="screenshots/07-invite-kyzgaldak_360.png" alt=""><img src="screenshots/07-invite-kyzgaldak_open_1440.png" alt=""></div>
+      <div class="meta"><b>«Қызғалдақ»</b><p>Тёплый: гранат и румянец, степные тюльпаны покачиваются.</p>
+      <div class="links"><a class="p" href="mockups/07-invite-kyzgaldak.html">Конверт</a><a href="mockups/07-invite-kyzgaldak.html#mid">#mid</a><a href="mockups/07-invite-kyzgaldak.html#open">#open</a><a href="mockups/07-invite-kyzgaldak.html#answered">#answered</a><a href="mockups/07-invite-kyzgaldak.html#table">#table</a></div></div></div>
+  </div>
+  <p class="note">Обложки в арке сейчас — SVG-заставки (лёгкие, анимированные). В продукте их заменят отобранные ИИ-обложки ≤ 60 КБ; SVG-заставка остаётся как плейсхолдер на время загрузки. Промпты — в DESIGN_v2.md, раздел 11. Ассеты: <code>assets/ornaments</code>, <code>assets/icons/icons.svg</code>, <code>assets/brand</code>, <code>assets/covers</code>. Скриншоты 360/1440: <code>screenshots/</code>.</p>
+</main>
+</body>
+</html>

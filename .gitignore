@@ -1,0 +1,37 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js / build output
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# tests
+coverage/
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+
+# deploy
+.vercel/
+
+# env — secrets live only in .env.local and in Vercel/GitHub settings
+.env*
+!.env.example
+
+# logs / OS
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db
+
+# design sources (large, not needed in the repo)
+design/v2/covers/source/
+
+# Sentry
+.sentryclirc

@@ -1,0 +1,1860 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FBF8F3">
+<title>Той прототипі</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Lora:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF8F3; --surface:#FFFFFF; --surface-2:#F3EEE5; --border:#E4DDD0; --border-strong:#8C8270;
+  --ink:#1C2230; --ink-2:#5A6170; --primary:#0E5E6F; --primary-pressed:#0B4B59; --primary-soft:#E6F2F4;
+  --gold:#C9A24B; --gold-ink:#8A5A00; --gold-soft:#FFF4DC;
+  --success:#1A7F4B; --success-ink:#166B40; --success-soft:#E7F5EC;
+  --danger:#B42318; --danger-soft:#FDECEA; --dup:#5B3FA8; --dup-soft:#EFEAFB;
+  --seat-taken:#7A808C; --seat-free:#1A7F4B; --scrim:rgba(28,34,48,.48);
+  --sh-card:0 1px 2px rgba(28,34,48,.06),0 2px 8px rgba(28,34,48,.06);
+  --sh-bar:0 -2px 12px rgba(28,34,48,.10); --sh-sheet:0 -8px 24px rgba(28,34,48,.16);
+  --font:"Golos Text","Noto Sans",system-ui,sans-serif; --serif:"Lora","Noto Serif",Georgia,serif;
+  --tabs-h:0px; --sticky-h:0px; --safe-b:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:1.125rem;line-height:1.45;overflow-x:hidden}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.app{max-width:480px;margin:0 auto;min-height:100vh;position:relative}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
+.ic{flex:none;vertical-align:middle}
+
+/* header */
+.hdr{position:sticky;top:0;z-index:20;height:56px;display:flex;align-items:center;gap:4px;padding:0 8px 0 4px;background:var(--bg);border-bottom:1px solid var(--border)}
+.hdr h1{font-size:1.5rem;line-height:30px;font-weight:700;margin:0 0 0 12px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr .icon-btn + h1{margin-left:0}
+.icon-btn{width:48px;height:48px;border:0;background:transparent;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;flex:none;color:var(--ink)}
+.icon-btn:active{background:var(--surface-2)}
+.lang{display:flex;border:1.5px solid var(--primary);border-radius:12px;overflow:hidden;flex:none}
+.lang button{width:48px;height:44px;border:0;background:var(--surface);color:var(--primary);font-size:1rem;font-weight:600}
+.lang button[aria-pressed="true"]{background:var(--primary);color:#fff}
+
+main{padding:0 16px calc(24px + var(--sticky-h) + var(--tabs-h) + var(--safe-b))}
+main.enter{animation:enter .22s ease-out}
+@keyframes enter{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+main.enter-back{animation:enterb .22s ease-out}
+@keyframes enterb{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
+
+h2.h2,.h2{font-size:1.25rem;line-height:26px;font-weight:700;margin:24px 0 12px}
+.ink2{color:var(--ink-2)}
+.small{font-size:1rem;line-height:24px}
+.p{margin:12px 0}
+
+/* event head */
+.evt{text-align:center;padding:20px 0 4px}
+.evt-title{font-family:var(--serif);font-weight:600;font-size:1.625rem;line-height:32px;margin:0}
+.orn-div{display:flex;align-items:center;justify-content:center;gap:0;margin:8px auto 8px;width:160px}
+.orn-div i{display:block;height:1px;background:var(--gold);flex:1}
+.evt-meta{font-size:1rem;color:var(--ink-2);margin:0}
+
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;padding:8px 16px;border-radius:12px;border:0;font-size:1.125rem;line-height:24px;font-weight:600;text-align:center;text-decoration:none;transition:transform .08s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:active{background:var(--primary-pressed)}
+.btn-wa{background:var(--success);color:#fff}
+.btn-wa:active{background:#146a3e}
+.btn-sec{background:var(--surface);color:var(--primary);border:1.5px solid var(--primary);min-height:52px}
+.btn-sec:active{background:var(--primary-soft)}
+.btn-wao{background:var(--surface);color:var(--success);border:1.5px solid var(--success);min-height:48px}
+.btn-danger{background:var(--surface);color:var(--danger);border:1.5px solid var(--danger);min-height:52px}
+.btn-danger-fill{background:var(--danger);color:#fff;min-height:52px}
+.btn-text{background:transparent;color:var(--primary);min-height:48px;width:auto;margin:0 auto;padding:8px 12px}
+.btn-text:active{text-decoration:underline}
+.btn-sm{min-height:48px}
+.btn-row{display:flex;gap:8px}
+.btn-row > .btn{flex:1;width:auto}
+.btn[aria-disabled="true"]{opacity:.4}
+.btn-icon{width:48px;height:48px;min-height:48px;padding:0;border-radius:12px;background:var(--surface-2);color:var(--ink);border:0;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.btn-icon[aria-disabled="true"]{opacity:.4}
+.stack > * + *{margin-top:8px}
+
+/* sticky main button */
+.sticky{position:fixed;left:50%;transform:translateX(-50%);width:100%;max-width:480px;bottom:calc(var(--tabs-h) + var(--safe-b));padding:12px 16px;background:var(--bg);box-shadow:var(--sh-bar);z-index:25}
+.sticky:empty{display:none}
+.no-tabs .sticky{padding-bottom:calc(12px + var(--safe-b));bottom:0}
+
+/* tabs */
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:480px;display:flex;background:var(--surface);box-shadow:var(--sh-bar);z-index:26;padding-bottom:var(--safe-b)}
+.tabs button{flex:1;height:64px;border:0;background:var(--surface);color:var(--ink-2);display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:600;position:relative;border-top:3px solid transparent}
+.tabs button[aria-current="page"]{color:var(--primary);background:var(--primary-soft);border-top-color:var(--primary)}
+.tab-ic{position:relative;display:inline-flex}
+.dot{position:absolute;right:-7px;top:-3px;width:10px;height:10px;border-radius:50%;background:var(--danger);border:1.5px solid #fff}
+
+/* counters */
+.counters{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.counter{min-height:96px;background:var(--surface);border-radius:16px;box-shadow:var(--sh-card);border:2.5px solid transparent;padding:8px 10px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+.counter[aria-pressed="true"]{border-color:var(--primary);background:var(--primary-soft)}
+.counter .stat{font-size:2rem;line-height:36px;font-weight:700;font-variant-numeric:tabular-nums}
+.counter .lb{font-size:1rem;line-height:20px;font-weight:500;word-break:break-word}
+.counter .lb2{font-size:1rem;line-height:20px;color:var(--ink-2)}
+.c-yes .ic{color:var(--success)} .c-inv .ic{color:var(--gold-ink)} .c-no .ic{color:var(--ink-2)}
+.total-line{font-size:1rem;color:var(--ink-2);margin:8px 0 0}
+
+/* banners */
+.banner{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:12px 16px;border-radius:16px;border:0;text-align:left;margin-top:12px}
+.banner .bt{font-size:1.125rem;line-height:24px;font-weight:600}
+.banner .bs{font-size:1rem;line-height:22px}
+.banner > div{flex:1;min-width:0}
+.bn-gold{background:var(--gold-soft);color:var(--gold-ink)}
+.bn-gold .bt{color:var(--ink)} .bn-gold .bs{color:var(--gold-ink)}
+.bn-danger{background:var(--danger-soft);color:var(--danger)}
+.bn-danger .bs{color:var(--ink)}
+.bn-dup{background:var(--dup-soft);color:var(--dup)}
+.bn-dup .bs{color:var(--ink)}
+.bn-view{background:var(--surface-2);color:var(--ink-2)}
+.bn-view .bt{color:var(--ink)}
+.bn-net{background:var(--gold-soft);color:var(--gold-ink)}
+
+/* fields */
+.field{margin-top:20px}
+.field label,.flabel{display:block;font-size:1rem;font-weight:600;margin-bottom:8px}
+.input{width:100%;height:56px;border:1.5px solid var(--border-strong);border-radius:12px;background:var(--surface);padding:0 16px;font-size:1.125rem}
+.input::placeholder{color:var(--ink-2)}
+.input:focus{outline:none;border:2.5px solid var(--primary);padding:0 15px}
+.input[aria-invalid="true"]{border:2.5px solid var(--danger);padding:0 15px}
+.phone-wrap{position:relative}
+.phone-wrap .pre{position:absolute;left:16px;top:0;height:56px;display:flex;align-items:center;color:var(--ink-2);pointer-events:none;border-right:1px solid var(--border);padding-right:10px}
+.phone-wrap .input{padding-left:62px}
+.phone-wrap .input:focus,.phone-wrap .input[aria-invalid="true"]{padding-left:61px}
+.hint{font-size:1rem;color:var(--ink-2);margin:6px 0 0}
+.err{font-size:1rem;color:var(--danger);margin:6px 0 0;display:flex;gap:6px;align-items:flex-start}
+.err .ic{margin-top:2px}
+.search{position:relative;margin-top:12px}
+.search .ic{position:absolute;left:14px;top:16px;color:var(--ink-2)}
+.search .input{padding-left:48px}
+.search .input:focus{padding-left:47px}
+
+/* category tiles */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{min-height:56px;border-radius:12px;border:1.5px solid var(--border-strong);background:var(--surface);font-size:1.125rem;line-height:22px;font-weight:500;padding:8px 10px;display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;word-break:break-word}
+.tile[aria-checked="true"]{background:var(--primary-soft);border:2.5px solid var(--primary);color:var(--primary);font-weight:600;padding:7px 9px}
+.tile .sub{display:block;font-size:1rem;font-weight:400;color:var(--ink-2)}
+.tile-add{border-style:dashed;color:var(--primary);font-weight:600}
+
+/* stepper */
+.stepper{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.step-btn{width:64px;height:64px;border-radius:16px;border:0;background:var(--surface-2);font-size:2rem;font-weight:600;display:flex;align-items:center;justify-content:center;flex:none}
+.step-btn:active{transform:scale(.96)}
+.step-val{flex:1;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:0;background:transparent;border-radius:12px}
+.step-val b{font-size:2rem;line-height:36px;font-weight:700;font-variant-numeric:tabular-nums}
+.step-val span{font-size:1rem;color:var(--ink-2)}
+.step-val input{width:96px;height:56px;text-align:center;font-size:2rem;font-weight:700;border:2.5px solid var(--primary);border-radius:12px}
+.step-msg{min-height:24px;font-size:1rem;color:var(--gold-ink);text-align:center;margin:4px 0 0}
+
+/* guest cards */
+.ghead{font-size:1rem;font-weight:700;color:var(--ink-2);letter-spacing:.5px;margin:24px 0 8px}
+.gcard{background:var(--surface);border-radius:16px;box-shadow:var(--sh-card);padding:14px 16px;margin-top:8px;min-height:72px;cursor:pointer;transition:background .6s}
+.gcard:focus-visible{outline:3px solid var(--primary)}
+.gcard.flash{background:var(--primary-soft)}
+.gname{font-size:1.125rem;line-height:24px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.gmeta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:6px;font-size:1rem;color:var(--ink-2)}
+.gact{margin-top:10px;display:flex;align-items:center;gap:12px}
+.gact .btn{flex:none;width:auto;padding:8px 14px}
+.gact .btn-wa{flex:1}
+.gact .when{font-size:1rem;color:var(--ink-2)}
+.badge{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;font-size:1rem;font-weight:500;white-space:nowrap}
+.b-new{background:#fff;color:var(--ink-2);border:1.5px dashed var(--border-strong)}
+.b-inv{background:var(--gold-soft);color:var(--gold-ink)}
+.b-yes{background:var(--success-soft);color:var(--success-ink)}
+.b-no{background:#EEF0F3;color:var(--ink-2)}
+.filter-line{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;font-size:1rem;font-weight:600}
+.filter-line .btn{width:auto}
+.empty{text-align:center;padding:32px 8px}
+.empty .motif{opacity:.6}
+.empty p{font-size:1.125rem}
+.skel{background:var(--surface-2);border-radius:16px;animation:pulse 1.2s ease-in-out infinite alternate}
+@keyframes pulse{from{opacity:1}to{opacity:.45}}
+
+/* rows / kv */
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:1.125rem;margin:16px 0}
+.kv dt{color:var(--ink-2);font-size:1rem;padding-top:2px}
+.kv dd{margin:0}
+.box{background:var(--surface);border-radius:16px;box-shadow:var(--sh-card);padding:16px;margin-top:12px}
+.box-dup{border:2px solid var(--dup)}
+.box-danger{border:2px solid var(--danger)}
+.alert{border-radius:16px;padding:14px 16px;margin-top:4px}
+.alert-danger{background:var(--danger-soft)}
+.alert-danger .at{color:var(--danger);font-weight:600;display:flex;gap:8px;align-items:center}
+.ok-line{color:var(--success-ink);font-weight:600;display:flex;gap:8px;align-items:center}
+.danger-line{color:var(--danger);font-weight:600;display:flex;gap:8px;align-items:center}
+
+/* link rows */
+.links{background:var(--surface);border-radius:16px;box-shadow:var(--sh-card);margin-top:16px;overflow:hidden}
+.lrow{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:10px 16px;border:0;background:transparent;text-align:left}
+.lrow + .lrow{border-top:1px solid var(--border)}
+.lrow > div{flex:1;min-width:0}
+.lrow .lt{font-weight:600}
+.lrow .ls{font-size:1rem;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lrow:active{background:var(--surface-2)}
+
+/* hall */
+.summary h2{margin:16px 0 4px}
+.seg{display:flex;background:var(--surface-2);border-radius:12px;padding:3px;margin-top:16px}
+.seg button{flex:1;min-height:48px;border:0;border-radius:10px;background:transparent;font-size:1rem;font-weight:600;color:var(--ink-2);display:flex;align-items:center;justify-content:center;gap:8px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--primary);box-shadow:var(--sh-card)}
+.hallbox{background:var(--surface-2);border-radius:16px;margin-top:12px;overflow:hidden}
+.hall-svg{display:block;width:100%;height:auto;font-family:var(--font)}
+.hall-svg text{font-family:var(--font)}
+.hall-svg .tbl{cursor:pointer;outline:none}
+.hall-svg .tbl:focus-visible .cell{stroke:var(--primary);stroke-width:3}
+.hall-svg .cell{fill:transparent;transition:fill .12s}
+.hall-svg .tbl.tap .cell{fill:var(--primary-soft)}
+.hall-svg .chair{transition:fill .3s,stroke .3s}
+.hall-svg .dim{opacity:.3}
+.hall-svg .dim45{opacity:.45}
+.pulse{transform-box:fill-box;transform-origin:center;animation:ring .3s ease-in-out 4 alternate}
+@keyframes ring{from{transform:scale(1)}to{transform:scale(1.15)}}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:1rem;margin-top:12px;color:var(--ink)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.tcard{background:var(--surface);border-radius:16px;box-shadow:var(--sh-card);margin-top:8px;border:2px solid transparent}
+.tcard.over{border-color:var(--danger)}
+.tcard-h{display:flex;align-items:center;gap:8px;width:100%;min-height:64px;border:0;background:transparent;padding:10px 16px;text-align:left}
+.tcard-h > div{flex:1;min-width:0}
+.tcard-h .tt{font-weight:600;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.tcard-h .tc{font-size:1rem;color:var(--ink-2)}
+.tcard-b{padding:0 16px 12px}
+.fam{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--border)}
+.fam:first-child{border-top:0}
+.fam-n{width:28px;height:28px;border-radius:50%;background:var(--seat-taken);color:#fff;font-size:1rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin-top:0}
+.fam > div{flex:1;min-width:0}
+.fam .fn{font-weight:600}
+.fam .fm{font-size:1rem;color:var(--ink-2)}
+.fam .btn{margin-top:8px;width:auto;padding:8px 16px}
+.fam .btn-text{margin:4px 0 0;padding:8px 0;min-height:48px}
+.tsheet-svg{display:block;margin:8px auto 0;width:200px;height:200px}
+.center{text-align:center}
+
+/* order */
+.orow{display:flex;align-items:center;gap:10px;min-height:72px;padding:8px 12px;border-top:1px solid var(--border);transition:transform .2s}
+.orow:first-child{border-top:0}
+.orow .on{font-size:1.25rem;font-weight:700;width:24px;text-align:center;flex:none}
+.orow .om{width:8px;height:32px;border-radius:4px;flex:none;border:1px solid rgba(28,34,48,.15)}
+.orow > div.ot{flex:1;min-width:0}
+.orow .oname{font-weight:600;line-height:22px;word-break:break-word}
+.orow .osub{font-size:1rem;color:var(--ink-2)}
+.orow .obtns{display:flex;gap:8px;flex:none}
+.orow.moved{animation:moved .2s ease-out}
+@keyframes moved{from{background:var(--primary-soft)}to{background:transparent}}
+
+/* history */
+.hday{font-size:1rem;font-weight:700;color:var(--ink-2);letter-spacing:.5px;margin:24px 0 8px}
+.hitem{padding:14px 16px;border-top:1px solid var(--border)}
+.hitem:first-child{border-top:0}
+.hitem .hw{font-size:1rem;color:var(--ink-2)}
+.hitem .ht{font-weight:600}
+.hitem.undone .ht,.hitem.undone .hl{text-decoration:line-through;opacity:.6}
+.hitem .btn{width:auto;margin-top:8px;padding:8px 16px}
+
+/* move */
+.mlist .btn{justify-content:space-between;margin-top:8px}
+.disclose{display:flex;align-items:center;gap:8px;min-height:48px;border:0;background:transparent;color:var(--primary);font-weight:600;padding:0;margin-top:12px}
+
+/* hall setup */
+.ltiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ltile{min-height:96px;border-radius:12px;border:1.5px solid var(--border-strong);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:1.125rem;font-weight:500;position:relative;padding:8px}
+.ltile[aria-checked="true"]{background:var(--primary-soft);border:2.5px solid var(--primary);color:var(--primary);font-weight:600}
+.ltile .ck{position:absolute;left:8px;top:8px}
+.sumcard{background:var(--surface);border-radius:16px;box-shadow:var(--sh-card);padding:16px;margin-top:24px;border:2px solid transparent}
+.sumcard.bad{border-color:var(--danger)}
+.sumcard .stat{font-size:2rem;line-height:36px;font-weight:700}
+.sumcard hr{border:0;border-top:1px solid var(--border);margin:12px 0}
+
+/* start */
+.rcard{display:flex;flex-direction:column;justify-content:center;width:100%;min-height:72px;border-radius:16px;border:1.5px solid var(--border-strong);background:var(--surface);padding:10px 16px;text-align:left;margin-top:8px}
+.rcard[aria-checked="true"]{border:2.5px solid var(--primary);background:var(--primary-soft);padding:9px 15px}
+.rcard .rt{font-weight:600;display:flex;gap:8px;align-items:center}
+.rcard .rs{font-size:1rem;color:var(--ink-2)}
+.chk{display:flex;align-items:center;gap:12px;min-height:56px;font-size:1.125rem;margin-top:16px;cursor:pointer}
+.chk input{width:28px;height:28px;accent-color:var(--primary);flex:none}
+
+/* sheet */
+.sheet-wrap{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet-wrap[hidden]{display:none}
+.scrim{position:absolute;inset:0;background:var(--scrim);opacity:0;transition:opacity .2s}
+.sheet{position:relative;width:100%;max-width:480px;max-height:90vh;max-height:90dvh;background:var(--surface);border-radius:24px 24px 0 0;box-shadow:var(--sh-sheet);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.sheet-wrap.open .scrim{opacity:1}
+.sheet-wrap.open .sheet{transform:none}
+.sheet-handle{width:40px;height:4px;border-radius:2px;background:var(--border);margin:8px auto 0;flex:none}
+.sheet-head{display:flex;align-items:center;gap:8px;min-height:64px;padding:0 8px 0 16px;flex:none}
+.sheet-head h2{flex:1;margin:0;font-size:1.25rem;line-height:26px;font-weight:700;outline:none}
+.sheet-body{overflow-y:auto;padding:0 16px 16px;flex:1 1 auto;overscroll-behavior:contain}
+.sheet-foot{flex:none;padding:12px 16px calc(12px + var(--safe-b));background:var(--surface);box-shadow:var(--sh-bar)}
+.sheet-foot:empty{display:none}
+.sheet-foot > * + *{margin-top:8px}
+.bubble{background:#DCF8C6;border-radius:12px;padding:12px 14px;font-size:1rem;line-height:24px;margin-top:12px;white-space:pre-wrap;word-break:break-word}
+.ok-title{font-family:var(--serif);font-weight:600;font-size:1.625rem;line-height:32px;margin:8px 0 4px}
+.radio-row{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;border:0;background:transparent;text-align:left;padding:4px 0;font-size:1.125rem}
+.radio-row .rd{width:24px;height:24px;border-radius:50%;border:2px solid var(--border-strong);flex:none;display:flex;align-items:center;justify-content:center}
+.radio-row[aria-checked="true"] .rd{border-color:var(--primary)}
+.radio-row[aria-checked="true"] .rd::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--primary)}
+.mk{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--dup);color:#fff;font-size:1rem;font-weight:700;align-items:center;justify-content:center;flex:none}
+
+/* toast + float */
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabs-h) + var(--sticky-h) + var(--safe-b) + 12px);width:calc(100% - 32px);max-width:448px;min-height:64px;background:var(--ink);color:#fff;border-radius:16px;display:flex;align-items:center;gap:8px;padding:8px 8px 8px 16px;font-size:1rem;font-weight:500;z-index:60;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.toast[hidden]{display:none}
+.toast span{flex:1}
+.toast button{border:0;background:transparent;color:#9FD3DD;font-size:1.125rem;font-weight:700;min-height:48px;min-width:48px;padding:0 12px;border-radius:10px;display:inline-flex;align-items:center;gap:6px}
+.float{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabs-h) + var(--safe-b) + 12px);width:calc(100% - 32px);max-width:448px;background:#fff;border:2px solid var(--dup);border-radius:16px;padding:10px 10px 10px 14px;display:flex;align-items:center;gap:10px;z-index:40;font-size:1rem;box-shadow:var(--sh-card)}
+.float[hidden]{display:none}
+.float > div{flex:1}
+.float .btn{width:auto;flex:none;padding:8px 16px;min-height:48px}
+
+@media (prefers-reduced-motion: reduce){
+  main.enter,main.enter-back{animation:fade .1s}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .sheet{transition:opacity .1s;transform:none;opacity:0}
+  .sheet-wrap.open .sheet{opacity:1}
+  .scrim{transition:opacity .1s}
+  .skel{animation:none}
+  .pulse{animation:none}
+  .btn:active{transform:none}
+  .orow.moved{animation:none}
+  .hall-svg .chair{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div id="hdr"></div>
+  <main id="main" tabindex="-1"></main>
+  <div class="sticky" id="sticky"></div>
+  <nav class="tabs" id="tabs" hidden></nav>
+</div>
+<div class="float" id="float" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="sheet-wrap" id="sheet" hidden></div>
+<noscript>JavaScript қосулы болуы керек / Нужен JavaScript.</noscript>
+
+<script id="core">
+'use strict';
+/* ============ CORE: data + seating logic (no DOM) ============ */
+var DAY = 86400000;
+var CATS0 = [
+  {id:'kuda', kk:'Құдалар', ru:'Родня другой стороны', after:'Құдалардан кейін', color:'#F3E2B8'},
+  {id:'oz', kk:'Өз туыстар', ru:'Родня (по отцу)', after:'Өз туыстардан кейін', color:'#D6E9EF'},
+  {id:'nagashy', kk:'Нағашылар', ru:'Родня по матери', after:'Нағашылардан кейін', color:'#E4E0F3'},
+  {id:'dos', kk:'Достар', ru:'Друзья', after:'Достардан кейін', color:'#F8E0CF'},
+  {id:'ariptes', kk:'Әріптестер', ru:'Коллеги', after:'Әріптестерден кейін', color:'#E7E3DA'},
+  {id:'korshi', kk:'Көршілер', ru:'Соседи', after:'Көршілерден кейін', color:'#F3DCE3'},
+  {id:'synyp', kk:'Сыныптастар / курстастар', ru:'Одноклассники / однокурсники', after:'Сыныптастардан кейін', color:'#DCEFEA'},
+  {id:'baska', kk:'Басқа', ru:'Другое', after:'Басқадан кейін', color:'#ECECEC'}
+];
+var ROLES = {
+  ake:{kk:'Әкесі', ru:'Отец', ruLow:'отец', name:'Серік', gen:'Әкесінің', ruGen:'отца', edit:true, defCat:'oz'},
+  ana:{kk:'Анасы', ru:'Мама', ruLow:'мама', name:'Гүлжан', gen:'Анасының', ruGen:'мамы', edit:true, defCat:'nagashy'},
+  jas:{kk:'Жастар', ru:'Молодые', ruLow:'молодые', name:'Айбек, Дана', gen:'Жастардың', ruGen:'молодых', edit:false, defCat:'dos'}
+};
+// [id, name, list, cat, status, seats, phone, lockedTable, sentDaysAgo, expectedBefore]
+var RAW = [
+['f01','Сапарбаевтар (бас құда)','ake','kuda','yes',6,'7012103341'],
+['f02','Әділбек құда отбасы','ake','kuda','yes',4,'7021184052'],
+['f03','Райхан құдағи отбасы','ake','kuda','yes',3,'7056402118'],
+['f04','Нұрболат құда отбасы','ake','kuda','yes',5,'7073057790'],
+['f05','Жұпар құдағи','ake','kuda','yes',2,''],
+['f06','Тимур құда отбасы','ake','kuda','inv',4,'7023145520',0,3],
+['f07','Серікбай ағай отбасы','ake','oz','yes',5,'7014550812'],
+['f08','Нұрлан мен Әсем','ake','oz','yes',2,'7472219034'],
+['f09','Бауыржан ағай отбасы','ake','oz','yes',4,'7057781205'],
+['f10','Қайрат отбасы','ake','oz','yes',6,'7026604571'],
+['f11','Жанар апай','ake','oz','yes',1,''],
+['f12','Талғат отбасы','ake','oz','yes',4,'7013306218'],
+['f13','Ермек отбасы','ake','oz','inv',3,'7775120388',0,5],
+['f14','Мұрат ағай отбасы','ake','oz','yes',4,'7052194730'],
+['f15','Бақытжан Омаров отбасы','ake','ariptes','yes',2,'7013776109'],
+['f16','Асхат','ake','ariptes','yes',1,'7051028847'],
+['f17','Дархан отбасы','ake','ariptes','yes',2,'7476903125'],
+['f18','Гүлмира','ake','ariptes','no',1,'7024487013'],
+['f19','Ғалым отбасы','ake','ariptes','inv',2,'7016159240',0,2],
+['f20','Ақылбек ағай отбасы','ake','dos','yes',4,'7012905736'],
+['f21','Самат отбасы','ake','dos','yes',2,'7027741559'],
+['f22','Ержан отбасы','ake','dos','inv',3,'7773802671',0,1],
+['f23','Бекзат отбасы','ake','synyp','yes',2,'7054076914'],
+['f24','Әлия','ake','synyp','yes',1,'7478123506'],
+['f25','Нұржан отбасы','ake','synyp','new',2,''],
+['f26','Болат ағай отбасы','ake','oz','new',4,''],
+['f27','Ғабит ағай отбасы','ake','oz','yes',5,'7018442016'],
+['f28','Жомарт отбасы','ake','oz','yes',4,'7025031864'],
+['f29','Сәкен құда отбасы','ake','kuda','yes',4,'7019021463'],
+['f30','Ерлан ағай отбасы','ana','nagashy','yes',4,'7016234419'],
+['f31','Гүлнар апай отбасы','ana','nagashy','yes',5,'7023810766',7],
+['f32','Мейрамбек нағашы отбасы','ana','nagashy','yes',6,'7059145238',7],
+['f33','Күләш апай','ana','nagashy','yes',2,'7015551234'],
+['f34','Даурен нағашы отбасы','ana','nagashy','yes',4,'7017023985'],
+['f35','Әйгерім отбасы','ana','nagashy','yes',3,'7472601893',7],
+['f36','Нұрсұлу апай отбасы','ana','nagashy','inv',3,'7029056321',0,4],
+['f37','Қанат отбасы','ana','nagashy','yes',4,'7051167452'],
+['f38','Бақытжан отбасы','ana','korshi','yes',2,'',12],
+['f39','Сәуле апай','ana','korshi','yes',1,'7018196430',12],
+['f40','Марат отбасы','ana','korshi','yes',4,'7021469357',12,0,3],
+['f41','Айнұр отбасы','ana','korshi','no',2,'7475032781'],
+['f42','Ләззат апай отбасы','ana','dos','yes',4,'7017340652',12],
+['f43','Роза отбасы','ana','dos','yes',2,'7025903817',12],
+['f44','Шынар','ana','dos','inv',1,'7776412509',0,6],
+['f45','Зейнеп апай','ana','baska','yes',1,''],
+['f46','Дина','ana','baska','yes',1,'7473559062'],
+['f47','Ербол нағашы отбасы','ana','nagashy','yes',5,'7014832907'],
+['f48','Алмагүл апай отбасы','ana','nagashy','yes',3,'7022378644'],
+['f49','Бибігүл апай отбасы','ana','nagashy','yes',4,'7056725013'],
+['f50','Арман отбасы','jas','dos','yes',2,'7078124403'],
+['f51','Аружан','jas','dos','yes',1,'7082207156'],
+['f52','Дидар мен Томирис','jas','dos','yes',2,'7479130827'],
+['f53','Ернұр','jas','dos','yes',1,'7074316298'],
+['f54','Мадина отбасы','jas','dos','yes',2,'7086741530'],
+['f55','Санжар','jas','dos','inv',1,'7472863971',0,2],
+['f56','Әлихан','jas','dos','yes',1,'7071598264'],
+['f57','Жансая','jas','dos','no',1,'7089024715'],
+['f58','Ақбота','jas','ariptes','yes',1,'7476182049'],
+['f59','Нұрислам','jas','ariptes','yes',1,'7073459612'],
+['f60','Тоғжан','jas','ariptes','yes',1,'7085271380'],
+['f61','Ерасыл','jas','synyp','yes',1,'7477605436'],
+['f62','Айдана','jas','synyp','yes',1,'7078932147'],
+['f63','Темірлан отбасы','ake','dos','yes',3,'7015580327'],
+['f64','Нәзира отбасы','ake','ariptes','yes',2,'7053314682'],
+['f65','Қуаныш отбасы','ana','korshi','yes',3,'7052684190']
+];
+
+function makeToken(id){
+  if (id === 'f06') return 'a7K2pQ';
+  var a = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789', h = 2166136261, s = '';
+  for (var i = 0; i < id.length; i++) { h ^= id.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  for (var j = 0; j < 6; j++) { s += a[h % a.length]; h = Math.imul(h ^ (h >>> 13), 2654435761) >>> 0; }
+  return s;
+}
+function atTime(now, daysAgo, hh, mm){ var d = new Date(now - daysAgo * DAY); d.setHours(hh, mm, 0, 0); return d.getTime(); }
+
+function makeSample(now){
+  now = now || Date.now();
+  var fams = RAW.map(function(r, i){
+    var st = r[4], seats = r[5];
+    return {
+      id:r[0], name:r[1], list:r[2], cat:r[3], status:st,
+      expected: r[9] || seats, confirmed: st === 'yes' ? seats : null,
+      phone:r[6] || '', locked: !!r[7], lockedBy: r[7] ? 'ana' : null, table: r[7] || null, seq: i,
+      sentAt: st === 'new' ? null : (st === 'inv' ? atTime(now, r[8], 11, 0) : atTime(now, 9, 12, 0)),
+      remindedAt:null, answeredBy: (st === 'yes' || st === 'no') ? 'guest' : null,
+      token: makeToken(r[0])
+    };
+  });
+  var famLock = function(ids, to){ return ids.map(function(id){ return {id:id, table:to, locked:true, by:'ana'}; }); };
+  var famUn = function(ids){ return ids.map(function(id){ return {id:id, table:null, locked:false, by:null}; }); };
+  var history = [
+    {id:'h6', ts:atTime(now, 0, 9, 15), who:'guest', kind:'answer', fid:'f40', names:['Марат отбасы'], fromN:3, toN:4, warnTable:12, warnN:1},
+    {id:'h5', ts:atTime(now, 1, 15, 12), who:'ana', kind:'move', names:['Ләззат апай отбасы','Роза отбасы'], from:14, to:12, before:famUn(['f42','f43']), after:famLock(['f42','f43'], 12)},
+    {id:'h4', ts:atTime(now, 1, 15, 10), who:'ana', kind:'move', names:['Марат отбасы','Сәуле апай','Бақытжан отбасы'], from:13, to:12, before:famUn(['f40','f39','f38']), after:famLock(['f40','f39','f38'], 12)},
+    {id:'h3', ts:atTime(now, 1, 14, 35), who:'ana', kind:'move', names:['Әйгерім отбасы'], from:11, to:7, before:famUn(['f35']), after:famLock(['f35'], 7)},
+    {id:'h2', ts:atTime(now, 1, 14, 33), who:'ana', kind:'move', names:['Мейрамбек нағашы отбасы'], from:10, to:7, before:famUn(['f32']), after:famLock(['f32'], 7)},
+    {id:'h1', ts:atTime(now, 1, 14, 32), who:'ana', kind:'move', names:['Гүлнар апай отбасы'], from:8, to:7, before:famUn(['f31']), after:famLock(['f31'], 7)}
+  ];
+  var st = {
+    v:1, role:'ake', started:false, emptyMode:false,
+    cats: CATS0.map(function(c){ return Object.assign({custom:false}, c); }),
+    order: CATS0.map(function(c){ return c.id; }),
+    hall:{cols:4, count:16, seats:12},
+    families: fams, checked: [], history: history, seq: 100, hid: 100
+  };
+  autoSeat(st);
+  return st;
+}
+function makeEmpty(){
+  var st = makeSample();
+  st.families = []; st.history = []; st.hall = null; st.emptyMode = true; st.checked = [];
+  return st;
+}
+
+function seatsOf(f){
+  if (f.status === 'no') return 0;
+  if (f.status === 'yes') return f.confirmed || 0;
+  return f.expected || 0;
+}
+
+/* Tables: numbering left->right, top->bottom; proximity: level by level, central columns first. */
+function layoutTables(hall){
+  var C = hall.cols, N = hall.count, levels = Math.ceil(N / C);
+  var colOrder = C === 4 ? [1, 2, 0, 3] : [0, 1];
+  var tables = [], num = 1, L, c;
+  for (L = 0; L < levels; L++){
+    var inLevel = Math.min(C, N - L * C);
+    var cols = colOrder.slice(0, inLevel).sort(function(a, b){ return a - b; });
+    for (c = 0; c < cols.length; c++) tables.push({num:num++, level:L, col:cols[c], cap:hall.seats});
+  }
+  var prox = [];
+  for (L = 0; L < levels; L++){
+    for (c = 0; c < colOrder.length; c++){
+      for (var k = 0; k < tables.length; k++) if (tables[k].level === L && tables[k].col === colOrder[c]) prox.push(tables[k]);
+    }
+  }
+  prox.forEach(function(t, i){ t.pos = i; });
+  return {tables:tables, prox:prox, levels:levels};
+}
+
+/* Algorithm 6.1 */
+function autoSeat(st){
+  if (!st.hall) { st.families.forEach(function(f){ if (!f.locked) f.table = null; }); return {unplaced:[]}; }
+  var lay = layoutTables(st.hall), byNum = {}, unplaced = [];
+  lay.tables.forEach(function(t){ byNum[t.num] = {cap:t.cap, used:0}; });
+  var fams = st.families, seq = 0;
+  // step 1-2: locked families (drop lock if table vanished or no seats)
+  var locked = fams.filter(function(f){ return f.locked; }).sort(function(a, b){ return a.seq - b.seq; });
+  locked.forEach(function(f){
+    if (!byNum[f.table] || seatsOf(f) === 0) { f.locked = false; f.lockedBy = null; f.table = null; return; }
+    byNum[f.table].used += seatsOf(f); f.seq = seq++;
+  });
+  fams.forEach(function(f){ if (!f.locked) f.table = null; });
+  // step 4
+  var prevLast = null, prevCat = null, started = false;
+  st.order.forEach(function(cid){
+    var list = fams.filter(function(f){ return f.cat === cid && !f.locked && seatsOf(f) > 0; });
+    if (!list.length) return;                                   // step 5
+    list = list.map(function(f, i){ return {f:f, i:i}; })
+      .sort(function(a, b){ return (seatsOf(b.f) - seatsOf(a.f)) || (a.i - b.i); })
+      .map(function(x){ return x.f; });
+    var start = 0;
+    if (started) start = (prevCat === st.order[0]) ? prevLast + 1 : prevLast;
+    var last = start;
+    list.forEach(function(f){
+      var s = seatsOf(f);
+      for (var p = start; p < lay.prox.length; p++){
+        var t = lay.prox[p], b = byNum[t.num];
+        if (b.cap - b.used >= s){ b.used += s; f.table = t.num; f.seq = seq++; if (p > last) last = p; return; }
+      }
+      f.table = null; unplaced.push(f);
+    });
+    prevLast = last; prevCat = cid; started = true;
+  });
+  st.seq = Math.max(st.seq || 0, seq + 1);
+  return {unplaced:unplaced};
+}
+
+function tableStats(st){
+  if (!st.hall) return {tables:[], byNum:{}, over:[], unplaced:[], used:0};
+  var lay = layoutTables(st.hall), byNum = {};
+  lay.tables.forEach(function(t){ t.used = 0; t.fams = []; byNum[t.num] = t; });
+  var unplaced = [];
+  st.families.forEach(function(f){
+    var s = seatsOf(f); if (!s) return;
+    if (f.table && byNum[f.table]) { byNum[f.table].used += s; byNum[f.table].fams.push(f); }
+    else unplaced.push(f);
+  });
+  lay.tables.forEach(function(t){
+    t.fams.sort(function(a, b){ return a.seq - b.seq; });
+    var by = {}; t.fams.forEach(function(f){ by[f.cat] = (by[f.cat] || 0) + seatsOf(f); });
+    var best = null, bv = -1;
+    st.order.forEach(function(cid){ if ((by[cid] || 0) > bv && by[cid]) { bv = by[cid]; best = cid; } });
+    t.mainCat = best;
+  });
+  return {tables:lay.tables, prox:lay.prox, levels:lay.levels, byNum:byNum,
+    over: lay.tables.filter(function(t){ return t.used > t.cap; }), unplaced:unplaced,
+    usedTables: lay.tables.filter(function(t){ return t.used > 0; }).length};
+}
+
+var STOP = {'ағай':1,'апай':1,'отбасы':1,'құда':1,'құдағи':1,'нағашы':1,'мен':1,'әже':1,'ата':1};
+function nameKey(n){
+  var w = String(n || '').toLowerCase().replace(/\([^)]*\)/g, ' ').split(/[\s,.;:«»"!?]+/)
+    .filter(function(x){ return x && !STOP[x]; });
+  return w[0] || '';
+}
+function similar(a, b){ var ka = nameKey(a), kb = nameKey(b); return !!ka && ka === kb; }
+function pairKey(a, b){ return a < b ? a + '|' + b : b + '|' + a; }
+function dupPairs(st){
+  var fs = st.families.filter(function(f){ return f.status !== 'no'; }), out = [];
+  for (var i = 0; i < fs.length; i++) for (var j = i + 1; j < fs.length; j++){
+    if (similar(fs[i].name, fs[j].name) && st.checked.indexOf(pairKey(fs[i].id, fs[j].id)) < 0){
+      var p = [fs[i], fs[j]];
+      p.sort(function(a, b){ return (a.table || 999) - (b.table || 999); });
+      out.push(p);
+    }
+  }
+  return out;
+}
+function totals(st){
+  var yes = 0, pend = 0;
+  st.families.forEach(function(f){ if (f.status === 'yes') yes += f.confirmed || 0; else if (f.status !== 'no') pend += f.expected || 0; });
+  var cap = st.hall ? st.hall.count * st.hall.seats : 0;
+  return {yes:yes, pend:pend, total:yes + pend, cap:cap, free:cap - yes - pend};
+}
+if (typeof module !== 'undefined') module.exports = {makeSample:makeSample, makeEmpty:makeEmpty, autoSeat:autoSeat, tableStats:tableStats, dupPairs:dupPairs, totals:totals, seatsOf:seatsOf, similar:similar, layoutTables:layoutTables};
+</script>
+
+<script id="ui">
+'use strict';
+/* ============ storage ============ */
+var KEY = 'toi-proto-v1', LKEY = 'toi-proto-lang';
+function sGet(k){ try { return window.localStorage.getItem(k); } catch (e) { return null; } }
+function sSet(k, v){ try { window.localStorage.setItem(k, v); } catch (e) {} }
+function sDel(k){ try { window.localStorage.removeItem(k); } catch (e) {} }
+var state = null;
+(function(){
+  var raw = sGet(KEY);
+  if (raw) { try { var s = JSON.parse(raw); if (s && s.v === 1 && s.families) state = s; } catch (e) {} }
+  if (!state) state = makeSample();
+})();
+var lang = sGet(LKEY) === 'ru' ? 'ru' : 'kk';
+function save(){ sSet(KEY, JSON.stringify(state)); }
+
+/* ============ i18n helpers ============ */
+function t(kk, ru){ return lang === 'ru' ? ru : kk; }
+function pl(n, a, b, c){ var m10 = n % 10, m100 = n % 100; if (m10 === 1 && m100 !== 11) return a; if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return b; return c; }
+function nSeats(n){ return t(n + ' орын', n + ' ' + pl(n, 'место', 'места', 'мест')); }
+function nFam(n){ return t(n + ' отбасы', n + ' ' + pl(n, 'семья', 'семьи', 'семей')); }
+function nTables(n){ return t(n + ' үстел', n + ' ' + pl(n, 'стол', 'стола', 'столов')); }
+function nPeople(n){ return t(n + ' адам', n + ' ' + pl(n, 'человек', 'человека', 'человек')); }
+function tbl(n){ return t(n + '-үстел', 'Стол ' + n); }
+function tblLow(n){ return t(n + '-үстел', 'стол ' + n); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function cat(id){ for (var i = 0; i < state.cats.length; i++) if (state.cats[i].id === id) return state.cats[i]; return {id:id, kk:id, ru:'', color:'#ECECEC'}; }
+function catName(id){ return cat(id).kk; }
+function catNameRu(id){ var c = cat(id); if (lang === 'ru' && c.ru) return c.kk + ' (' + c.ru.charAt(0).toLowerCase() + c.ru.slice(1) + ')'; return c.kk; }
+function role(r){ return ROLES[r || state.role]; }
+function roleName(r){ return t(ROLES[r].kk, ROLES[r].ru); }
+function listName(r){ return t(ROLES[r].gen + ' тізімі', 'Список ' + ROLES[r].ruGen); }
+function canEdit(){ return role().edit; }
+function fam(id){ for (var i = 0; i < state.families.length; i++) if (state.families[i].id === id) return state.families[i]; return null; }
+function fmtPhone(d){ d = d || ''; var p = [d.slice(0, 3), d.slice(3, 6), d.slice(6, 8), d.slice(8, 10)].filter(Boolean); return p.join(' '); }
+function showPhone(d){ return d ? '+7 ' + fmtPhone(d) : ''; }
+function normPhone(v){ var d = String(v || '').replace(/\D/g, ''); if (d.length >= 11 && (d[0] === '7' || d[0] === '8')) d = d.slice(1); return d.slice(0, 10); }
+var MON_KK = ['қаңтар','ақпан','наурыз','сәуір','мамыр','маусым','шілде','тамыз','қыркүйек','қазан','қараша','желтоқсан'];
+var MON_RU = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+function hhmm(ts){ var d = new Date(ts); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+function daysAgo(ts){ var a = new Date(); a.setHours(0, 0, 0, 0); var b = new Date(ts); b.setHours(0, 0, 0, 0); return Math.round((a - b) / DAY); }
+function dayLabel(ts){ var d = daysAgo(ts), x = new Date(ts); if (d <= 0) return t('Бүгін', 'Сегодня'); if (d === 1) return t('Кеше', 'Вчера'); return lang === 'ru' ? x.getDate() + ' ' + MON_RU[x.getMonth()] : x.getDate() + ' ' + MON_KK[x.getMonth()]; }
+function sentAgo(ts){ var d = daysAgo(ts); if (d <= 0) return t('Бүгін жіберілді', 'Отправлено сегодня'); return t(d + ' күн бұрын жіберілді', 'Отправлено ' + d + ' ' + pl(d, 'день', 'дня', 'дней') + ' назад'); }
+function remindedToday(f){ return f.remindedAt && daysAgo(f.remindedAt) <= 0; }
+function addrName(f){ return f.name.replace(/\s*отбасы\s*/g, ' ').replace(/\s+/g, ' ').trim(); }
+
+/* ============ icons ============ */
+var ICONS = {
+  'arrow-left':'<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+  'x':'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  'plus':'<path d="M5 12h14"/><path d="M12 5v14"/>',
+  'search':'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  'phone':'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
+  'check-circle-2':'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  'x-circle':'<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
+  'clock':'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  'send':'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  'bell-ring':'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M4 2C2.8 3.7 2 5.7 2 8"/><path d="M22 8c0-2.3-.8-4.3-2-6"/>',
+  'chevron-up':'<path d="m18 15-6-6-6 6"/>',
+  'chevron-down':'<path d="m6 9 6 6 6-6"/>',
+  'chevron-right':'<path d="m9 18 6-6-6-6"/>',
+  'arrow-right-left':'<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>',
+  'arrow-right':'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  'lock':'<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  'history':'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+  'undo-2':'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/>',
+  'alert-triangle':'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  'users':'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  'list':'<path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/>',
+  'layout-grid':'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  'settings-2':'<path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>',
+  'eye':'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+  'check':'<path d="M20 6 9 17l-5-5"/>',
+  'arrow-up-down':'<path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>',
+  'minus':'<path d="M5 12h14"/>'
+};
+function ic(n, s, cls){ s = s || 24; return '<svg class="ic ' + (cls || '') + '" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + ICONS[n] + '</svg>'; }
+function waIc(s){ s = s || 24; return '<svg class="ic" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>'; }
+function motif(w, h, op){ return '<svg class="motif" width="' + w + '" height="' + h + '" viewBox="0 0 48 24" fill="none" stroke="#C9A24B" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" focusable="false"' + (op ? ' style="opacity:' + op + '"' : '') + '><path vector-effect="non-scaling-stroke" d="M24 23 C24 14 18 8 12 8 C7 8 4 11 4 15 C4 18 6 20 9 20 C11.5 20 13 18.5 13 16.5 C13 15 12 14 10.5 14"/><path vector-effect="non-scaling-stroke" d="M24 23 C24 14 30 8 36 8 C41 8 44 11 44 15 C44 18 42 20 39 20 C36.5 20 35 18.5 35 16.5 C35 15 36 14 37.5 14"/><path vector-effect="non-scaling-stroke" d="M24 23 V4"/></svg>'; }
+var MOTIF_PATHS = '<path d="M24 23 C24 14 18 8 12 8 C7 8 4 11 4 15 C4 18 6 20 9 20 C11.5 20 13 18.5 13 16.5 C13 15 12 14 10.5 14"/><path d="M24 23 C24 14 30 8 36 8 C41 8 44 11 44 15 C44 18 42 20 39 20 C36.5 20 35 18.5 35 16.5 C35 15 36 14 37.5 14"/><path d="M24 23 V4"/>';
+
+/* ============ UI state ============ */
+var ui = {
+  filter:null, search:'', hallMode:'schema', expanded:{}, dup:null, loadedGuests:false, loadedHall:false,
+  form:null, allowLeave:false, setup:null, highlight:null, chain:null, moveOthers:false,
+  startRole:null, startEmpty:null, gs:null
+};
+
+/* ============ navigation ============ */
+var navIdx = 0, navStack = [], canPush = true, curPath = null, pendingAfter = null, sheetCtx = null, sheetPushed = false, lastFocus = null;
+function parseRoute(){
+  var h = (location.hash || '').replace(/^#/, ''); var parts = h.split('?');
+  var q = parts[1] || '', m = /(?:^|&)sheet=([^&]*)/.exec(q);
+  return {path: parts[0] || '', sheet: m ? m[1] : null};
+}
+function setUrl(url, push){
+  if (!canPush) return false;
+  try {
+    if (push) { navIdx++; history.pushState({idx:navIdx}, '', url); }
+    else history.replaceState({idx:navIdx}, '', url);
+    navStack[navIdx] = url; navStack.length = navIdx + 1;
+    return true;
+  } catch (e) { canPush = false; return false; }
+}
+var navDir = 1;
+function go(path, opt){
+  opt = opt || {};
+  if (sheetCtx) closeSheetDom();
+  navDir = opt.back ? -1 : 1;
+  if (!setUrl('#' + path, !opt.replace)) { if (location.hash !== '#' + path) { curPath = null; location.hash = path; } }
+  render();
+}
+function backTo(path, after){
+  var target = '#' + path;
+  for (var i = navIdx - 1; i >= 0; i--){
+    if (navStack[i] === target){ pendingAfter = after || null; navDir = -1; history.go(i - navIdx); return; }
+  }
+  go(path, {replace:true, back:true}); if (after) after();
+}
+function goBack(fallback){
+  if (canPush && navIdx > 0) { navDir = -1; history.back(); }
+  else go(fallback, {replace:true, back:true});
+}
+function onPop(e){
+  if (e && e.state && typeof e.state.idx === 'number') navIdx = e.state.idx;
+  var r = parseRoute();
+  // leave-guard for dirty guest form
+  if (isFormPath(curPath) && r.path !== curPath && ui.form && formDirty() && !ui.allowLeave){
+    setUrl('#' + curPath, true);
+    if (sheetCtx) closeSheetDom();
+    openLeaveSheet();
+    return;
+  }
+  if (sheetCtx && !r.sheet) closeSheetDom();
+  if (r.path !== curPath) render(); else refresh();
+  var a = pendingAfter; pendingAfter = null; if (a) a();
+}
+window.addEventListener('popstate', onPop);
+window.addEventListener('hashchange', function(){ var r = parseRoute(); if (r.path !== curPath) { if (sheetCtx) closeSheetDom(); render(); } });
+function isFormPath(p){ return p === '/guests/add' || /^\/guests\/edit\//.test(p || ''); }
+
+/* ============ render ============ */
+var $ = function(id){ return document.getElementById(id); };
+function header(o){
+  var s = '';
+  if (o.back) s += '<button class="icon-btn" data-act="back" aria-label="' + t('Артқа', 'Назад') + '">' + ic('arrow-left') + '</button>';
+  if (o.close) s += '<button class="icon-btn" data-act="' + o.close + '" aria-label="' + t('Бас тарту', 'Отмена') + '">' + ic('x') + '</button>';
+  s += '<h1>' + esc(o.title) + '</h1>';
+  if (o.lang) s += '<div class="lang" role="group" aria-label="Тіл / Язык"><button data-act="lang" data-v="kk" aria-pressed="' + (lang === 'kk') + '" lang="kk">ҚАЗ</button><button data-act="lang" data-v="ru" aria-pressed="' + (lang === 'ru') + '" lang="ru">РУС</button></div>';
+  return '<header class="hdr">' + s + '</header>';
+}
+function tabsHtml(){
+  var p = curPath || '', g = p.indexOf('/guests') === 0, hl = p.indexOf('/hall') === 0;
+  var dot = hasHallProblems() ? '<span class="dot" aria-hidden="true"></span>' : '';
+  return '<button data-act="tab" data-v="/guests"' + (g ? ' aria-current="page"' : '') + '>' + '<span class="tab-ic">' + ic('users') + '</span>' + t('Қонақтар', 'Гости') + '</button>' +
+    '<button data-act="tab" data-v="/hall"' + (hl ? ' aria-current="page"' : '') + '>' + '<span class="tab-ic">' + ic('layout-grid') + dot + '</span>' + t('Зал', 'Зал') + (dot ? '<span class="vh">' + t(' — назар аударыңыз', ' — есть проблемы') + '</span>' : '') + '</button>';
+}
+function hasHallProblems(){ if (!state.hall) return false; var s = tableStats(state); return s.over.length > 0 || s.unplaced.length > 0 || dupPairs(state).length > 0; }
+
+var SCREENS = [];
+function route(re, fn){ SCREENS.push([re, fn]); }
+function render(keep){
+  var r = parseRoute(), path = r.path;
+  if (!path || (!state.started && path !== '/start')) { path = state.started ? '/guests' : '/start'; setUrl('#' + path, false); }
+  if (canPush && r.sheet && !sheetCtx) setUrl('#' + path, false);
+  var prev = curPath; curPath = path;
+  if (!keep && prev !== path){
+    if (prev && prev.indexOf('/hall') === 0 && path !== '/hall') ui.dup = null;
+    if (!isFormPath(path)) ui.allowLeave = false;
+  }
+  var out = null;
+  for (var i = 0; i < SCREENS.length; i++){ var m = SCREENS[i][0].exec(path); if (m) { out = SCREENS[i][1](m); break; } }
+  if (!out) { go(state.started ? '/guests' : '/start', {replace:true}); return; }
+  if (out.redirect) { go(out.redirect, {replace:true}); return; }
+  document.documentElement.lang = lang === 'ru' ? 'ru' : 'kk';
+  document.title = t('Той прототипі', 'Прототип тоя');
+  $('hdr').innerHTML = out.hdr || '';
+  var main = $('main');
+  main.innerHTML = out.body || '';
+  $('sticky').innerHTML = out.sticky || '';
+  var tabs = $('tabs');
+  if (out.tabs) { tabs.hidden = false; tabs.innerHTML = tabsHtml(); } else { tabs.hidden = true; tabs.innerHTML = ''; }
+  document.body.classList.toggle('no-tabs', !out.tabs);
+  layoutVars();
+  renderFloat();
+  if (!keep && prev !== path){
+    main.classList.remove('enter', 'enter-back'); void main.offsetWidth;
+    main.classList.add(navDir < 0 ? 'enter-back' : 'enter');
+    window.scrollTo(0, 0);
+    navDir = 1;
+    if (out.focus) { var fe = document.querySelector(out.focus); if (fe) fe.focus({preventScroll:true}); }
+  }
+  if (out.after) out.after();
+}
+function refresh(){ var y = window.scrollY; render(true); window.scrollTo(0, y); if (sheetCtx) paintSheet(); }
+function layoutVars(){
+  var tabs = $('tabs'), st = $('sticky');
+  document.documentElement.style.setProperty('--tabs-h', tabs.hidden ? '0px' : '64px');
+  document.documentElement.style.setProperty('--sticky-h', st.innerHTML ? st.offsetHeight + 'px' : '0px');
+}
+window.addEventListener('resize', layoutVars);
+
+/* ============ toast ============ */
+var toastTimer = null, toastUndo = null;
+function toast(msg, undo){
+  var el = $('toast');
+  toastUndo = undo || null;
+  el.innerHTML = '<span>' + esc(msg) + '</span>' + (undo ? '<button data-act="toastUndo">' + ic('undo-2', 20) + t('Қайтару', 'Вернуть') + '</button>' : '');
+  el.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(hideToast, 8000);
+}
+function hideToast(){ $('toast').hidden = true; toastUndo = null; }
+$('toast').addEventListener('click', function(){ clearTimeout(toastTimer); });
+
+/* ============ sheet ============ */
+function openSheet(name, build, opts){
+  opts = opts || {};
+  var replacing = !!sheetCtx;
+  if (!replacing) lastFocus = document.activeElement;
+  sheetCtx = {name:name, build:build};
+  if (!replacing) { sheetPushed = setUrl('#' + curPath + '?sheet=' + name, true); }
+  else if (sheetPushed) setUrl('#' + curPath + '?sheet=' + name, false);
+  var w = $('sheet');
+  w.hidden = false;
+  paintSheet(true);
+  if (!replacing) requestAnimationFrame(function(){ requestAnimationFrame(function(){ w.classList.add('open'); }); });
+}
+function paintSheet(focus){
+  if (!sheetCtx) return;
+  var c = sheetCtx.build(), w = $('sheet');
+  var bodyScroll = w.querySelector('.sheet-body'); var y = bodyScroll ? bodyScroll.scrollTop : 0;
+  w.innerHTML = '<div class="scrim" data-act="sheetClose"></div>' +
+    '<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">' +
+    '<div class="sheet-handle" aria-hidden="true"></div>' +
+    '<div class="sheet-head"><h2 id="sheet-title" tabindex="-1">' + (c.titleHtml || esc(c.title || '')) + '</h2>' +
+    '<button class="icon-btn" data-act="' + (c.closeAct || 'sheetClose') + '" aria-label="' + t('Жабу', 'Закрыть') + '">' + ic('x') + '</button></div>' +
+    '<div class="sheet-body">' + (c.body || '') + '</div>' +
+    '<div class="sheet-foot">' + (c.foot || '') + '</div></div>';
+  if (!focus) { var b = w.querySelector('.sheet-body'); if (b) b.scrollTop = y; }
+  if (focus) { var h = $('sheet-title'); if (h) h.focus({preventScroll:true}); }
+  if (c.after) c.after();
+}
+function closeSheetDom(){
+  var w = $('sheet');
+  sheetCtx = null; sheetPushed = false; ui.gs = null;
+  w.classList.remove('open');
+  setTimeout(function(){ if (!sheetCtx) { w.hidden = true; w.innerHTML = ''; } }, 200);
+  if (lastFocus && document.body.contains(lastFocus)) { try { lastFocus.focus({preventScroll:true}); } catch (e) {} }
+}
+function closeSheet(after){
+  if (sheetPushed && canPush) { pendingAfter = after || null; history.back(); }
+  else { closeSheetDom(); refresh(); if (after) after(); }
+}
+/* sheet -> other screen (replace sheet history entry) */
+function sheetGo(path){ closeSheetDom(); go(path, {replace:true}); }
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && sheetCtx) { e.preventDefault(); act('sheetClose', document.createElement('i'), e); }
+  if (e.key === 'Tab' && sheetCtx){
+    var f = Array.prototype.slice.call($('sheet').querySelectorAll('button,input,[tabindex="0"],h2[tabindex]')).filter(function(x){ return x.offsetParent !== null; });
+    if (!f.length) return; var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+  if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.getAttribute && e.target.getAttribute('role') === 'button' && e.target.tagName !== 'BUTTON'){
+    e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+  }
+});
+
+/* ============ floating dup panel ============ */
+function renderFloat(){
+  var el = $('float');
+  if (!ui.dup || curPath !== '/hall') { el.hidden = true; el.innerHTML = ''; return; }
+  var a = fam(ui.dup[0]), b = fam(ui.dup[1]);
+  if (!a || !b) { ui.dup = null; el.hidden = true; return; }
+  el.innerHTML = '<div><div><span class="mk">1</span> ' + esc(a.name) + ' — ' + (a.table ? tblLow(a.table) : '—') + '</div><div style="margin-top:4px"><span class="mk">2</span> ' + esc(b.name) + ' — ' + (b.table ? tblLow(b.table) : '—') + '</div></div>' +
+    '<button class="btn btn-sec" data-act="dupOff">' + t('Жабу', 'Закрыть') + '</button>';
+  el.hidden = false;
+}
+
+/* ============ shared pieces ============ */
+function eventHead(){
+  return '<div class="evt"><p class="evt-title">Айбек пен Дана</p><div class="orn-div" aria-hidden="true"><i></i>' + motif(48, 24) + '<i></i></div>' +
+    '<p class="evt-meta">' + t('Үйлену тойы · 15 қараша, 18:00', 'Свадьба · 15 ноября, 18:00') + '</p>' +
+    '<p class="evt-meta">' + t('«Шаңырақ» мейрамханасы', 'Ресторан «Шаңырақ»') + '</p></div>';
+}
+function badge(f){
+  if (f.status === 'new') return '<span class="badge b-new">' + ic('send', 18) + t('Жіберілмеді', 'Не отправлено') + '</span>';
+  if (f.status === 'inv') return '<span class="badge b-inv">' + ic('clock', 18) + t('Жауап жоқ', 'Нет ответа') + '</span>';
+  if (f.status === 'yes') return '<span class="badge b-yes">' + ic('check-circle-2', 18) + t('Келеді', 'Придут') + ' · ' + (f.confirmed || 0) + '</span>';
+  return '<span class="badge b-no">' + ic('x-circle', 18) + t('Келмейді', 'Не придут') + '</span>';
+}
+function statusWord(f){
+  if (f.status === 'yes') return ic('check-circle-2', 16) + ' ' + t('Келеді', 'Придут');
+  if (f.status === 'inv') return ic('clock', 16) + ' ' + t('Жауап жоқ', 'Нет ответа');
+  if (f.status === 'new') return ic('send', 16) + ' ' + t('Жіберілмеді', 'Не отправлено');
+  return ic('x-circle', 16) + ' ' + t('Келмейді', 'Не придут');
+}
+function seatsText(f){
+  if (f.status === 'yes') return nSeats(f.confirmed || 0);
+  return '~' + nSeats(f.expected);
+}
+function pendingText(f){ return '~' + nSeats(f.expected) + ' ' + t('(күтілуде)', '(ожидается)'); }
+function stepperHtml(key, val, lbl){
+  return '<div class="stepper" data-step="' + key + '">' +
+    '<button class="step-btn" data-act="step" data-k="' + key + '" data-d="-1" aria-label="' + t('Азайту', 'Меньше') + '">' + ic('minus', 32) + '</button>' +
+    '<button class="step-val" data-act="stepEdit" data-k="' + key + '" aria-label="' + esc(val + ' ' + (lbl || '')) + ' — ' + t('өзгерту үшін басыңыз', 'нажмите, чтобы ввести') + '"><b class="num">' + val + '</b>' + (lbl ? '<span>' + esc(lbl) + '</span>' : '') + '</button>' +
+    '<button class="step-btn" data-act="step" data-k="' + key + '" data-d="1" aria-label="' + t('Көбейту', 'Больше') + '">' + ic('plus', 32) + '</button></div>' +
+    '<p class="step-msg" id="stepmsg-' + key + '" aria-live="polite"></p>';
+}
+var STEPS = {
+  guest:{min:1, max:20, get:function(){ return ui.form.n; }, set:function(v){ ui.form.n = v; }, lbl:function(){ return t('орын', lang === 'ru' ? 'мест' : 'орын'); },
+    lo:function(){ return t('Кемінде 1 орын', 'Минимум 1 место'); }, hi:function(){ return t('Ең көбі 20 орын', 'Максимум 20 мест'); }},
+  answer:{min:1, max:20, get:function(){ return ui.gs.n; }, set:function(v){ ui.gs.n = v; }, lbl:function(){ return t('орын', 'мест'); },
+    lo:function(){ return t('Кемінде 1 орын', 'Минимум 1 место'); }, hi:function(){ return t('Ең көбі 20 орын', 'Максимум 20 мест'); }},
+  tables:{min:4, max:40, get:function(){ return ui.setup.count; }, set:function(v){ ui.setup.count = v; }, lbl:function(){ return t('үстел', 'столов'); },
+    lo:function(){ return t('Кемінде 4 үстел', 'Минимум 4 стола'); }, hi:function(){ return t('Ең көбі 40 үстел', 'Максимум 40 столов'); }},
+  seats:{min:6, max:16, get:function(){ return ui.setup.seats; }, set:function(v){ ui.setup.seats = v; }, lbl:function(){ return t('орын', 'мест'); },
+    lo:function(){ return t('Кемінде 6 орын', 'Минимум 6 мест'); }, hi:function(){ return t('Ең көбі 16 орын', 'Максимум 16 мест'); }}
+};
+function stepUpdate(k){
+  var S = STEPS[k], box = document.querySelector('[data-step="' + k + '"]');
+  if (box) { var v = box.querySelector('.step-val'); v.innerHTML = '<b class="num">' + S.get() + '</b><span>' + esc(S.lbl()) + '</span>'; v.setAttribute('aria-label', S.get() + ' ' + S.lbl() + ' — ' + t('өзгерту үшін басыңыз', 'нажмите, чтобы ввести')); }
+  if (k === 'tables' || k === 'seats') paintSetupSummary();
+}
+function stepMsg(k, msg){ var m = $('stepmsg-' + k); if (m) { m.textContent = msg; clearTimeout(m._t); m._t = setTimeout(function(){ m.textContent = ''; }, 3000); } }
+
+/* ============ S0 start ============ */
+route(/^\/start$/, function(){
+  if (ui.startRole == null) ui.startRole = state.role;
+  if (ui.startEmpty == null) ui.startEmpty = !!state.emptyMode;
+  var cards = ['ake', 'ana', 'jas'].map(function(r){
+    var R = ROLES[r], on = ui.startRole === r;
+    return '<button class="rcard" role="radio" aria-checked="' + on + '" data-act="startRole" data-v="' + r + '"><span class="rt">' + (on ? ic('check', 20) : '') + esc(t(R.kk, R.ru)) + ' (' + esc(R.name) + ')</span><span class="rs">' + (R.edit ? t('Тізім + отырғызу', 'Список + рассадка') : t('Тек тізім', 'Только список')) + '</span></button>';
+  }).join('');
+  var body = '<div style="text-align:center;padding-top:24px">' + motif(64, 32, .6) + '<p class="h2" style="margin:8px 0 0">' + t('Прототип · демо', 'Прототип · демо') + '</p></div>' +
+    '<p class="flabel" style="margin-top:24px" id="who">' + t('Кім ретінде кіресіз?', 'Под кем входите?') + '</p>' +
+    '<div role="radiogroup" aria-labelledby="who">' + cards + '</div>' +
+    '<label class="chk"><input type="checkbox" data-act="startEmpty"' + (ui.startEmpty ? ' checked' : '') + '>' + t('Бос тізімді көрсету', 'Показать пустой список') + '</label>' +
+    '<div style="margin-top:24px"><button class="btn btn-primary" data-act="startGo">' + t('Бастау', 'Начать') + '</button></div>' +
+    '<div style="text-align:center;margin-top:8px"><button class="btn btn-text" data-act="startReset">' + t('Деректерді қалпына келтіру', 'Сбросить данные') + '</button></div>';
+  return {hdr:header({title:t('Прототип', 'Прототип'), lang:true}), body:body, tabs:false};
+});
+
+/* ============ S1 guests ============ */
+route(/^\/guests$/, function(){
+  var me = state.role, mine = state.families.filter(function(f){ return f.list === me; });
+  var body = eventHead() + '<h2 class="h2">' + esc(listName(me)) + '</h2>';
+  if (!ui.loadedGuests){
+    body += '<div class="counters" aria-hidden="true"><div class="skel" style="height:96px"></div><div class="skel" style="height:96px"></div><div class="skel" style="height:96px"></div></div>' +
+      '<div class="skel" style="height:24px;margin-top:10px;width:70%"></div><div class="skel" style="height:64px;margin-top:12px"></div><div class="skel" style="height:56px;margin-top:12px"></div>' +
+      '<div class="skel" style="height:88px;margin-top:32px"></div><div class="skel" style="height:88px;margin-top:8px"></div><span class="vh" role="status">' + t('Жүктелуде', 'Загрузка') + '</span>';
+    setTimeout(function(){ ui.loadedGuests = true; if (curPath === '/guests') refresh(); }, 400);
+  } else if (!mine.length){
+    body += '<div class="empty">' + motif(64, 32, .6) + '<h2 class="h2" style="margin-top:8px">' + t('Тізім әзірге бос', 'Список пока пуст') + '</h2><p>' + t('Алғашқы қонақты қосыңыз. Бір отбасы немесе бір адам.', 'Добавьте первого гостя. Одну семью или одного человека.') + '</p></div>';
+  } else {
+    var yes = 0, inv = 0, no = 0, all = 0;
+    mine.forEach(function(f){ if (f.status === 'yes') yes += f.confirmed || 0; if (f.status === 'inv') inv++; if (f.status === 'no') no++; all += seatsOf(f); });
+    var cnt = function(k, cls, icon, val, l1, l2){
+      return '<button class="counter ' + cls + '" data-act="filter" data-v="' + k + '" aria-pressed="' + (ui.filter === k) + '">' + ic(icon, 22) + '<span class="stat">' + val + '</span><span class="lb">' + l1 + '</span><span class="lb2">' + l2 + '</span></button>';
+    };
+    body += '<div class="counters">' +
+      cnt('yes', 'c-yes', 'check-circle-2', yes, t('Келеді', 'Придут'), t('орын', pl(yes, 'место', 'места', 'мест'))) +
+      cnt('inv', 'c-inv', 'clock', inv, t('Жауап жоқ', 'Нет ответа'), t('отбасы', pl(inv, 'семья', 'семьи', 'семей'))) +
+      cnt('no', 'c-no', 'x-circle', no, t('Келмейді', 'Не придут'), t('отбасы', pl(no, 'семья', 'семьи', 'семей'))) + '</div>' +
+      '<p class="total-line">' + t('Барлығы: ' + nFam(mine.length) + ' · ~' + nSeats(all), 'Всего: ' + nFam(mine.length) + ' · примерно ' + nSeats(all)) + '</p>';
+    if (inv > 0) body += '<button class="banner bn-gold" data-act="goNoAnswer">' + ic('bell-ring') + '<div><div class="bt">' + t('Жауап бермегендер: ', 'Не ответили: ') + inv + '</div><div class="bs">' + t('Еске салу', 'Напомнить') + '</div></div>' + ic('chevron-right') + '</button>';
+    body += '<div class="search">' + ic('search') + '<label class="vh" for="q">' + t('Іздеу: аты бойынша', 'Поиск по имени') + '</label><input class="input" id="q" type="search" autocomplete="off" placeholder="' + t('Іздеу: аты бойынша', 'Поиск по имени') + '" value="' + esc(ui.search) + '" data-input="search"></div>';
+    body += '<div id="glist">' + guestListHtml(mine) + '</div>';
+  }
+  var sticky = '<button class="btn btn-primary" data-act="addGuest">' + ic('plus') + t('Қонақ қосу', 'Добавить гостя') + '</button>';
+  return {hdr:header({title:t('Менің тізімім', 'Мой список'), lang:true}), body:body, sticky:sticky, tabs:true,
+    after:function(){ if (ui.highlight) { var id = ui.highlight; ui.highlight = null; var el = document.querySelector('[data-card="' + id + '"]'); if (el) { el.classList.add('flash'); el.scrollIntoView({block:'center'}); setTimeout(function(){ el.classList.remove('flash'); }, 2000); } } }};
+});
+var ST_ORDER = {'new':0, inv:1, yes:2, no:3};
+function guestListHtml(mine){
+  var q = ui.search.trim().toLowerCase(), s = '';
+  var list = mine.filter(function(f){ return (!ui.filter || f.status === ui.filter) && (!q || f.name.toLowerCase().indexOf(q) >= 0); });
+  if (ui.filter){
+    var fl = {yes:t('Келеді', 'Придут'), inv:t('Жауап жоқ', 'Нет ответа'), no:t('Келмейді', 'Не придут')}[ui.filter];
+    s += '<div class="filter-line"><span>' + t('Сүзгі: ', 'Фильтр: ') + fl + '</span><button class="btn btn-text" data-act="filterOff">' + ic('x', 20) + t('Алып тастау', 'Убрать') + '</button></div>';
+  }
+  if (!list.length){
+    if (q) s += '<div class="empty"><p>' + t('«' + esc(ui.search.trim()) + '» бойынша ешкім табылмады', 'По «' + esc(ui.search.trim()) + '» никого не нашлось') + '</p><button class="btn btn-sec" data-act="addGuestQ">' + ic('plus') + t('Қонақ қосу', 'Добавить гостя') + '</button></div>';
+    else s += '<div class="empty"><p class="ink2">' + t('Бұл сүзгі бойынша ешкім жоқ', 'По этому фильтру никого нет') + '</p></div>';
+    return s;
+  }
+  state.order.forEach(function(cid){
+    var g = list.filter(function(f){ return f.cat === cid; });
+    if (!g.length) return;
+    g.sort(function(a, b){ return (ST_ORDER[a.status] - ST_ORDER[b.status]) || a.name.localeCompare(b.name, 'kk'); });
+    var seats = g.reduce(function(a, f){ return a + seatsOf(f); }, 0);
+    s += '<h3 class="ghead">' + esc(catName(cid).toUpperCase()) + ' · ' + nFam(g.length) + ' · ' + nSeats(seats) + '</h3>';
+    g.forEach(function(f){ s += guestCard(f); });
+  });
+  return s;
+}
+function guestCard(f){
+  var meta = badge(f);
+  if (f.status === 'inv' || f.status === 'new') meta += '<span>' + pendingText(f) + '</span>';
+  if (f.table && seatsOf(f)) meta += '<span>' + tbl(f.table) + '</span>';
+  if (f.phone) meta += '<span aria-label="' + t('Телефон бар', 'Есть телефон') + '" role="img">' + ic('phone', 16) + '</span>';
+  var actn = '';
+  if (f.status === 'new') actn = '<div class="gact"><button class="btn btn-wa btn-sm" data-act="wa" data-id="' + f.id + '" data-k="invite" data-o="list">' + waIc() + t('WhatsApp-қа жіберу', 'Отправить в WhatsApp') + '</button></div>';
+  else if (f.status === 'inv') actn = '<div class="gact"><button class="btn btn-wao" data-act="wa" data-id="' + f.id + '" data-k="remind" data-o="list">' + ic('bell-ring') + t('Еске салу', 'Напомнить') + '</button><span class="when">' + (remindedToday(f) ? t('Бүгін еске салынды', 'Сегодня напомнили') : sentAgo(f.sentAt)) + '</span></div>';
+  return '<div class="gcard" role="button" tabindex="0" data-act="guest" data-id="' + f.id + '" data-card="' + f.id + '" aria-label="' + esc(f.name) + '"><div class="gname">' + esc(f.name) + '</div><div class="gmeta">' + meta + '</div>' + actn + '</div>';
+}
+
+/* ============ S2 add/edit guest ============ */
+function newForm(name){
+  return {mode:'add', id:null, name:name || '', phone:'', cat:role().defCat, n:2, err:{}, orig:null};
+}
+function formDirty(){
+  var f = ui.form; if (!f) return false;
+  if (f.mode === 'edit') { var o = f.orig; return f.name !== o.name || f.phone !== o.phone || f.cat !== o.cat || f.n !== o.n; }
+  return !!(f.name.trim() || f.phone || f.cat !== role().defCat || f.n !== 2);
+}
+function formScreen(){
+  if (!ui.form) ui.form = newForm();
+  var f = ui.form, edit = f.mode === 'edit';
+  var tiles = state.order.map(function(cid){
+    var on = f.cat === cid, c = cat(cid);
+    var label = esc(c.kk) + (lang === 'ru' && c.ru ? '<span class="sub">' + esc(c.ru.charAt(0).toLowerCase() + c.ru.slice(1)) + '</span>' : '');
+    return '<button class="tile" role="radio" aria-checked="' + on + '" data-act="pickCat" data-v="' + cid + '">' + (on ? ic('check', 20) : '') + '<span>' + label + '</span></button>';
+  }).join('') + '<button class="tile tile-add" data-act="newCat">' + ic('plus', 20) + t('Өз санатыңыз', 'Своя категория') + '</button>';
+  var body = '<div class="field" id="f-name"><label for="in-name">' + t('Аты', 'Имя') + '</label>' +
+    '<input class="input" id="in-name" data-input="name" autocomplete="off" autocapitalize="words" enterkeyhint="next" placeholder="' + t('Мысалы: Ерлан ағай отбасы', 'Например: Ерлан ағай отбасы') + '" value="' + esc(f.name) + '" aria-describedby="name-msg">' +
+    '<div id="name-msg"></div></div>' +
+    '<div class="field" id="f-phone"><label for="in-phone">' + t('Телефон (міндетті емес)', 'Телефон (необязательно)') + '</label>' +
+    '<div class="phone-wrap"><span class="pre" aria-hidden="true">+7</span><input class="input" id="in-phone" data-input="phone" type="tel" inputmode="tel" autocomplete="off" placeholder="7__ ___ __ __" value="' + esc(fmtPhone(f.phone)) + '" aria-describedby="phone-msg"></div>' +
+    '<div id="phone-msg"></div></div>' +
+    '<div class="field"><p class="flabel" id="cat-l">' + t('Санаты', 'Категория') + '</p><div class="tiles" role="radiogroup" aria-labelledby="cat-l">' + tiles + '</div></div>' +
+    '<div class="field"><p class="flabel">' + t('Неше орын керек?', 'Сколько мест нужно?') + '</p>' + stepperHtml('guest', f.n, STEPS.guest.lbl()) +
+    '<p class="hint" style="text-align:center">' + t('Кішкентай балаларды санамаңыз', 'Маленьких детей не считайте') + '</p></div>';
+  var sticky = '<button class="btn btn-primary" data-act="submitGuest">' + (edit ? t('Сақтау', 'Сохранить') : t('Қосу', 'Добавить')) + '</button>';
+  return {hdr:header({title: edit ? t('Қонақты өзгерту', 'Изменить гостя') : t('Жаңа қонақ', 'Новый гость'), back:true}), body:body, sticky:sticky, tabs:false,
+    focus: edit ? null : '#in-name', after:paintFormErrors};
+}
+route(/^\/guests\/add$/, function(){ if (ui.form && ui.form.mode !== 'add') ui.form = newForm(); return formScreen(); });
+route(/^\/guests\/edit\/(\w+)$/, function(m){
+  var g = fam(m[1]); if (!g) return {redirect:'/guests'};
+  if (!ui.form || ui.form.id !== g.id){
+    var n = g.status === 'yes' ? g.confirmed : g.expected;
+    ui.form = {mode:'edit', id:g.id, name:g.name, phone:g.phone, cat:g.cat, n:n, err:{}, orig:{name:g.name, phone:g.phone, cat:g.cat, n:n}};
+  }
+  return formScreen();
+});
+function paintFormErrors(){
+  var f = ui.form; if (!f) return;
+  var nm = $('name-msg'), ph = $('phone-msg'), ni = $('in-name'), pi = $('in-phone');
+  if (!nm) return;
+  nm.innerHTML = f.err.name ? '<p class="err">' + ic('alert-triangle', 20) + t('Атын жазыңыз', 'Напишите имя') + '</p>' : '<p class="hint">' + t('Бір отбасы немесе бір адам', 'Одна семья или один человек') + '</p>';
+  ni.setAttribute('aria-invalid', !!f.err.name);
+  var p = '';
+  if (f.err.phone === 'short') p = '<p class="err">' + ic('alert-triangle', 20) + t('Нөмір толық емес. Тексеріңіз немесе өшіріңіз', 'Номер неполный. Проверьте или сотрите') + '</p>';
+  else if (f.err.phone === 'dup') {
+    var d = fam(f.err.dupId);
+    p = '<p class="err">' + ic('alert-triangle', 20) + '<span>' + t('Бұл қонақ ' + ROLES[d.list].gen + ' тізімінде бар', 'Этот гость уже есть в списке ' + ROLES[d.list].ruGen) + '</span></p>' +
+      '<div class="box" id="dup-card"><div class="gname">' + esc(d.name) + ' · ' + esc(catName(d.cat)) + '</div><div class="gmeta">' + badge(d) + (d.table && seatsOf(d) ? '<span>' + tbl(d.table) + '</span>' : '') + '</div></div>' +
+      '<p class="hint">' + t('Бір нөмір екі қонақта болмайды. Нөмірді өзгертіңіз немесе өшіріңіз.', 'Один номер не может быть у двух гостей. Измените или сотрите номер.') + '</p>';
+  } else p = '<p class="hint">' + t('Нөмір болса, шақыруды бірден WhatsApp-қа жібере аласыз', 'Если есть номер, приглашение можно сразу отправить в WhatsApp') + '</p>';
+  ph.innerHTML = p;
+  pi.setAttribute('aria-invalid', !!f.err.phone);
+}
+function submitGuest(){
+  var f = ui.form; f.name = f.name.replace(/\s+/g, ' ').trim(); f.err = {};
+  var ni = $('in-name'); if (ni) ni.value = f.name;
+  if (!f.name){ f.err.name = true; paintFormErrors(); ni.focus(); ni.scrollIntoView({block:'center'}); return; }
+  if (f.phone && f.phone.length < 10){ f.err.phone = 'short'; paintFormErrors(); var pi = $('in-phone'); pi.focus(); pi.scrollIntoView({block:'center'}); return; }
+  if (f.phone){
+    var d = state.families.filter(function(x){ return x.phone === f.phone && x.id !== f.id; })[0];
+    if (d){ f.err.phone = 'dup'; f.err.dupId = d.id; paintFormErrors(); var dc = $('dup-card'); $('in-phone').focus({preventScroll:true}); (dc || $('in-phone')).scrollIntoView({block:'center'}); return; }
+  }
+  paintFormErrors();
+  var nameChanged = f.mode === 'add' || f.name !== f.orig.name;
+  var sims = nameChanged ? state.families.filter(function(x){ return x.id !== f.id && similar(x.name, f.name); }) : [];
+  if (sims.length) { openSimilarSheet(sims); return; }
+  commitGuest([]);
+}
+function commitGuest(checkedWith){
+  var f = ui.form, g;
+  if (f.mode === 'add'){
+    var id = 'g' + Date.now().toString(36);
+    g = {id:id, name:f.name, list:state.role, cat:f.cat, status:'new', expected:f.n, confirmed:null, phone:f.phone, locked:false, lockedBy:null, table:null,
+      seq:state.seq++, sentAt:null, remindedAt:null, answeredBy:null, token:makeToken(id + 'x')};
+    state.families.push(g);
+  } else {
+    g = fam(f.id); g.name = f.name; g.phone = f.phone; g.cat = f.cat;
+    if (g.status === 'yes') g.confirmed = f.n; else g.expected = f.n;
+  }
+  checkedWith.forEach(function(o){ var k = pairKey(g.id, o); if (state.checked.indexOf(k) < 0) state.checked.push(k); });
+  autoSeat(state); save();
+  if (f.mode === 'add'){
+    ui.lastAdded = g.id;
+    ui.form = newForm();
+    if (sheetCtx) openSheet('ok', successSheet); else openSheet('ok', successSheet);
+  } else {
+    ui.allowLeave = true; ui.form = null;
+    var nm = g.name;
+    if (sheetCtx) closeSheetDom();
+    backTo('/guests', function(){ ui.highlight = g.id; refresh(); toast(t(nm + ': өзгерістер сақталды', nm + ': изменения сохранены')); });
+  }
+}
+function openLeaveSheet(){
+  openSheet('leave', function(){
+    return {title:t('Қонақ сақталмайды. Шығасыз ба?', 'Гость не сохранится. Выйти?'), body:'',
+      foot:'<button class="btn btn-danger" data-act="leaveYes">' + t('Иә, шығу', 'Да, выйти') + '</button><button class="btn btn-primary" data-act="sheetClose">' + t('Жоқ, жалғастыру', 'Нет, продолжить') + '</button>'};
+  });
+}
+function simCard(d){
+  var where = (d.table && seatsOf(d)) ? t(d.table + '-үстелде отыр', 'Сидит за ' + d.table + '-м столом') : t('Әлі отырғызылмаған', 'Ещё не рассажен');
+  return '<div class="box box-dup"><div class="gname" style="display:flex;gap:8px;align-items:center">' + ic('users', 20) + esc(d.name) + '</div>' +
+    '<div class="small ink2">' + esc(listName(d.list)) + ' · ' + esc(catName(d.cat)) + '</div>' +
+    '<div class="gmeta">' + badge(d) + '<span>' + where + '</span></div></div>';
+}
+function openSimilarSheet(sims){
+  openSheet('similar', function(){
+    var shown = sims.slice(0, 3);
+    var body = '<p>' + t('Сіз жазған: «' + esc(ui.form.name) + '»', 'Вы написали: «' + esc(ui.form.name) + '»') + '</p>' +
+      '<p class="small ink2">' + t('Тізімде ұқсас қонақ бар:', 'В списке есть похожий гость:') + '</p>' + shown.map(simCard).join('') +
+      (sims.length > 3 ? '<p class="small ink2">' + t('және тағы ' + (sims.length - 3), 'и ещё ' + (sims.length - 3)) + '</p>' : '') +
+      '<p class="small ink2" style="margin-top:16px">' + t('Бір адамды екі рет қоспау үшін тексеріңіз. Аттас адамдар да болады.', 'Проверьте, чтобы не добавить человека дважды. Бывают и тёзки.') + '</p>';
+    return {title:t('Бұл сол адам ба?', 'Это тот же человек?'), body:body,
+      foot:'<button class="btn btn-primary" data-act="simSame">' + t('Иә, сол адам. Қоспаймын', 'Да, это он(а). Не добавляю') + '</button>' +
+        '<button class="btn btn-sec" data-act="simOther">' + t('Жоқ, басқа адам. Қосу', 'Нет, другой человек. Добавить') + '</button>'};
+  });
+  ui.sims = sims.map(function(x){ return x.id; });
+}
+function successSheet(){
+  var g = fam(ui.lastAdded); if (!g) return {title:'', body:''};
+  var body = '<div class="center" style="padding-top:4px">' + motif(96, 48) + '<p class="ok-title" id="ok-h">' + t('Қосылды!', 'Добавлено!') + '</p>' +
+    '<p>' + esc(g.name) + ' · ' + esc(catName(g.cat)) + ' · ' + nSeats(g.expected) + '</p>' +
+    '<p class="small ink2">' + t('Енді шақыруды жіберіңіз', 'Теперь отправьте приглашение') + '</p></div>';
+  var foot = '<button class="btn btn-wa" data-act="wa" data-id="' + g.id + '" data-k="invite" data-o="success">' + waIc() + t('WhatsApp-қа жіберу', 'Отправить в WhatsApp') + '</button>' +
+    (g.phone ? '' : '<p class="hint center" style="margin-top:4px">' + t('Нөмір жоқ: WhatsApp-та контактіні өзіңіз таңдайсыз', 'Номера нет: контакт выберете сами в WhatsApp') + '</p>') +
+    '<button class="btn btn-sec" data-act="addMore">' + t('Тағы қонақ қосу', 'Добавить ещё гостя') + '</button>' +
+    '<div class="center"><button class="btn btn-text" data-act="toList">' + t('Тізімге оралу', 'Вернуться к списку') + '</button></div>';
+  return {title:'', titleHtml:'<span class="vh">' + t('Қосылды!', 'Добавлено!') + '</span>', closeAct:'toList', body:body, foot:foot};
+}
+
+/* ============ S3 new category ============ */
+function openNewCat(){
+  var ord = state.order, bi = ord.indexOf('baska');
+  ui.nc = {name:'', after: bi > 0 ? ord[bi - 1] : ord[ord.length - 1], err:null};
+  openSheet('newcat', function(){
+    var ord = state.order, opts = '';
+    for (var i = 0; i < ord.length - 1; i++){
+      var c = cat(ord[i]);
+      var lbl = c.custom ? t('«' + c.kk + '» санатынан кейін', 'После категории «' + c.kk + '»') : t(c.after, 'После: ' + c.kk);
+      opts += '<button class="radio-row" role="radio" aria-checked="' + (ui.nc.after === ord[i]) + '" data-act="ncAfter" data-v="' + ord[i] + '"><span class="rd"></span>' + esc(lbl) + '</button>';
+    }
+    opts += '<button class="radio-row" role="radio" aria-checked="' + (ui.nc.after === '__end') + '" data-act="ncAfter" data-v="__end"><span class="rd"></span>' + t('Ең соңында', 'В самом конце') + '</button>';
+    var err = ui.nc.err ? '<p class="err" id="nc-msg">' + ic('alert-triangle', 20) + (ui.nc.err === 'empty' ? t('Санат атын жазыңыз', 'Напишите название категории') : t('Мұндай санат бар', 'Такая категория уже есть')) + '</p>' : '';
+    var body = '<div class="field" style="margin-top:0"><label for="in-cat">' + t('Санат аты', 'Название категории') + '</label><input class="input" id="in-cat" data-input="ncname" autocomplete="off" autocapitalize="words" placeholder="' + t('Мысалы: Ауылдастар', 'Например: Ауылдастар (односельчане)') + '" value="' + esc(ui.nc.name) + '"' + (ui.nc.err ? ' aria-invalid="true" aria-describedby="nc-msg"' : '') + '>' + err + '</div>' +
+      '<p class="flabel" style="margin-top:20px" id="nc-l">' + t('Залда кімдерден кейін отырады?', 'После кого сидят в зале?') + '</p><div role="radiogroup" aria-labelledby="nc-l">' + opts + '</div>' +
+      '<p class="hint">' + t('Кейін «Зал» бетінде өзгертуге болады', 'Потом можно изменить на странице «Зал»') + '</p>';
+    return {title:t('Жаңа санат', 'Новая категория'), body:body, foot:'<button class="btn btn-primary" data-act="ncSave">' + t('Сақтау', 'Сохранить') + '</button>'};
+  });
+}
+function saveNewCat(){
+  var nm = ui.nc.name.replace(/\s+/g, ' ').trim();
+  if (!nm) { ui.nc.err = 'empty'; paintSheet(); $('in-cat').focus(); return; }
+  if (state.cats.some(function(c){ return c.kk.toLowerCase() === nm.toLowerCase(); })) { ui.nc.err = 'dup'; paintSheet(); $('in-cat').focus(); return; }
+  var id = 'c' + Date.now().toString(36);
+  state.cats.push({id:id, kk:nm, ru:'', after:'', color:'#ECECEC', custom:true});
+  if (ui.nc.after === '__end') state.order.push(id); else state.order.splice(state.order.indexOf(ui.nc.after) + 1, 0, id);
+  ui.form.cat = id;
+  autoSeat(state); save();
+  closeSheet(function(){ toast(t('Жаңа санат қосылды: ', 'Новая категория добавлена: ') + nm); });
+}
+
+/* ============ S4 guest sheet ============ */
+function openGuestSheet(id){
+  ui.gs = {id:id, del:false, yes:false, n:2};
+  openSheet('guest', guestSheet);
+}
+function guestSheet(){
+  var g = ui.gs && fam(ui.gs.id); if (!g) return {title:'', body:''};
+  if (ui.gs.del){
+    return {title:g.name, body:'<p>' + t('«' + esc(g.name) + '» тізімнен өшіресіз бе?', 'Удалить «' + esc(g.name) + '» из списка?') + '</p>',
+      foot:'<button class="btn btn-danger-fill" data-act="gDelYes">' + t('Иә, өшіру', 'Да, удалить') + '</button><button class="btn btn-sec" data-act="gDelNo">' + t('Жоқ', 'Нет') + '</button>'};
+  }
+  var info = g.status === 'inv' ? (remindedToday(g) ? t('Бүгін еске салынды', 'Сегодня напомнили') : sentAgo(g.sentAt)) : '';
+  var seatV = g.status === 'yes' ? String(g.confirmed) : (g.status === 'no' ? '—' : '~' + g.expected + ' ' + t('(күтілуде)', '(ожидается)'));
+  var body = '<div class="gmeta" style="margin-top:0">' + badge(g) + (info ? '<span>' + info + '</span>' : '') + '</div>' +
+    '<dl class="kv"><dt>' + t('Санаты', 'Категория') + '</dt><dd>' + esc(catName(g.cat)) + '</dd>' +
+    '<dt>' + t('Орын', 'Мест') + '</dt><dd>' + seatV + '</dd>' +
+    '<dt>' + t('Телефон', 'Телефон') + '</dt><dd>' + (g.phone ? esc(showPhone(g.phone)) : '—') + '</dd>' +
+    '<dt>' + t('Үстел', 'Стол') + '</dt><dd>' + (g.status === 'no' ? '—' : (g.table ? tbl(g.table) : t('Әлі отырғызылмаған', 'Ещё не рассажен'))) + '</dd>' +
+    '<dt>' + t('Қосқан', 'Добавил(а)') + '</dt><dd>' + esc(roleName(g.list)) + '</dd></dl>' +
+    '<p class="flabel">' + t('Жауабын телефонмен білдіңіз бе?', 'Узнали ответ по телефону?') + '</p>' +
+    '<div class="btn-row"><button class="btn btn-sec" data-act="gYes" aria-expanded="' + ui.gs.yes + '">' + ic('check-circle-2') + t('Келеді', 'Придут') + '</button><button class="btn btn-sec" data-act="gNo">' + ic('x-circle') + t('Келмейді', 'Не придут') + '</button></div>';
+  if (ui.gs.yes){
+    body += '<div class="box"><p class="flabel">' + t('Неше орын?', 'Сколько мест?') + '</p>' + stepperHtml('answer', ui.gs.n, STEPS.answer.lbl()) +
+      '<button class="btn btn-primary" data-act="gYesSave">' + t('Сақтау', 'Сохранить') + '</button></div>';
+  }
+  var a;
+  if (g.status === 'new') a = '<button class="btn btn-wa" data-act="wa" data-id="' + g.id + '" data-k="invite" data-o="guest">' + waIc() + t('WhatsApp-қа жіберу', 'Отправить в WhatsApp') + '</button>';
+  else if (g.status === 'inv') a = '<button class="btn btn-wao" style="min-height:52px" data-act="wa" data-id="' + g.id + '" data-k="remind" data-o="guest">' + ic('bell-ring') + t('Еске салу', 'Напомнить') + '</button>';
+  else a = '<button class="btn btn-sec" data-act="wa" data-id="' + g.id + '" data-k="invite" data-o="guest">' + waIc() + t('Қайта жіберу', 'Отправить снова') + '</button>';
+  return {title:g.name, body:body, foot:a + '<div class="btn-row"><button class="btn btn-sec" data-act="gEdit">' + t('Өзгерту', 'Изменить') + '</button><button class="btn btn-danger" data-act="gDel">' + t('Өшіру', 'Удалить') + '</button></div>'};
+}
+
+/* ============ S6 WhatsApp simulation ============ */
+function waText(g, kind){
+  var a = addrName(g), link = 'toi.link/' + g.token;
+  if (kind === 'remind') return 'Ассалаумағалейкум, ' + a + '! Айбек пен Дананың тойына 15 қараша, 18:00-де күтеміз. Келе аласыз ба? Жауабыңызды осы сілтемеден белгілеңізші: ' + link;
+  return 'Ассалаумағалейкум, ' + a + '! Ұлымыз Айбек пен келініміз Дананың үйлену тойына шақырамыз. 15 қараша, 18:00, «Шаңырақ» мейрамханасы. Келетін-келмейтініңізді осы сілтемеден белгілеңізші: ' + link;
+}
+function openWa(id, kind, origin){
+  ui.wa = {id:id, kind:kind, origin:origin};
+  openSheet('whatsapp', function(){
+    var g = fam(ui.wa.id); if (!g) return {title:'', body:''};
+    var to = g.phone ? '<div><b>' + t('Кімге', 'Кому') + ':</b> ' + esc(g.name) + '<br><span class="num" style="padding-left:0">' + esc(showPhone(g.phone)) + '</span></div>'
+      : '<div><b>' + t('Кімге', 'Кому') + ':</b> ' + t('контактіні WhatsApp-та өзіңіз таңдайсыз', 'контакт выберете сами в WhatsApp') + '<br><span class="ink2 small">' + esc(g.name) + '</span></div>';
+    var body = to + '<div class="bubble" lang="kk">' + esc(waText(g, ui.wa.kind)) + '</div><p class="small ink2">' + t('Прототипте хабарлама жіберілмейді.', 'В прототипе сообщение не отправляется.') + '</p>';
+    return {title:t('WhatsApp ашылады', 'Откроется WhatsApp'), body:body,
+      foot:'<button class="btn btn-wa" data-act="waDone">' + waIc() + t('Жіберілді деп белгілеу', 'Отметить как отправленное') + '</button><div class="center"><button class="btn btn-text" data-act="sheetClose">' + t('Бас тарту', 'Отмена') + '</button></div>'};
+  });
+}
+function waDone(){
+  var w = ui.wa, g = fam(w.id); if (!g) return;
+  var msg;
+  if (w.kind === 'remind') { g.remindedAt = Date.now(); msg = t('Еске салу жіберілді', 'Напоминание отправлено'); }
+  else { if (g.status === 'new') g.status = 'inv'; g.sentAt = Date.now(); g.remindedAt = null; msg = t('Шақыру жіберілді', 'Приглашение отправлено'); }
+  save();
+  if (w.origin === 'success') { closeSheetDom(); backTo('/guests', function(){ ui.highlight = g.id; refresh(); toast(msg); }); }
+  else closeSheet(function(){ toast(msg); });
+}
+
+/* ============ S5 no-answer ============ */
+route(/^\/guests\/no-answer$/, function(){
+  var me = state.role, mine = state.families.filter(function(f){ return f.list === me; });
+  var inv = mine.filter(function(f){ return f.status === 'inv'; }).sort(function(a, b){ return a.sentAt - b.sentAt; });
+  var nw = mine.filter(function(f){ return f.status === 'new'; }).sort(function(a, b){ return a.name.localeCompare(b.name, 'kk'); });
+  var body = '';
+  if (!inv.length && !nw.length){
+    body = '<div class="empty">' + motif(64, 32, .6) + '<h2 class="h2">' + t('Барлығы жауап берді!', 'Все ответили!') + '</h2><p>' + t('Еске салатын ешкім жоқ', 'Напоминать некому') + '</p><button class="btn btn-sec" data-act="tab" data-v="/guests">' + t('Тізімге оралу', 'Вернуться к списку') + '</button></div>';
+  } else {
+    body += '<p class="small ink2" style="margin-top:16px">' + t('Шақыру жіберілді, бірақ әлі жауап жоқ. Еске салу WhatsApp-ты ашады.', 'Приглашение отправлено, но ответа пока нет. «Напомнить» откроет WhatsApp.') + '</p>';
+    if (inv.length){
+      var seats = inv.reduce(function(a, f){ return a + f.expected; }, 0);
+      body += '<h2 class="h2">' + nFam(inv.length) + ' · ~' + nSeats(seats) + '</h2>';
+      inv.forEach(function(f){
+        var done = remindedToday(f);
+        body += '<div class="gcard" style="cursor:default" data-card="' + f.id + '"><div class="gname">' + esc(f.name) + '</div><div class="small ink2">' + esc(catName(f.cat)) + ' · ~' + nSeats(f.expected) + '</div>' +
+          '<div class="small ink2">' + sentAgo(f.sentAt) + '</div>' +
+          (done ? '<div class="small" style="color:var(--success-ink);font-weight:600;display:flex;gap:6px;align-items:center;margin-top:4px">' + ic('check', 20) + t('Бүгін еске салынды', 'Сегодня напомнили') + '</div><button class="btn btn-text" style="margin:0" data-act="wa" data-id="' + f.id + '" data-k="remind" data-o="noanswer">' + t('Тағы еске салу', 'Напомнить ещё раз') + '</button>'
+            : '<div class="gact"><button class="btn btn-wao" style="flex:1" data-act="wa" data-id="' + f.id + '" data-k="remind" data-o="noanswer">' + ic('bell-ring') + t('Еске салу', 'Напомнить') + '</button></div>') + '</div>';
+      });
+    }
+    if (nw.length){
+      body += '<h2 class="h2">' + t('Әлі жіберілмегендер', 'Ещё не отправлено') + ' · ' + nw.length + '</h2>';
+      nw.forEach(function(f){
+        body += '<div class="gcard" style="cursor:default" data-card="' + f.id + '"><div class="gname">' + esc(f.name) + ' · ~' + nSeats(f.expected) + '</div><div class="gact"><button class="btn btn-wa btn-sm" data-act="wa" data-id="' + f.id + '" data-k="invite" data-o="noanswer">' + waIc() + t('WhatsApp-қа жіберу', 'Отправить в WhatsApp') + '</button></div></div>';
+      });
+    }
+  }
+  return {hdr:header({title:t('Жауап бермегендер', 'Не ответили'), back:true}), body:body, tabs:true};
+});
+
+/* ============ hall SVG ============ */
+var COL = {taken:'#7A808C', free:'#FFFFFF', freeStroke:'#1A7F4B', danger:'#B42318', dup:'#5B3FA8', ink:'#1C2230', ink2:'#5A6170', border:'#8C8270', gold:'#C9A24B', goldInk:'#8A5A00', primary:'#0E5E6F', success:'#1A7F4B'};
+function chairOwners(tb){
+  var owners = [], i = 0;
+  tb.fams.forEach(function(f, fi){ var s = seatsOf(f); for (var k = 0; k < s; k++) owners.push({f:f, fi:fi, first:k === 0}); });
+  return owners;
+}
+function tableAria(tb){
+  var over = tb.used - tb.cap;
+  return t(tb.num + '-үстел, ' + tb.used + ' адам, ' + tb.cap + ' орын' + (over > 0 ? ', ' + over + ' орын жетпейді' : ''),
+    'Стол ' + tb.num + ', ' + nPeople(tb.used) + ', ' + nSeats(tb.cap) + (over > 0 ? ', не хватает ' + nSeats(over) : ''));
+}
+function hallSvg(o){
+  o = o || {};
+  var S = tableStats(state), C = state.hall.cols, four = C === 4;
+  var cw = four ? 82 : 164, ch = four ? 86 : 140, gcx = four ? 41 : 82, gcy = four ? 32 : 52, r = four ? 18 : 30;
+  var top = 24 + 64 + 16, H = top + S.levels * ch + 32;
+  var dupIds = ui.dup && o.mode !== 'move' ? ui.dup : null;
+  var s = '<svg class="hall-svg" viewBox="0 0 328 ' + H + '" role="group" aria-label="' + t('Зал схемасы', 'Схема зала') + '">';
+  s += '<text x="164" y="17" text-anchor="middle" font-size="14" font-weight="700" letter-spacing="2" fill="' + COL.goldInk + '">' + t('ТӨР', 'ТӨР') + '</text>';
+  s += '<g class="tbl" role="button" tabindex="0" data-act="couple" aria-label="' + t('Жастар үстелі', 'Стол молодых') + '"><rect class="cell" x="60" y="24" width="208" height="64" rx="12"/>' +
+    '<svg x="148" y="26" width="32" height="16" viewBox="0 0 48 24" fill="none" stroke="' + COL.gold + '" stroke-width="2" stroke-linecap="round" aria-hidden="true">' + MOTIF_PATHS + '</svg>' +
+    '<rect x="98" y="46" width="132" height="36" rx="18" fill="#FFFFFF" stroke="' + COL.gold + '" stroke-width="2"/>' +
+    '<text x="164" y="64" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="700" fill="' + COL.ink + '">' + t('Жастар үстелі', 'Стол молодых') + '</text>' +
+    '<circle cx="82" cy="64" r="6" fill="' + COL.gold + '" aria-hidden="true"/><circle cx="246" cy="64" r="6" fill="' + COL.gold + '" aria-hidden="true"/></g>';
+  var mf = o.mode === 'move' ? fam(o.fid) : null, need = mf ? seatsOf(mf) : 0;
+  S.tables.forEach(function(tb){
+    var x0 = tb.col * cw, y0 = top + tb.level * ch, cx = x0 + gcx, cy = y0 + gcy, n = tb.cap, k = tb.used, over = k > n;
+    var R = four ? (n <= 14 ? 26 : 27) : (n <= 14 ? 44 : 46), c = four ? (n <= 14 ? 4.5 : 4) : (n <= 14 ? 7.5 : 7), sw = four ? 1.5 : 2;
+    var fill = tb.mainCat ? cat(tb.mainCat).color : '#FFFFFF';
+    var isCur = mf && mf.table === tb.num, free = n - k, fits = mf && !isCur && free >= need;
+    var hasDup = dupIds && tb.fams.some(function(f){ return dupIds.indexOf(f.id) >= 0; });
+    var cls = 'tbl', act = 'table';
+    if (mf) { act = isCur ? '' : 'moveTo'; if (!isCur && !fits) cls += ' dim45'; }
+    else if (dupIds && !hasDup) cls += ' dim';
+    var aria = mf ? (isCur ? t(tb.num + '-үстел, қазір', 'Стол ' + tb.num + ', сейчас') : t(tb.num + '-үстел, ' + Math.max(0, free) + ' бос', 'Стол ' + tb.num + ', свободно ' + Math.max(0, free))) : tableAria(tb);
+    s += '<g class="' + cls + '"' + (act ? ' role="button" tabindex="0" data-act="' + act + '" data-num="' + tb.num + '"' : ' aria-disabled="true"') + ' aria-label="' + esc(aria) + '">';
+    s += '<rect class="cell" x="' + (x0 + 1) + '" y="' + (y0 + 1) + '" width="' + (cw - 2) + '" height="' + (ch - 2) + '" rx="10"/>';
+    s += '<g aria-hidden="true">';
+    if (over && !mf) s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r + 4.5) + '" fill="none" stroke="' + COL.danger + '" stroke-width="1.5"/>';
+    var dstroke = over ? COL.danger : COL.border, dsw = over ? 3 : 1;
+    if (isCur) { dstroke = COL.primary; dsw = 3; }
+    s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + fill + '" stroke="' + dstroke + '" stroke-width="' + dsw + '"/>';
+    if (fits) s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r + 3) + '" fill="none" stroke="' + COL.success + '" stroke-width="3" stroke-dasharray="5 3"/>';
+    var owners = chairOwners(tb);
+    for (var i = 0; i < n; i++){
+      var th = (-90 + i * 360 / n) * Math.PI / 180, x = cx + R * Math.cos(th), y = cy + R * Math.sin(th);
+      var ow = owners[i], fc, st = 'none', ssw = 0;
+      if (over) fc = COL.danger;
+      else if (ow) fc = COL.taken; else { fc = COL.free; st = COL.freeStroke; ssw = sw; }
+      if (ow && dupIds && dupIds.indexOf(ow.f.id) >= 0) fc = COL.dup;
+      s += '<circle class="chair" cx="' + x.toFixed(2) + '" cy="' + y.toFixed(2) + '" r="' + c + '" fill="' + fc + '" stroke="' + st + '" stroke-width="' + ssw + '"/>';
+    }
+    s += '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" dominant-baseline="central" font-size="' + (four ? 14 : 20) + '" font-weight="700" fill="' + COL.ink + '">' + tb.num + '</text>';
+    var lblY = four ? y0 + 76 : y0 + 112, lfs = four ? 14 : 16;
+    var label, lcol = COL.ink2;
+    if (mf) label = isCur ? t('қазір', 'сейчас') : t(Math.max(0, free) + ' бос', Math.max(0, free) + ' своб.');
+    else { label = k + '/' + n; if (over) lcol = COL.danger; }
+    s += '<text x="' + cx + '" y="' + lblY + '" text-anchor="middle" dominant-baseline="central" font-size="' + lfs + '" font-weight="700" fill="' + (isCur ? COL.primary : lcol) + '">' + label + '</text>';
+    if (!four){
+      var cn = tb.mainCat ? catName(tb.mainCat) : t('Бос', 'Свободен');
+      if (cn.length > 16) cn = cn.slice(0, 15) + '…';
+      s += '<text x="' + cx + '" y="' + (y0 + 130) + '" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="500" fill="' + COL.ink2 + '">' + esc(cn) + '</text>';
+    }
+    if (over && !mf){
+      var br = four ? 9 : 12, bo = four ? 24 : 40;
+      s += '<circle cx="' + (cx + bo) + '" cy="' + (cy - bo) + '" r="' + br + '" fill="' + COL.danger + '"/><text x="' + (cx + bo) + '" y="' + (cy - bo) + '" text-anchor="middle" dominant-baseline="central" font-size="' + (four ? 12 : 16) + '" font-weight="700" fill="#fff">!</text>';
+    }
+    if (hasDup){
+      var di = tb.fams.filter(function(f){ return dupIds.indexOf(f.id) >= 0; }).map(function(f){ return dupIds.indexOf(f.id) + 1; })[0];
+      var mo = four ? 24 : 40;
+      s += '<circle class="pulse" cx="' + cx + '" cy="' + cy + '" r="' + (r + 5) + '" fill="none" stroke="' + COL.dup + '" stroke-width="3"/>';
+      s += '<circle cx="' + (cx - mo) + '" cy="' + (cy - mo) + '" r="10" fill="' + COL.dup + '"/><text x="' + (cx - mo) + '" y="' + (cy - mo) + '" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="700" fill="#fff">' + di + '</text>';
+    }
+    s += '</g></g>';
+  });
+  var ey = top + S.levels * ch;
+  s += '<line x1="104" y1="' + (ey + 6) + '" x2="224" y2="' + (ey + 6) + '" stroke="' + COL.border + '" stroke-width="1" stroke-dasharray="4 4"/>';
+  s += '<text x="164" y="' + (ey + 22) + '" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="700" letter-spacing="1" fill="' + COL.ink2 + '">' + t('КІРЕБЕРІС', 'ВХОД') + '</text>';
+  return s + '</svg>';
+}
+function bigTableSvg(tb){
+  var n = tb.cap, k = tb.used, over = k > n, R = 70, r = 46, c = n <= 14 ? 11 : 10, owners = chairOwners(tb);
+  var s = '<svg class="tsheet-svg" viewBox="0 0 200 200" aria-hidden="true" focusable="false">';
+  s += '<circle cx="100" cy="100" r="' + r + '" fill="' + (tb.mainCat ? cat(tb.mainCat).color : '#FFFFFF') + '" stroke="' + (over ? COL.danger : COL.border) + '" stroke-width="' + (over ? 3 : 1) + '"/>';
+  if (over) s += '<circle cx="100" cy="100" r="' + (r + 5) + '" fill="none" stroke="' + COL.danger + '" stroke-width="1.5"/>';
+  for (var i = 0; i < n; i++){
+    var th = (-90 + i * 360 / n) * Math.PI / 180, x = 100 + R * Math.cos(th), y = 100 + R * Math.sin(th), ow = owners[i];
+    var fc = over ? COL.danger : (ow ? COL.taken : COL.free);
+    s += '<circle cx="' + x.toFixed(2) + '" cy="' + y.toFixed(2) + '" r="' + c + '" fill="' + fc + '"' + (!ow && !over ? ' stroke="' + COL.freeStroke + '" stroke-width="3"' : '') + '/>';
+    if (ow && ow.first) s += '<text x="' + x.toFixed(2) + '" y="' + y.toFixed(2) + '" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="700" fill="#fff">' + (ow.fi + 1) + '</text>';
+  }
+  s += '<text x="100" y="94" text-anchor="middle" dominant-baseline="central" font-size="28" font-weight="700" fill="' + COL.ink + '">' + tb.num + '</text>';
+  s += '<text x="100" y="120" text-anchor="middle" dominant-baseline="central" font-size="16" fill="' + COL.ink + '">' + t('үстел', 'стол') + '</text>';
+  return s + '</svg>';
+}
+function famRows(tb, numbered){
+  var ed = canEdit();
+  return tb.fams.map(function(f, i){
+    var meta = esc(catName(f.cat)) + ' · ' + (f.status === 'yes' ? nSeats(f.confirmed) : '~' + nSeats(f.expected)) + ' · ' + statusWord(f);
+    var lock = f.locked ? '<div class="fm">' + ic('lock', 16) + ' ' + t('Қолмен қойылған (' + ROLES[f.lockedBy || 'ana'].kk + ')', 'Поставлен вручную (' + ROLES[f.lockedBy || 'ana'].ruLow + ')') + '</div>' +
+      (ed ? '<button class="btn btn-text" data-act="unlock" data-id="' + f.id + '">' + t('Автоматқа қайтару', 'Вернуть автоматике') + '</button>' : '') : '';
+    return '<div class="fam">' + (numbered ? '<span class="fam-n" aria-hidden="true">' + (i + 1) + '</span>' : '') + '<div><div class="fn">' + esc(f.name) + '</div><div class="fm">' + meta + '</div>' + lock +
+      (ed ? '<div><button class="btn btn-sec btn-sm" data-act="move" data-id="' + f.id + '">' + ic('arrow-right-left') + t('Ауыстыру', 'Перенести') + '</button></div>' : '') + '</div></div>';
+  }).join('');
+}
+function tableStatusHtml(tb){
+  var over = tb.used - tb.cap;
+  if (!tb.fams.length) return '<p class="ok-line">' + ic('check-circle-2') + t('Бұл үстел бос · ' + nSeats(tb.cap), 'Этот стол свободен · ' + nSeats(tb.cap)) + '</p>';
+  if (over > 0) return '<div class="alert alert-danger"><div class="at">' + ic('alert-triangle') + t(over + ' орын жетпейді', 'Не хватает ' + nSeats(over)) + '</div><p class="small" style="margin:4px 0 0">' +
+    t(tb.used + ' адам, ал үстелде ' + tb.cap + ' орын. Бір отбасын басқа үстелге ауыстырыңыз.', nPeople(tb.used) + ', а мест ' + tb.cap + '. Пересадите одну семью за другой стол.') + '</p></div>';
+  return '<p class="ok-line">' + ic('check-circle-2') + t(tb.used + ' / ' + tb.cap + ' орын · ' + (tb.cap - tb.used) + ' бос', tb.used + ' / ' + tb.cap + ' мест · ' + (tb.cap - tb.used) + ' свободно') + '</p>';
+}
+function openTableSheet(num, chain){
+  ui.tsNum = num; ui.chain = chain || null;
+  openSheet('table', function(){
+    var S = tableStats(state), tb = S.byNum[ui.tsNum]; if (!tb) return {title:'', body:''};
+    var body = tableStatusHtml(tb) + bigTableSvg(tb) +
+      '<p class="center small">' + tb.used + ' / ' + tb.cap + ' ' + t('орын', 'мест') + (tb.mainCat ? ' · ' + esc(catName(tb.mainCat)) : '') + '</p>';
+    if (tb.fams.length) body += '<p class="flabel" style="margin-top:16px">' + t('Кімдер отыр', 'Кто сидит') + '</p><div class="box" style="padding:4px 16px">' + famRows(tb, true) + '</div>';
+    var foot = '';
+    if (ui.chain){
+      var i = ui.chain.indexOf(ui.tsNum), nx = ui.chain[i + 1];
+      if (nx) foot = '<button class="btn btn-sec" data-act="nextTable" data-num="' + nx + '">' + t('Келесі: ' + nx + '-үстел', 'Следующий: стол ' + nx) + ' ' + ic('arrow-right') + '</button>';
+    }
+    return {title:tbl(tb.num), body:body, foot:foot};
+  });
+}
+
+/* ============ H2 hall ============ */
+route(/^\/hall$/, function(){
+  if (!state.hall) return canEdit() ? {redirect:'/hall/setup'} : {hdr:header({title:t('Зал', 'Зал'), lang:true}), tabs:true,
+    body:'<div class="banner bn-view">' + ic('eye') + '<div><div class="bt">' + t('Сіз отырғызуды тек көресіз', 'Вы можете только смотреть рассадку') + '</div><div class="bs">' + t('Зал әлі бапталмаған. Оны Әкесі немесе Анасы баптайды.', 'Зал ещё не настроен. Его настроят отец или мама.') + '</div></div></div>'};
+  var S = tableStats(state), T = totals(state), ed = canEdit(), body = '';
+  if (!ed) body += '<div class="banner bn-view" style="margin-top:16px">' + ic('eye') + '<div><div class="bt">' + t('Сіз отырғызуды тек көресіз', 'Вы можете только смотреть рассадку') + '</div></div></div>';
+  body += '<div class="summary"><h2 class="h2 num">' + T.total + ' / ' + T.cap + ' ' + t('орын', 'мест') + ' · ' + nTables(state.hall.count) + '</h2>' +
+    '<p class="small ink2" style="margin:0">' + t(T.yes + ' келеді · ' + T.pend + ' күтілуде · ', T.yes + ' придут · ' + T.pend + ' ожидается · ') +
+    (T.free >= 0 ? t(T.free + ' бос', T.free + ' свободно') : '<span style="color:var(--danger);font-weight:600">' + t((-T.free) + ' орын жетпейді', 'не хватает ' + nSeats(-T.free)) + '</span>') + '</p>' +
+    '<p class="small" style="margin:4px 0 0;font-weight:600">' + t('Мейрамханаға: ' + T.total + ' адам → ' + S.usedTables + ' үстел', 'Для ресторана: ' + nPeople(T.total) + ' → ' + nTables(S.usedTables)) + '</p></div>';
+  if (!state.families.some(function(f){ return seatsOf(f) > 0; })){
+    body += '<div class="box"><p style="margin-top:0">' + t('Қонақтар әлі жоқ. Тізімге қонақ қосқанда, олар осы жерде өздігінен отырады.', 'Гостей пока нет. Когда добавите гостей, они сами рассядутся здесь.') + '</p><button class="btn btn-sec" data-act="addGuest">' + ic('plus') + t('Қонақ қосу', 'Добавить гостя') + '</button></div>';
+  }
+  if (S.unplaced.length){
+    var us = S.unplaced.reduce(function(a, f){ return a + seatsOf(f); }, 0), need = Math.ceil(us / state.hall.seats);
+    body += '<button class="banner bn-danger" data-act="unplaced">' + ic('alert-triangle') + '<div><div class="bt">' + t(us + ' адамға орын жоқ · тағы ' + need + ' үстел керек', 'Для ' + us + ' ' + pl(us, 'человека', 'человек', 'человек') + ' нет мест · нужно ещё ' + nTables(need)) + '</div><div class="bs">' + t('Отырғызылмағандар', 'Не рассажены') + '</div></div>' + ic('chevron-right') + '</button>';
+  }
+  if (S.over.length){
+    body += '<button class="banner bn-danger" data-act="overBanner">' + ic('alert-triangle') + '<div><div class="bt">' + t(S.over.length + ' үстелде орын жетпейді', 'За ' + S.over.length + ' ' + pl(S.over.length, 'столом', 'столами', 'столами') + ' не хватает мест') + '</div><div class="bs">' +
+      S.over.map(function(tb){ return tbl(tb.num) + ' (−' + (tb.used - tb.cap) + ')'; }).join(' · ') + '</div></div>' + ic('chevron-right') + '</button>';
+  }
+  var dp = dupPairs(state);
+  if (dp.length){
+    var ppl = {}; dp.forEach(function(p){ ppl[p[0].id] = 1; ppl[p[1].id] = 1; });
+    body += '<button class="banner bn-dup" data-act="dupBanner">' + ic('users') + '<div><div class="bt">' + t('Мүмкін қайталанған қонақтар: ', 'Возможно, повторяющиеся гости: ') + Object.keys(ppl).length + '</div><div class="bs">' + t('Көру үшін басыңыз', 'Нажмите, чтобы посмотреть') + '</div></div>' + ic('chevron-right') + '</button>';
+  }
+  body += '<div class="seg" role="group" aria-label="' + t('Көрініс', 'Вид') + '"><button data-act="hallMode" data-v="schema" aria-pressed="' + (ui.hallMode === 'schema') + '">' + ic('layout-grid', 20) + t('Схема', 'Схема') + '</button><button data-act="hallMode" data-v="list" aria-pressed="' + (ui.hallMode === 'list') + '">' + ic('list', 20) + t('Тізім', 'Список') + '</button></div>';
+  if (!ui.loadedHall){
+    body += '<div class="skel" style="height:480px;margin-top:12px" aria-hidden="true"></div><span class="vh" role="status">' + t('Жүктелуде', 'Загрузка') + '</span>';
+    setTimeout(function(){ ui.loadedHall = true; if (curPath === '/hall') refresh(); }, 400);
+  } else if (ui.hallMode === 'schema'){
+    body += '<div class="hallbox" id="schema">' + hallSvg() + '</div>' +
+      '<div class="legend" aria-label="' + t('Белгілер', 'Обозначения') + '"><span><svg width="18" height="18" aria-hidden="true"><circle cx="9" cy="9" r="7" fill="' + COL.taken + '"/></svg>' + t('Бос емес', 'Занято') + '</span>' +
+      '<span><svg width="18" height="18" aria-hidden="true"><circle cx="9" cy="9" r="6.5" fill="#fff" stroke="' + COL.freeStroke + '" stroke-width="2"/></svg>' + t('Бос', 'Свободно') + '</span>' +
+      '<span><svg width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="' + COL.danger + '"/><text x="10" y="10" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#fff">!</text></svg>' + t('Орын жетпейді', 'Не хватает мест') + '</span></div>';
+  } else {
+    body += '<div id="schema">' + S.tables.map(function(tb){
+      var over = tb.used - tb.cap, open = !!ui.expanded[tb.num];
+      return '<div class="tcard' + (over > 0 ? ' over' : '') + '"><button class="tcard-h" data-act="expand" data-num="' + tb.num + '" aria-expanded="' + open + '"><div><div class="tt">' + (over > 0 ? '<span class="danger-line">' + ic('alert-triangle', 20) + tbl(tb.num) + '</span>' : '<span>' + tbl(tb.num) + '</span>') +
+        '<span class="num' + (over > 0 ? '" style="color:var(--danger)' : '') + '">' + tb.used + '/' + tb.cap + ' · ' + (over > 0 ? t(over + ' орын жетпейді', 'не хватает ' + nSeats(over)) : t((tb.cap - tb.used) + ' бос', (tb.cap - tb.used) + ' своб.')) + '</span></div>' +
+        '<div class="tc">' + (tb.mainCat ? esc(catName(tb.mainCat)) : t('Бос', 'Свободен')) + '</div></div>' + ic(open ? 'chevron-up' : 'chevron-down') + '</button>' +
+        (open ? '<div class="tcard-b">' + (tb.fams.length ? famRows(tb, true) : tableStatusHtml(tb)) + '</div>' : '') + '</div>';
+    }).join('') + '</div>';
+  }
+  var ordNames = state.order.map(catName).join(', ');
+  body += '<div class="links"><button class="lrow" data-act="nav" data-v="/hall/order">' + ic('arrow-up-down') + '<div><div class="lt">' + t('Отырғызу реті', 'Порядок рассадки') + '</div><div class="ls">' + esc(ordNames) + '</div></div>' + ic('chevron-right') + '</button>' +
+    '<button class="lrow" data-act="nav" data-v="/hall/history">' + ic('history') + '<div><div class="lt">' + t('Өзгерістер тарихы', 'История изменений') + ' · ' + state.history.length + '</div></div>' + ic('chevron-right') + '</button>' +
+    (ed ? '<button class="lrow" data-act="nav" data-v="/hall/setup">' + ic('settings-2') + '<div><div class="lt">' + t('Залды өзгерту', 'Изменить зал') + '</div><div class="ls">' + t(state.hall.cols + ' қатар · ' + state.hall.count + ' үстел · ' + state.hall.seats + ' орын', state.hall.cols + ' ' + pl(state.hall.cols, 'ряд', 'ряда', 'рядов') + ' · ' + nTables(state.hall.count) + ' · ' + nSeats(state.hall.seats)) + '</div></div>' + ic('chevron-right') + '</button>' : '') + '</div>';
+  if (ui.dup) body += '<div style="height:120px"></div>';
+  return {hdr:header({title:t('Зал', 'Зал'), lang:true}), body:body, tabs:true};
+});
+function openUnplaced(){
+  openSheet('unplaced', function(){
+    var S = tableStats(state), us = S.unplaced.reduce(function(a, f){ return a + seatsOf(f); }, 0), need = Math.ceil(us / state.hall.seats);
+    var body = '<div class="box" style="padding:4px 16px">' + S.unplaced.map(function(f){ return '<div class="fam"><div><div class="fn">' + esc(f.name) + '</div><div class="fm">' + esc(catName(f.cat)) + ' · ' + seatsText(f) + '</div></div></div>'; }).join('') + '</div>';
+    return {title:t('Отырғызылмағандар', 'Не рассажены'), body:body,
+      foot: canEdit() ? '<button class="btn btn-primary" data-act="addTables" data-n="' + need + '">' + ic('plus') + t('Үстел қосу', 'Добавить стол') + '</button>' : ''};
+  });
+}
+function openDupSheet(){
+  ui.dd = null;
+  openSheet('dups', function(){
+    var dp = dupPairs(state), ed = canEdit();
+    if (ui.dd){
+      var a = fam(ui.dd.pair[0]), b = fam(ui.dd.pair[1]);
+      var opt = function(f, i){ return '<button class="rcard" role="radio" aria-checked="' + (ui.dd.pick === f.id) + '" data-act="ddPick" data-v="' + f.id + '"><span class="rt"><span class="mk">' + i + '</span>' + esc(f.name) + '</span><span class="rs">' + esc(listName(f.list)) + ' · ' + esc(catName(f.cat)) + '</span></button>'; };
+      return {title:t('Қайсысын өшіреміз?', 'Кого удаляем?'), body:'<div role="radiogroup">' + opt(a, 1) + opt(b, 2) + '</div>',
+        foot:'<button class="btn btn-danger-fill" data-act="ddDelete">' + t('Өшіру', 'Удалить') + '</button><button class="btn btn-sec" data-act="ddBack">' + t('Жоқ', 'Нет') + '</button>'};
+    }
+    var body = '<p class="small ink2" style="margin-top:0">' + t('Аттары ұқсас. Бір адам екі рет жазылған болуы мүмкін.', 'Имена похожи. Возможно, один человек записан дважды.') + '</p>';
+    if (!dp.length) body += '<p>' + t('Қайталанған қонақтар жоқ', 'Повторов нет') + '</p>';
+    dp.forEach(function(p, pi){
+      var row = function(f, i){ return '<div style="display:flex;gap:10px;margin-top:10px"><span class="mk">' + i + '</span><div><div class="fn" style="font-weight:600">' + esc(f.name) + '</div><div class="small ink2">' + esc(listName(f.list)) + ' · ' + esc(catName(f.cat)) + '</div><div class="small ink2">' + seatsText(f) + ' · ' + (f.table ? tblLow(f.table) : t('Әлі отырғызылмаған', 'Ещё не рассажен')) + '</div></div></div>'; };
+      body += '<div class="box box-dup">' + row(p[0], 1) + row(p[1], 2) +
+        '<button class="btn btn-sec" style="margin-top:12px" data-act="dupShow" data-i="' + pi + '">' + ic('eye') + t('Схемадан көру', 'Показать на схеме') + '</button>' +
+        (ed ? '<div class="btn-row" style="margin-top:8px"><button class="btn btn-danger btn-sm" data-act="dupDelOne" data-i="' + pi + '">' + t('Біреуін өшіру', 'Удалить одного') + '</button><button class="btn btn-sec btn-sm" data-act="dupKeep" data-i="' + pi + '">' + t('Екеуі де қалсын', 'Оставить обоих') + '</button></div>' : '') + '</div>';
+    });
+    return {title:t('Мүмкін қайталанған қонақтар', 'Возможно, повторяющиеся гости'), body:body};
+  });
+}
+
+/* ============ history / undo ============ */
+function snapshot(){ return JSON.stringify({families:state.families, order:state.order, cats:state.cats, checked:state.checked, hall:state.hall}); }
+function restore(snap){ var s = JSON.parse(snap); state.families = s.families; state.order = s.order; state.cats = s.cats; state.checked = s.checked; state.hall = s.hall; save(); }
+function famState(f){ return {id:f.id, table:f.table, locked:f.locked, by:f.lockedBy}; }
+function applyFams(arr){
+  var rerun = false;
+  arr.forEach(function(x){ var f = fam(x.id); if (!f) return; f.table = x.table; f.locked = x.locked; f.lockedBy = x.by || null; if (!x.locked) rerun = true; if (x.locked) f.seq = state.seq++; });
+  return rerun;
+}
+function applyData(kind, d){
+  if (kind === 'move' || kind === 'unlock') { if (applyFams(d)) autoSeat(state); }
+  else if (kind === 'reorder') { state.order = d.slice(); autoSeat(state); }
+  else if (kind === 'hall') { state.hall = Object.assign({}, d.hall); applyFams(d.fams || []); autoSeat(state); }
+}
+function addHist(e){ e.id = 'h' + (state.hid++); e.ts = Date.now(); e.who = state.role; state.history.unshift(e); return e; }
+function undoEntry(id){
+  var e = null; state.history.forEach(function(x){ if (x.id === id) e = x; });
+  if (!e || e.undone || e.kind === 'answer') return null;
+  applyData(e.kind, e.before);
+  e.undone = {ts:Date.now(), who:state.role};
+  var ne = {kind:e.kind, revert:!e.revert, names:e.names, from:e.to, to:e.from, cat:e.cat, fromPos:e.toPos, toPos:e.fromPos, hallB:e.hallA, hallA:e.hallB, before:e.after, after:e.before};
+  addHist(ne); save();
+  return ne;
+}
+function histText(e){
+  var title = '', line = '';
+  if (e.kind === 'move'){ title = e.names.join(', '); line = t((e.from || '—') + ' → ' + e.to + '-үстел', 'стол ' + (e.from || '—') + ' → ' + e.to); }
+  else if (e.kind === 'unlock'){ title = e.names.join(', '); line = e.revert ? t('Қайта бекітілді: ' + e.to + '-үстел', 'Снова закреплено: стол ' + e.to) : t('Автоматқа қайтарылды', 'Возвращено автоматике'); }
+  else if (e.kind === 'reorder'){ title = t('Отырғызу реті', 'Порядок рассадки'); line = t('Рет: ' + catName(e.cat) + ' ' + e.fromPos + ' → ' + e.toPos, 'Порядок: ' + catName(e.cat) + ' ' + e.fromPos + ' → ' + e.toPos); }
+  else if (e.kind === 'hall'){ var h = e.hallA; title = t('Зал', 'Зал'); line = t('Зал: ' + h.count + ' үстел × ' + h.seats + ' орын, ' + h.cols + ' қатар', 'Зал: ' + nTables(h.count) + ' × ' + nSeats(h.seats) + ', ' + h.cols + ' ' + pl(h.cols, 'ряд', 'ряда', 'рядов')); }
+  else if (e.kind === 'answer'){ title = t(e.names[0] + ': ' + e.fromN + ' → ' + e.toN + ' орын', e.names[0] + ': ' + e.fromN + ' → ' + e.toN + ' ' + pl(e.toN, 'место', 'места', 'мест')); }
+  if (e.revert) title = t('Қайтарылды: ', 'Возвращено: ') + title;
+  return {title:title, line:line};
+}
+function whoName(w){ return w === 'guest' ? t('Қонақтың жауабы', 'Ответ гостя') : roleName(w); }
+function histToast(e){ var x = histText(e); return x.title + (x.line ? ' · ' + x.line : ''); }
+
+/* ============ H1 setup ============ */
+route(/^\/hall\/setup$/, function(){
+  if (!canEdit()) return {redirect:'/hall'};
+  if (!ui.setup) ui.setup = state.hall ? Object.assign({}, state.hall) : {cols:4, count:16, seats:12};
+  var u = ui.setup;
+  var mini = function(cols){ var s = '<svg width="' + (cols === 4 ? 72 : 40) + '" height="34" aria-hidden="true">'; for (var r = 0; r < 2; r++) for (var c = 0; c < cols; c++) s += '<circle cx="' + (8 + c * 18) + '" cy="' + (8 + r * 18) + '" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/>'; return s + '</svg>'; };
+  var lt = function(cols){ var on = u.cols === cols; return '<button class="ltile" role="radio" aria-checked="' + on + '" data-act="setCols" data-v="' + cols + '">' + (on ? '<span class="ck">' + ic('check', 20) + '</span>' : '') + mini(cols) + '<span>' + t(cols + ' қатар', cols + ' ' + pl(cols, 'ряд', 'ряда', 'рядов')) + '</span></button>'; };
+  var body = '<h2 class="h2" id="cols-l">' + t('Үстелдер неше қатар тұрады?', 'Сколько рядов столов?') + '</h2><div class="ltiles" role="radiogroup" aria-labelledby="cols-l">' + lt(2) + lt(4) + '</div>' +
+    '<h2 class="h2">' + t('Үстел саны', 'Количество столов') + '</h2>' + stepperHtml('tables', u.count, STEPS.tables.lbl()) +
+    '<h2 class="h2">' + t('Бір үстелде неше орын?', 'Сколько мест за столом?') + '</h2>' + stepperHtml('seats', u.seats, STEPS.seats.lbl()) +
+    '<div class="sumcard" id="sumcard" role="status" aria-live="polite"></div>';
+  return {hdr:header({title:t('Залды баптау', 'Настройка зала'), back:true}), body:body, tabs:false,
+    sticky:'<button class="btn btn-primary" data-act="setupSave">' + t('Сақтау және отырғызу', 'Сохранить и рассадить') + '</button>', after:paintSetupSummary};
+}
+);
+function paintSetupSummary(){
+  var el = $('sumcard'); if (!el || !ui.setup) return;
+  var u = ui.setup, T = totals(state), cap = u.count * u.seats, free = cap - T.total;
+  var line = free >= 0 ? '<p class="ok-line" style="margin:8px 0 0">' + ic('check-circle-2') + t('Орын жетеді · ' + free + ' бос', 'Мест хватает · ' + free + ' свободно') + '</p>'
+    : '<p class="danger-line" style="margin:8px 0 0">' + ic('alert-triangle') + t((-free) + ' орын жетпейді · тағы ' + Math.ceil(-free / u.seats) + ' үстел керек', 'Не хватает ' + nSeats(-free) + ' · нужно ещё ' + nTables(Math.ceil(-free / u.seats))) + '</p>';
+  el.className = 'sumcard' + (free < 0 ? ' bad' : '');
+  el.innerHTML = '<div class="small ink2">' + t('Барлық орын', 'Всего мест') + '</div><div class="stat num">' + u.count + ' × ' + u.seats + ' = ' + cap + '</div><hr>' +
+    '<div>' + t('Қонақтар: ' + T.total + ' орын', 'Гости: ' + nSeats(T.total)) + '</div><div class="small ink2">' + t('(' + T.yes + ' келеді + ' + T.pend + ' күтілуде)', '(' + T.yes + ' придут + ' + T.pend + ' ожидается)') + '</div>' + line;
+}
+function setupSave(){
+  var u = ui.setup, before = state.hall ? Object.assign({}, state.hall) : null;
+  if (before && before.cols === u.cols && before.count === u.count && before.seats === u.seats) { ui.setup = null; goBack('/hall'); return; }
+  var dropped = state.families.filter(function(f){ return f.locked && f.table > u.count; });
+  var bf = dropped.map(famState);
+  dropped.forEach(function(f){ f.locked = false; f.lockedBy = null; f.table = null; });
+  state.hall = {cols:u.cols, count:u.count, seats:u.seats};
+  autoSeat(state);
+  var e = null;
+  if (before) e = addHist({kind:'hall', hallB:before, hallA:Object.assign({}, state.hall), before:{hall:before, fams:bf}, after:{hall:Object.assign({}, state.hall), fams:dropped.map(famState)}});
+  save(); ui.setup = null;
+  var msg = t('Зал өзгерді: ' + u.count + ' үстел × ' + u.seats + ' орын', 'Зал изменён: ' + nTables(u.count) + ' × ' + nSeats(u.seats));
+  var done = function(){ toast(msg, e ? function(){ undoEntry(e.id); refresh(); } : null); };
+  backTo('/hall', done);
+}
+
+/* ============ H5 order ============ */
+function catRange(cid){
+  var nums = {}; state.families.forEach(function(f){ if (f.cat === cid && f.table && seatsOf(f)) nums[f.table] = 1; });
+  var a = Object.keys(nums).map(Number).sort(function(x, y){ return x - y; }); if (!a.length) return '';
+  var parts = [], s = a[0], p = a[0];
+  for (var i = 1; i <= a.length; i++){ if (a[i] === p + 1) { p = a[i]; continue; } parts.push(s === p ? String(s) : s + '–' + p); s = p = a[i]; }
+  return parts.join(', ');
+}
+route(/^\/hall\/order$/, function(){
+  var ed = canEdit(), n = state.order.length;
+  var rows = state.order.map(function(cid, i){
+    var c = cat(cid), seats = state.families.filter(function(f){ return f.cat === cid; }).reduce(function(a, f){ return a + seatsOf(f); }, 0), rg = catRange(cid);
+    var sub = nSeats(seats) + (rg ? ' · ' + t(rg + '-үстел', (rg.indexOf(',') >= 0 || rg.indexOf('–') >= 0 ? 'столы ' : 'стол ') + rg) : '');
+    var btns = ed ? '<div class="obtns"><button class="btn-icon" data-act="ordMove" data-cat="' + cid + '" data-d="-1" aria-label="' + esc(c.kk) + ': ' + t('жоғары', 'вверх') + '"' + (i === 0 ? ' aria-disabled="true"' : '') + '>' + ic('chevron-up') + '</button>' +
+      '<button class="btn-icon" data-act="ordMove" data-cat="' + cid + '" data-d="1" aria-label="' + esc(c.kk) + ': ' + t('төмен', 'вниз') + '"' + (i === n - 1 ? ' aria-disabled="true"' : '') + '>' + ic('chevron-down') + '</button></div>'
+      : '<span class="small ink2">' + t('Тек көру', 'Только просмотр') + '</span>';
+    return '<div class="orow' + (ui.movedCat === cid ? ' moved' : '') + '"><span class="on">' + (i + 1) + '</span><span class="om" style="background:' + c.color + '" aria-hidden="true"></span><div class="ot"><div class="oname">' + esc(catNameRu(cid)) + '</div><div class="osub">' + sub + '</div></div>' + btns + '</div>';
+  }).join('');
+  var lockedN = state.families.filter(function(f){ return f.locked; }).length;
+  var body = (ed ? '' : '<div class="banner bn-view" style="margin-top:16px">' + ic('eye') + '<div><div class="bt">' + t('Сіз отырғызуды тек көресіз', 'Вы можете только смотреть рассадку') + '</div></div></div>') +
+    '<p class="small ink2" style="margin-top:16px">' + t('Жоғарыдағылар төрге жақын отырады. Ретін ↑ ↓ батырмаларымен өзгертіңіз.', 'Те, кто выше, сидят ближе к төру. Порядок меняйте кнопками ↑ ↓.') + '</p>' +
+    '<div class="box" style="padding:0">' + rows + '</div>' +
+    (lockedN ? '<p class="small ink2" style="display:flex;gap:8px;align-items:flex-start">' + ic('lock', 16) + '<span>' + t('Қолмен қойылған ' + lockedN + ' отбасы орнында қалады.', nFam(lockedN) + ', поставленных вручную, останутся на своих местах.') + '</span></p>' : '');
+  ui.movedCat = null;
+  return {hdr:header({title:t('Отырғызу реті', 'Порядок рассадки'), back:true}), body:body, tabs:false};
+});
+function ordMove(cid, d){
+  var o = state.order, i = o.indexOf(cid), j = i + d;
+  if (j < 0 || j >= o.length) return;
+  var before = o.slice(); o.splice(i, 1); o.splice(j, 0, cid);
+  autoSeat(state);
+  var e = addHist({kind:'reorder', cat:cid, fromPos:i + 1, toPos:j + 1, before:before, after:o.slice()});
+  save(); ui.movedCat = cid;
+  refresh();
+  var b = document.querySelector('[data-act="ordMove"][data-cat="' + cid + '"][data-d="' + d + '"]'); if (b) b.focus();
+  toast(t('Рет өзгерді: ' + catName(cid) + ' ' + (j + 1) + '-орында', 'Порядок изменён: ' + catName(cid) + ' на ' + (j + 1) + '-м месте'), function(){ undoEntry(e.id); refresh(); });
+}
+
+/* ============ H7 history ============ */
+route(/^\/hall\/history$/, function(){
+  var ed = canEdit(), body = '<p class="small ink2" style="margin-top:16px">' + t('Кім, қашан, не өзгертті. Кез келген өзгерісті қайтаруға болады.', 'Кто, когда и что изменил. Любое изменение можно вернуть.') + '</p>';
+  if (!state.history.length) body += '<div class="empty">' + motif(64, 32, .6) + '<p class="ink2">' + t('Әзірге өзгеріс жоқ', 'Изменений пока нет') + '</p></div>';
+  var day = null, open = false;
+  state.history.forEach(function(e){
+    var dl = dayLabel(e.ts);
+    if (dl !== day){ if (open) body += '</div>'; body += '<h3 class="hday">' + esc(dl.toUpperCase()) + '</h3><div class="box" style="padding:0">'; open = true; day = dl; }
+    var x = histText(e);
+    body += '<div class="hitem' + (e.undone ? ' undone' : '') + '"><div class="hw">' + hhmm(e.ts) + ' · ' + esc(whoName(e.who)) + '</div><div class="ht">' + esc(x.title) + '</div>' + (x.line ? '<div class="hl">' + esc(x.line) + '</div>' : '');
+    if (e.kind === 'answer'){
+      if (e.warnTable) body += '<div class="danger-line small">' + ic('alert-triangle', 20) + t(e.warnTable + '-үстелге ' + e.warnN + ' орын жетпейді', 'За столом ' + e.warnTable + ' не хватает ' + nSeats(e.warnN)) + '</div>';
+      body += '<div class="small ink2">' + t('(қонақтың жауабын қайтаруға болмайды)', '(ответ гостя вернуть нельзя)') + '</div>';
+    } else if (e.undone){
+      body += '<div class="small ink2">' + t('Қайтарылды', 'Возвращено') + ' · ' + hhmm(e.undone.ts) + ' · ' + esc(roleName(e.undone.who)) + '</div>';
+    } else if (ed){
+      body += '<button class="btn btn-sec btn-sm" data-act="histUndo" data-id="' + e.id + '">' + ic('undo-2') + t('Қайтару', 'Вернуть') + '</button>';
+    }
+    body += '</div>';
+  });
+  if (open) body += '</div>';
+  if (state.history.length) body += '<p class="small ink2">' + t('Қайтарылған өзгеріс сызылып тұрады', 'Отменённое изменение показано зачёркнутым') + '</p>';
+  return {hdr:header({title:t('Өзгерістер тарихы', 'История изменений'), back:true}), body:body, tabs:false};
+});
+
+/* ============ H4 move ============ */
+route(/^\/hall\/move\/(\w+)$/, function(m){
+  if (!canEdit() || !state.hall) return {redirect:'/hall'};
+  var f = fam(m[1]); if (!f || !seatsOf(f)) return {redirect:'/hall'};
+  var S = tableStats(state), need = seatsOf(f);
+  var fit = S.tables.filter(function(tb){ return tb.num !== f.table && tb.cap - tb.used >= need; });
+  var other = S.tables.filter(function(tb){ return tb.num !== f.table && tb.cap - tb.used < need; });
+  var row = function(tb){ var fr = Math.max(0, tb.cap - tb.used); return '<button class="btn btn-sec" data-act="moveTo" data-num="' + tb.num + '"><span>' + tbl(tb.num) + ' · ' + t(fr + ' бос', fr + ' свободно') + '</span>' + ic('chevron-right') + '</button>'; };
+  var body = '<p style="font-weight:600;margin:16px 0 0">' + esc(f.name) + ' · ' + nSeats(need) + '</p>' +
+    '<p class="small ink2" style="margin:0">' + (f.table ? t('Қазір: ' + f.table + '-үстел', 'Сейчас: стол ' + f.table) : t('Қазір: әлі отырғызылмаған', 'Сейчас: ещё не рассажен')) + '</p>' +
+    '<p class="small ink2" style="margin:0">' + t('Жасыл үстелдерде ' + need + ' орын бос.', 'За зелёными столами есть ' + nSeats(need) + ' свободно.') + '</p>' +
+    '<div class="hallbox">' + hallSvg({mode:'move', fid:f.id}) + '</div>' +
+    '<p class="flabel" style="margin-top:16px">' + t('Бос орны жеткілікті үстелдер:', 'Столы, где хватает мест:') + '</p><div class="mlist">' + (fit.length ? fit.map(row).join('') : '<p class="small ink2">—</p>') + '</div>' +
+    (other.length ? '<button class="disclose" data-act="moveOthers" aria-expanded="' + ui.moveOthers + '">' + t('Басқа үстелдер (орын жетпейді)', 'Другие столы (мест не хватает)') + ic(ui.moveOthers ? 'chevron-up' : 'chevron-down') + '</button>' + (ui.moveOthers ? '<div class="mlist">' + other.map(row).join('') + '</div>' : '') : '');
+  return {hdr:header({title:t('Қай үстелге?', 'За какой стол?'), close:'moveCancel'}), body:body, tabs:false};
+});
+function openMoveConfirm(fid, num){
+  ui.mv = {fid:fid, num:num};
+  openSheet('confirm', function(){
+    var f = fam(ui.mv.fid), S = tableStats(state), tb = S.byNum[ui.mv.num], need = seatsOf(f), free = tb.cap - tb.used, ok = free >= need;
+    var body = '<p style="margin-top:0">' + esc(f.name) + ' (' + nSeats(need) + ')</p><p style="font-size:1.25rem;font-weight:700;display:flex;gap:10px;align-items:center">' + (f.table ? tbl(f.table) : '—') + ' ' + ic('arrow-right') + ' ' + tbl(tb.num) + '</p>' +
+      (ok ? '<p class="ok-line">' + t(tb.num + '-үстелде ' + free + ' орын бос.', 'За столом ' + tb.num + ' свободно ' + nSeats(free) + '.') + '</p>'
+        : '<p class="danger-line">' + ic('alert-triangle') + t(tb.num + '-үстелге ' + (need - Math.max(0, free)) + ' орын жетпейді', 'За столом ' + tb.num + ' не хватит ' + nSeats(need - Math.max(0, free))) + '</p>');
+    return {title:t('Ауыстыру керек пе?', 'Перенести?'), body:body,
+      foot:'<button class="btn btn-primary" data-act="moveYes">' + (ok ? t('Иә, ауыстыру', 'Да, перенести') : t('Бәрібір ауыстыру', 'Всё равно перенести')) + '</button><button class="btn btn-sec" data-act="sheetClose">' + t('Жоқ', 'Нет') + '</button>'};
+  });
+}
+function doMove(fid, num){
+  var f = fam(fid), before = [famState(f)], from = f.table;
+  f.table = num; f.locked = true; f.lockedBy = state.role; f.seq = state.seq++;
+  var e = addHist({kind:'move', names:[f.name], from:from, to:num, before:before, after:[famState(f)]});
+  save();
+  return e;
+}
+
+/* ============ actions ============ */
+var A = {};
+function act(name, el, ev){ var fn = A[name]; if (fn) fn(el, ev); }
+document.addEventListener('click', function(e){
+  var el = e.target.closest('[data-act]'); if (!el) return;
+  if (el.getAttribute('aria-disabled') === 'true') { e.preventDefault(); return; }
+  if (el.tagName === 'INPUT' && el.type === 'checkbox') { act(el.dataset.act, el, e); return; }
+  e.preventDefault();
+  act(el.dataset.act, el, e);
+});
+document.addEventListener('input', function(e){
+  var k = e.target.dataset && e.target.dataset.input; if (!k) return;
+  var v = e.target.value;
+  if (k === 'search') { ui.search = v; var gl = $('glist'); if (gl) gl.innerHTML = guestListHtml(state.families.filter(function(f){ return f.list === state.role; })); }
+  else if (k === 'name') { ui.form.name = v; if (ui.form.err.name && v.trim()) { ui.form.err.name = false; paintFormErrors(); } }
+  else if (k === 'phone') {
+    var d = normPhone(v), had = !!ui.form.err.phone; ui.form.phone = d;
+    var f = fmtPhone(d); if (e.target.value !== f) { e.target.value = f; try { e.target.setSelectionRange(f.length, f.length); } catch (x) {} }
+    if (had) { ui.form.err.phone = null; paintFormErrors(); }
+  }
+  else if (k === 'ncname') { ui.nc.name = v; if (ui.nc.err) { ui.nc.err = null; var cur = e.target.selectionStart; paintSheet(); var i = $('in-cat'); i.focus(); try { i.setSelectionRange(cur, cur); } catch (x) {} } }
+});
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Enter' && e.target.id === 'in-name') { e.preventDefault(); $('in-phone').focus(); }
+  else if (e.key === 'Enter' && e.target.id === 'in-phone') { e.preventDefault(); e.target.blur(); }
+  else if (e.key === 'Enter' && e.target.id === 'in-cat') { e.preventDefault(); saveNewCat(); }
+  else if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('step-input')) { e.preventDefault(); e.target.blur(); }
+});
+
+A.lang = function(el){ lang = el.dataset.v; sSet(LKEY, lang); refresh(); };
+A.back = function(){
+  if (isFormPath(curPath) && formDirty()) { openLeaveSheet(); return; }
+  if (isFormPath(curPath)) ui.allowLeave = true;
+  var parent = curPath.indexOf('/hall') === 0 ? '/hall' : '/guests';
+  if (curPath === '/hall/setup') ui.setup = null;
+  goBack(parent);
+};
+A.leaveYes = function(){ ui.allowLeave = true; var mode = ui.form && ui.form.mode; ui.form = null; closeSheetDom(); backTo('/guests'); };
+A.tab = function(el){ var p = el.dataset.v; if (curPath === p) { window.scrollTo(0, 0); return; } if (isFormPath(curPath) && formDirty()) { openLeaveSheet(); return; } go(p); };
+A.nav = function(el){ if (el.dataset.v === '/hall/setup') ui.setup = null; go(el.dataset.v); };
+A.sheetClose = function(){
+  if (sheetCtx && sheetCtx.name === 'guest' && ui.gs && ui.gs.del) { ui.gs.del = false; paintSheet(); return; }
+  if (sheetCtx && sheetCtx.name === 'dups' && ui.dd) { ui.dd = null; paintSheet(); return; }
+  closeSheet();
+};
+A.toastUndo = function(){ var u = toastUndo; hideToast(); if (u) u(); };
+
+/* start */
+A.startRole = function(el){ ui.startRole = el.dataset.v; refresh(); var b = document.querySelector('[data-act="startRole"][data-v="' + el.dataset.v + '"]'); if (b) b.focus(); };
+A.startEmpty = function(el){ ui.startEmpty = el.checked; };
+A.startGo = function(){
+  var r = ui.startRole || 'ake';
+  if (ui.startEmpty && !state.emptyMode) state = makeEmpty();
+  else if (!ui.startEmpty && state.emptyMode) state = makeSample();
+  state.role = r; state.started = true; save();
+  ui.loadedGuests = false; ui.loadedHall = false; ui.filter = null; ui.search = ''; ui.form = null; ui.dup = null; ui.setup = null; ui.expanded = {};
+  ui.startRole = null; ui.startEmpty = null;
+  go('/guests', {replace:true});
+};
+A.startReset = function(){
+  sDel(KEY);
+  var r = ui.startRole || 'ake';
+  state = makeSample(); state.role = r; ui.startEmpty = false;
+  refresh();
+  toast(t('Деректер қалпына келтірілді', 'Данные сброшены'));
+};
+
+/* guests */
+A.filter = function(el){ var v = el.dataset.v; ui.filter = ui.filter === v ? null : v; refresh(); var b = document.querySelector('[data-act="filter"][data-v="' + v + '"]'); if (b) b.focus({preventScroll:true}); };
+A.filterOff = function(){ ui.filter = null; refresh(); };
+A.goNoAnswer = function(){ go('/guests/no-answer'); };
+A.addGuest = function(){ ui.form = newForm(); ui.allowLeave = false; go('/guests/add'); };
+A.addGuestQ = function(){ ui.form = newForm(ui.search.trim()); ui.allowLeave = false; go('/guests/add'); };
+A.guest = function(el){ openGuestSheet(el.dataset.id); };
+A.wa = function(el){ openWa(el.dataset.id, el.dataset.k, el.dataset.o); };
+A.waDone = waDone;
+
+/* form */
+A.pickCat = function(el){
+  ui.form.cat = el.dataset.v;
+  document.querySelectorAll('[data-act="pickCat"]').forEach(function(b){
+    var on = b.dataset.v === ui.form.cat; b.setAttribute('aria-checked', on);
+    var ck = b.querySelector('.ic'); if (on && !ck) b.insertAdjacentHTML('afterbegin', ic('check', 20)); if (!on && ck) ck.remove();
+  });
+};
+A.newCat = function(){ openNewCat(); setTimeout(function(){ var i = $('in-cat'); if (i) i.focus(); }, 260); };
+A.ncAfter = function(el){ ui.nc.after = el.dataset.v; paintSheet(); var b = document.querySelector('[data-act="ncAfter"][data-v="' + el.dataset.v + '"]'); if (b) b.focus(); };
+A.ncSave = saveNewCat;
+A.step = function(el){
+  var k = el.dataset.k, S = STEPS[k], d = +el.dataset.d, v = S.get() + d;
+  if (v < S.min || v > S.max) { try { if (navigator.vibrate) navigator.vibrate(30); } catch (x) {} stepMsg(k, v < S.min ? S.lo() : S.hi()); return; }
+  S.set(v); stepUpdate(k);
+};
+A.stepEdit = function(el){
+  var k = el.dataset.k, S = STEPS[k];
+  el.innerHTML = '<input class="step-input" type="text" inputmode="numeric" pattern="[0-9]*" value="' + S.get() + '" aria-label="' + esc(S.lbl()) + '">';
+  var i = el.querySelector('input'); i.focus(); i.select();
+  i.addEventListener('click', function(ev){ ev.stopPropagation(); });
+  i.addEventListener('blur', function(){
+    var v = parseInt(i.value.replace(/\D/g, ''), 10);
+    if (isNaN(v)) v = S.get();
+    if (v < S.min) { stepMsg(k, S.lo()); v = S.min; } if (v > S.max) { stepMsg(k, S.hi()); v = S.max; }
+    S.set(v); stepUpdate(k);
+  });
+};
+A.submitGuest = function(){ submitGuest(); };
+A.simSame = function(){
+  var d = fam(ui.sims[0]); ui.allowLeave = true; ui.form = null; closeSheetDom();
+  backTo('/guests', function(){ toast(t('Қосылмады: ' + d.name + ' тізімде бар', 'Не добавлено: ' + d.name + ' уже в списке')); });
+};
+A.simOther = function(){ commitGuest(ui.sims || []); };
+A.addMore = function(){ ui.form = newForm(); closeSheet(function(){ var i = $('in-name'); if (i) { i.value = ''; i.focus(); } }); };
+A.toList = function(){ var id = ui.lastAdded; ui.allowLeave = true; ui.form = null; closeSheetDom(); backTo('/guests', function(){ ui.highlight = id; refresh(); }); };
+
+/* guest sheet */
+A.gYes = function(){ var g = fam(ui.gs.id); ui.gs.yes = !ui.gs.yes; ui.gs.n = g.status === 'yes' ? g.confirmed : g.expected; paintSheet(); };
+A.gYesSave = function(){
+  var g = fam(ui.gs.id), snap = snapshot(), n = ui.gs.n, nm = g.name;
+  g.status = 'yes'; g.confirmed = n; g.answeredBy = 'member'; g.respondedAt = Date.now();
+  autoSeat(state); save();
+  closeSheet(function(){ toast(t(nm + ': келеді, ' + n + ' орын', nm + ': придут, ' + nSeats(n)), function(){ restore(snap); refresh(); }); });
+};
+A.gNo = function(){
+  var g = fam(ui.gs.id), snap = snapshot(), nm = g.name;
+  g.status = 'no'; g.answeredBy = 'member'; g.respondedAt = Date.now();
+  autoSeat(state); save();
+  closeSheet(function(){ toast(t(nm + ': келмейді', nm + ': не придут'), function(){ restore(snap); refresh(); }); });
+};
+A.gEdit = function(){ var id = ui.gs.id; ui.form = null; ui.allowLeave = false; sheetGo('/guests/edit/' + id); };
+A.gDel = function(){ ui.gs.del = true; paintSheet(); };
+A.gDelNo = function(){ ui.gs.del = false; paintSheet(); };
+A.gDelYes = function(){
+  var g = fam(ui.gs.id), snap = snapshot(), nm = g.name;
+  state.families = state.families.filter(function(x){ return x.id !== g.id; });
+  save(); /* deletion frees seats; no reshuffle (P11, 4.16) */
+  closeSheet(function(){ toast(t(nm + ' өшірілді', nm + ' удалены из списка'), function(){ restore(snap); refresh(); }); });
+};
+
+/* hall */
+A.hallMode = function(el){ ui.hallMode = el.dataset.v; refresh(); };
+A.expand = function(el){ var n = el.dataset.num; ui.expanded[n] = !ui.expanded[n]; refresh(); var b = document.querySelector('[data-act="expand"][data-num="' + n + '"]'); if (b) b.focus({preventScroll:true}); };
+A.table = function(el){
+  var n = +el.dataset.num; el.classList.add('tap');
+  setTimeout(function(){ el.classList.remove('tap'); openTableSheet(n); }, 120);
+};
+A.couple = function(el){
+  if (el.classList) el.classList.add('tap');
+  setTimeout(function(){
+    if (el.classList) el.classList.remove('tap');
+    openSheet('couple', function(){ return {title:t('Жастар үстелі · Айбек пен Дана', 'Стол молодых · Айбек пен Дана'), body:'<div class="center">' + motif(64, 32) + '<p>' + t('Жастар төрде отырады', 'Молодые сидят на төре') + '</p></div>', foot:'<button class="btn btn-sec" data-act="sheetClose">' + t('Жабу', 'Закрыть') + '</button>'}; });
+  }, 120);
+};
+A.overBanner = function(){
+  var S = tableStats(state), nums = S.over.map(function(tb){ return tb.num; });
+  if (nums.length > 1 && ui.hallMode === 'schema') { var sc = $('schema'); if (sc) sc.scrollIntoView({block:'start'}); }
+  openTableSheet(nums[0], nums.length > 1 ? nums : null);
+};
+A.nextTable = function(el){ ui.tsNum = +el.dataset.num; paintSheet(true); };
+A.unplaced = openUnplaced;
+A.addTables = function(el){ var n = +el.dataset.n || 1; ui.setup = Object.assign({}, state.hall); ui.setup.count = Math.min(40, ui.setup.count + n); sheetGo('/hall/setup'); };
+A.dupBanner = openDupSheet;
+A.dupShow = function(el){
+  var p = dupPairs(state)[+el.dataset.i]; ui.dup = [p[0].id, p[1].id]; ui.hallMode = 'schema';
+  closeSheet(function(){ var sc = $('schema'); if (sc) sc.scrollIntoView({block:'start'}); });
+};
+A.dupOff = function(){ ui.dup = null; refresh(); };
+A.dupKeep = function(el){
+  var p = dupPairs(state)[+el.dataset.i], snap = snapshot();
+  state.checked.push(pairKey(p[0].id, p[1].id)); save(); ui.dup = null;
+  closeSheet(function(){ toast(t('Жарайды, екеуі де қалды', 'Хорошо, оба остались'), function(){ restore(snap); refresh(); }); });
+};
+A.dupDelOne = function(el){ var p = dupPairs(state)[+el.dataset.i]; ui.dd = {pair:[p[0].id, p[1].id], pick:p[0].id}; paintSheet(true); };
+A.ddPick = function(el){ ui.dd.pick = el.dataset.v; paintSheet(); var b = document.querySelector('[data-act="ddPick"][data-v="' + el.dataset.v + '"]'); if (b) b.focus(); };
+A.ddBack = function(){ ui.dd = null; paintSheet(true); };
+A.ddDelete = function(){
+  var g = fam(ui.dd.pick), snap = snapshot(), nm = g.name;
+  state.families = state.families.filter(function(x){ return x.id !== g.id; });
+  save(); /* deletion frees seats; no reshuffle (P11, 4.16) */ ui.dd = null; ui.dup = null;
+  closeSheet(function(){ toast(t(nm + ' өшірілді', nm + ' удалены'), function(){ restore(snap); refresh(); }); });
+};
+A.move = function(el){ ui.moveOthers = false; sheetGo('/hall/move/' + el.dataset.id); };
+A.moveOthers = function(){ ui.moveOthers = !ui.moveOthers; refresh(); };
+A.moveCancel = function(){ goBack('/hall'); };
+A.moveTo = function(el){
+  var m = /^\/hall\/move\/(\w+)$/.exec(curPath); if (!m) return;
+  var n = +el.dataset.num;
+  if (el.tagName !== 'BUTTON') { el.classList.add('tap'); setTimeout(function(){ el.classList.remove('tap'); openMoveConfirm(m[1], n); }, 120); }
+  else openMoveConfirm(m[1], n);
+};
+A.moveYes = function(){
+  var e = doMove(ui.mv.fid, ui.mv.num), f = fam(ui.mv.fid);
+  var msg = t(f.name + ' ' + ui.mv.num + '-үстелге ауыстырылды', f.name + ' перенесены за стол ' + ui.mv.num);
+  closeSheetDom();
+  backTo('/hall', function(){ toast(msg, function(){ undoEntry(e.id); refresh(); }); });
+};
+A.unlock = function(el){
+  var f = fam(el.dataset.id), before = [famState(f)], from = f.table;
+  f.locked = false; f.lockedBy = null;
+  autoSeat(state);
+  var e = addHist({kind:'unlock', names:[f.name], from:from, to:from, before:before, after:[famState(f)]});
+  save();
+  closeSheet(function(){ toast(t(f.name + ': автоматқа қайтарылды' + (f.table ? ' · ' + f.table + '-үстел' : ''), f.name + ': возвращено автоматике' + (f.table ? ' · стол ' + f.table : '')), function(){ undoEntry(e.id); refresh(); }); });
+};
+A.setCols = function(el){ ui.setup.cols = +el.dataset.v; refresh(); var b = document.querySelector('[data-act="setCols"][data-v="' + el.dataset.v + '"]'); if (b) b.focus(); };
+A.setupSave = setupSave;
+A.ordMove = function(el){ ordMove(el.dataset.cat, +el.dataset.d); };
+A.histUndo = function(el){
+  var ne = undoEntry(el.dataset.id); if (!ne) return;
+  refresh();
+  toast(histToast(ne), function(){ undoEntry(ne.id); refresh(); });
+};
+
+/* ============ boot ============ */
+(function(){
+  var r = parseRoute();
+  try { history.replaceState({idx:0}, '', location.href.split('#')[0] + '#' + (r.path || (state.started ? '/guests' : '/start'))); navStack[0] = '#' + (r.path || (state.started ? '/guests' : '/start')); }
+  catch (e) { canPush = false; }
+  render();
+})();
+</script>
+</body>
+</html>

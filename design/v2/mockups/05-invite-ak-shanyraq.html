@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F4ECDD">
+<title>Шақыру «Ақ шаңырақ» · Той v2</title>
+<!-- Шрифты: свои woff2-подмножества (≈ 30 КБ на два файла); preload только Cormorant — имя семьи на конверте = LCP -->
+<!-- в продукте (https): <link rel="preload" href="/fonts/cormorant-garamond-600-kk.woff2" as="font" type="font/woff2" crossorigin>
+     в статичном макете выключено: file:// блокирует CORS-preload; сам шрифт грузится через @font-face в invite.css -->
+<link rel="stylesheet" href="css/invite.css">
+</head>
+<body class="inv tpl-ak">
+<!-- ===== Конверт: первый экран. Нажатие «Ашу» запускает музыку (автозапуск запрещён браузерами) ===== -->
+<section class="scene" aria-label="Шақыру конверті">
+  <div class="scene-decor">
+    <svg class="corner c-tl draw" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner c-tr draw" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner c-bl draw" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner c-br draw" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg>
+  </div>
+  <div class="scene-inner">
+    <p class="env-hello">Сізге тойға шақыру келді</p>
+    <p class="env-to">Ерлан ағай отбасы</p>
+    <div class="env" aria-hidden="true">
+      <div class="env-back"><svg viewBox="0 0 400 282" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="lp-ak" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(0)"><path d="M20 26 C20 20 17 16 13 15 C9 14 6 17 7 20 C8 22 11 22 11 20 M20 26 C20 20 23 16 27 15 C31 14 34 17 33 20 C32 22 29 22 29 20 M20 26 V10" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></pattern></defs><rect width="400" height="282" fill="url(#lp-ak)"/></svg></div>
+      <div class="letter"><span class="l-kick">Үйлену тойы</span><span class="l-names">Айбек пен Дана</span><svg class="" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg></div>
+      <div class="pocket"></div>
+      <div class="flap"><i class="f"></i><i class="b"></i></div>
+      <span class="seal-glow"></span>
+      <span class="seal"><span class="mono">А<i></i>Д</span></span>
+    </div>
+    <button class="open-btn" id="open">Ашу</button>
+    <p class="env-hint" id="hint"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Ашқанда музыка қосылады</p>
+    <div class="lang-pill" role="group" aria-label="Тіл"><button aria-pressed="true">ҚАЗ</button><button aria-pressed="false">РУС</button></div>
+  </div>
+</section>
+
+<!-- ===== Приглашение ===== -->
+<div class="page-bg"></div>
+<div class="side-decor l" aria-hidden="true" data-ambient><svg viewBox="0 0 400 1000" preserveAspectRatio="xMinYMin slice" width="100%" height="100%" aria-hidden="true">
+<g class="draw" opacity=".75"><g transform="translate(40 250) scale(3.4)" fill="none" stroke="currentColor" stroke-width="0.35" stroke-linecap="round"><path pathLength="1" d="M0 -40 A40 40 0 1 1 0 40 A40 40 0 1 1 0 -40"/><path pathLength="1" class="d2" d="M0 -34 A34 34 0 1 0 0 34 A34 34 0 1 0 0 -34"/><path pathLength="1" class="d3" d="M-13 -31.4 Q-18 0 -13 31.4"/><path pathLength="1" class="d3" d="M13 -31.4 Q18 0 13 31.4"/><path pathLength="1" class="d4" d="M-31.4 -13 Q0 -18 31.4 -13"/><path pathLength="1" class="d4" d="M-31.4 13 Q0 18 31.4 13"/><path pathLength="1" class="ray" style="--dd:600ms" d="M45.00 0.00 L62.00 0.00"/><path pathLength="1" class="ray" style="--dd:625ms" d="M44.14 8.78 L53.94 10.73"/><path pathLength="1" class="ray" style="--dd:650ms" d="M41.57 17.22 L57.28 23.73"/><path pathLength="1" class="ray" style="--dd:675ms" d="M37.42 25.00 L45.73 30.56"/><path pathLength="1" class="ray" style="--dd:700ms" d="M31.82 31.82 L43.84 43.84"/><path pathLength="1" class="ray" style="--dd:725ms" d="M25.00 37.42 L30.56 45.73"/><path pathLength="1" class="ray" style="--dd:750ms" d="M17.22 41.57 L23.73 57.28"/><path pathLength="1" class="ray" style="--dd:775ms" d="M8.78 44.14 L10.73 53.94"/><path pathLength="1" class="ray" style="--dd:800ms" d="M0.00 45.00 L0.00 62.00"/><path pathLength="1" class="ray" style="--dd:825ms" d="M-8.78 44.14 L-10.73 53.94"/><path pathLength="1" class="ray" style="--dd:850ms" d="M-17.22 41.57 L-23.73 57.28"/><path pathLength="1" class="ray" style="--dd:875ms" d="M-25.00 37.42 L-30.56 45.73"/><path pathLength="1" class="ray" style="--dd:900ms" d="M-31.82 31.82 L-43.84 43.84"/><path pathLength="1" class="ray" style="--dd:925ms" d="M-37.42 25.00 L-45.73 30.56"/><path pathLength="1" class="ray" style="--dd:950ms" d="M-41.57 17.22 L-57.28 23.73"/><path pathLength="1" class="ray" style="--dd:975ms" d="M-44.14 8.78 L-53.94 10.73"/><path pathLength="1" class="ray" style="--dd:1000ms" d="M-45.00 0.00 L-62.00 0.00"/><path pathLength="1" class="ray" style="--dd:1025ms" d="M-44.14 -8.78 L-53.94 -10.73"/><path pathLength="1" class="ray" style="--dd:1050ms" d="M-41.57 -17.22 L-57.28 -23.73"/><path pathLength="1" class="ray" style="--dd:1075ms" d="M-37.42 -25.00 L-45.73 -30.56"/><path pathLength="1" class="ray" style="--dd:1100ms" d="M-31.82 -31.82 L-43.84 -43.84"/><path pathLength="1" class="ray" style="--dd:1125ms" d="M-25.00 -37.42 L-30.56 -45.73"/><path pathLength="1" class="ray" style="--dd:1150ms" d="M-17.22 -41.57 L-23.73 -57.28"/><path pathLength="1" class="ray" style="--dd:1175ms" d="M-8.78 -44.14 L-10.73 -53.94"/><path pathLength="1" class="ray" style="--dd:1200ms" d="M-0.00 -45.00 L-0.00 -62.00"/><path pathLength="1" class="ray" style="--dd:1225ms" d="M8.78 -44.14 L10.73 -53.94"/><path pathLength="1" class="ray" style="--dd:1250ms" d="M17.22 -41.57 L23.73 -57.28"/><path pathLength="1" class="ray" style="--dd:1275ms" d="M25.00 -37.42 L30.56 -45.73"/><path pathLength="1" class="ray" style="--dd:1300ms" d="M31.82 -31.82 L43.84 -43.84"/><path pathLength="1" class="ray" style="--dd:1325ms" d="M37.42 -25.00 L45.73 -30.56"/><path pathLength="1" class="ray" style="--dd:1350ms" d="M41.57 -17.22 L57.28 -23.73"/><path pathLength="1" class="ray" style="--dd:1375ms" d="M44.14 -8.78 L53.94 -10.73"/></g></g>
+<path class="draw" d="M150 470 V1000" fill="none" stroke="currentColor" stroke-width="1" pathLength="1"/>
+<g opacity=".85"><g transform="translate(150 520) scale(.9)"><svg x="-60" y="-32" width="120" height="64" class="draw" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg></g><g transform="translate(150 640) scale(.9)"><svg x="-60" y="-32" width="120" height="64" class="draw" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg></g><g transform="translate(150 760) scale(.9)"><svg x="-60" y="-32" width="120" height="64" class="draw" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg></g><g transform="translate(150 880) scale(.9)"><svg x="-60" y="-32" width="120" height="64" class="draw" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg></g></g></svg></div>
+<div class="side-decor r" aria-hidden="true" data-ambient><svg viewBox="0 0 400 1000" preserveAspectRatio="xMinYMin slice" width="100%" height="100%" aria-hidden="true">
+<g class="draw" opacity=".75"><g transform="translate(40 250) scale(3.4)" fill="none" stroke="currentColor" stroke-width="0.35" stroke-linecap="round"><path pathLength="1" d="M0 -40 A40 40 0 1 1 0 40 A40 40 0 1 1 0 -40"/><path pathLength="1" class="d2" d="M0 -34 A34 34 0 1 0 0 34 A34 34 0 1 0 0 -34"/><path pathLength="1" class="d3" d="M-13 -31.4 Q-18 0 -13 31.4"/><path pathLength="1" class="d3" d="M13 -31.4 Q18 0 13 31.4"/><path pathLength="1" class="d4" d="M-31.4 -13 Q0 -18 31.4 -13"/><path pathLength="1" class="d4" d="M-31.4 13 Q0 18 31.4 13"/><path pathLength="1" class="ray" style="--dd:600ms" d="M45.00 0.00 L62.00 0.00"/><path pathLength="1" class="ray" style="--dd:625ms" d="M44.14 8.78 L53.94 10.73"/><path pathLength="1" class="ray" style="--dd:650ms" d="M41.57 17.22 L57.28 23.73"/><path pathLength="1" class="ray" style="--dd:675ms" d="M37.42 25.00 L45.73 30.56"/><path pathLength="1" class="ray" style="--dd:700ms" d="M31.82 31.82 L43.84 43.84"/><path pathLength="1" class="ray" style="--dd:725ms" d="M25.00 37.42 L30.56 45.73"/><path pathLength="1" class="ray" style="--dd:750ms" d="M17.22 41.57 L23.73 57.28"/><path pathLength="1" class="ray" style="--dd:775ms" d="M8.78 44.14 L10.73 53.94"/><path pathLength="1" class="ray" style="--dd:800ms" d="M0.00 45.00 L0.00 62.00"/><path pathLength="1" class="ray" style="--dd:825ms" d="M-8.78 44.14 L-10.73 53.94"/><path pathLength="1" class="ray" style="--dd:850ms" d="M-17.22 41.57 L-23.73 57.28"/><path pathLength="1" class="ray" style="--dd:875ms" d="M-25.00 37.42 L-30.56 45.73"/><path pathLength="1" class="ray" style="--dd:900ms" d="M-31.82 31.82 L-43.84 43.84"/><path pathLength="1" class="ray" style="--dd:925ms" d="M-37.42 25.00 L-45.73 30.56"/><path pathLength="1" class="ray" style="--dd:950ms" d="M-41.57 17.22 L-57.28 23.73"/><path pathLength="1" class="ray" style="--dd:975ms" d="M-44.14 8.78 L-53.94 10.73"/><path pathLength="1" class="ray" style="--dd:1000ms" d="M-45.00 0.00 L-62.00 0.00"/><path pathLength="1" class="ray" style="--dd:1025ms" d="M-44.14 -8.78 L-53.94 -10.73"/><path pathLength="1" class="ray" style="--dd:1050ms" d="M-41.57 -17.22 L-57.28 -23.73"/><path pathLength="1" class="ray" style="--dd:1075ms" d="M-37.42 -25.00 L-45.73 -30.56"/><path pathLength="1" class="ray" style="--dd:1100ms" d="M-31.82 -31.82 L-43.84 -43.84"/><path pathLength="1" class="ray" style="--dd:1125ms" d="M-25.00 -37.42 L-30.56 -45.73"/><path pathLength="1" class="ray" style="--dd:1150ms" d="M-17.22 -41.57 L-23.73 -57.28"/><path pathLength="1" class="ray" style="--dd:1175ms" d="M-8.78 -44.14 L-10.73 -53.94"/><path pathLength="1" class="ray" style="--dd:1200ms" d="M-0.00 -45.00 L-0.00 -62.00"/><path pathLength="1" class="ray" style="--dd:1225ms" d="M8.78 -44.14 L10.73 -53.94"/><path pathLength="1" class="ray" style="--dd:1250ms" d="M17.22 -41.57 L23.73 -57.28"/><path pathLength="1" class="ray" style="--dd:1275ms" d="M25.00 -37.42 L30.56 -45.73"/><path pathLength="1" class="ray" style="--dd:1300ms" d="M31.82 -31.82 L43.84 -43.84"/><path pathLength="1" class="ray" style="--dd:1325ms" d="M37.42 -25.00 L45.73 -30.56"/><path pathLength="1" class="ray" style="--dd:1350ms" d="M41.57 -17.22 L57.28 -23.73"/><path pathLength="1" class="ray" style="--dd:1375ms" d="M44.14 -8.78 L53.94 -10.73"/></g></g>
+<path class="draw" d="M150 470 V1000" fill="none" stroke="currentColor" stroke-width="1" pathLength="1"/>
+<g opacity=".85"><g transform="translate(150 520) scale(.9)"><svg x="-60" y="-32" width="120" height="64" class="draw" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg></g><g transform="translate(150 640) scale(.9)"><svg x="-60" y="-32" width="120" height="64" class="draw" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg></g><g transform="translate(150 760) scale(.9)"><svg x="-60" y="-32" width="120" height="64" class="draw" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg></g><g transform="translate(150 880) scale(.9)"><svg x="-60" y="-32" width="120" height="64" class="draw" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg></g></g></svg></div>
+<div class="inv-bar">
+  <div class="lang-pill" role="group" aria-label="Тіл"><button aria-pressed="true">ҚАЗ</button><button aria-pressed="false">РУС</button></div>
+  <button class="pill-btn" aria-label="Музыканы өшіру" aria-pressed="true"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>Музыка</button>
+</div>
+
+<main class="invite">
+  <div class="inv-col paper">
+    <header class="hero">
+      <div class="kicker">Үйлену тойы</div>
+      <div class="arch-wrap">
+        <div class="arch" data-ambient><svg class="cover" viewBox="0 0 300 370" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8ECD8"/><stop offset=".55" stop-color="#F2D6AE"/><stop offset="1" stop-color="#E7B98C"/></linearGradient>
+<radialGradient id="sn" cx=".5" cy=".55" r=".5"><stop offset="0" stop-color="#FFF6E2"/><stop offset=".45" stop-color="#FCE5BC" stop-opacity=".9"/><stop offset="1" stop-color="#FCE5BC" stop-opacity="0"/></radialGradient></defs>
+<rect width="300" height="370" fill="url(#sk)"/><circle cx="150" cy="196" r="120" fill="url(#sn)"/>
+<g class="draw" style="color:#B48A3E"><g transform="translate(150 196) scale(1.25)" fill="none" stroke="currentColor" stroke-width="1.20" stroke-linecap="round"><path pathLength="1" d="M0 -40 A40 40 0 1 1 0 40 A40 40 0 1 1 0 -40"/><path pathLength="1" class="d2" d="M0 -34 A34 34 0 1 0 0 34 A34 34 0 1 0 0 -34"/><path pathLength="1" class="d3" d="M-13 -31.4 Q-18 0 -13 31.4"/><path pathLength="1" class="d3" d="M13 -31.4 Q18 0 13 31.4"/><path pathLength="1" class="d4" d="M-31.4 -13 Q0 -18 31.4 -13"/><path pathLength="1" class="d4" d="M-31.4 13 Q0 18 31.4 13"/><path pathLength="1" class="ray" style="--dd:600ms" d="M45.00 0.00 L62.00 0.00"/><path pathLength="1" class="ray" style="--dd:625ms" d="M44.14 8.78 L53.94 10.73"/><path pathLength="1" class="ray" style="--dd:650ms" d="M41.57 17.22 L57.28 23.73"/><path pathLength="1" class="ray" style="--dd:675ms" d="M37.42 25.00 L45.73 30.56"/><path pathLength="1" class="ray" style="--dd:700ms" d="M31.82 31.82 L43.84 43.84"/><path pathLength="1" class="ray" style="--dd:725ms" d="M25.00 37.42 L30.56 45.73"/><path pathLength="1" class="ray" style="--dd:750ms" d="M17.22 41.57 L23.73 57.28"/><path pathLength="1" class="ray" style="--dd:775ms" d="M8.78 44.14 L10.73 53.94"/><path pathLength="1" class="ray" style="--dd:800ms" d="M0.00 45.00 L0.00 62.00"/><path pathLength="1" class="ray" style="--dd:825ms" d="M-8.78 44.14 L-10.73 53.94"/><path pathLength="1" class="ray" style="--dd:850ms" d="M-17.22 41.57 L-23.73 57.28"/><path pathLength="1" class="ray" style="--dd:875ms" d="M-25.00 37.42 L-30.56 45.73"/><path pathLength="1" class="ray" style="--dd:900ms" d="M-31.82 31.82 L-43.84 43.84"/><path pathLength="1" class="ray" style="--dd:925ms" d="M-37.42 25.00 L-45.73 30.56"/><path pathLength="1" class="ray" style="--dd:950ms" d="M-41.57 17.22 L-57.28 23.73"/><path pathLength="1" class="ray" style="--dd:975ms" d="M-44.14 8.78 L-53.94 10.73"/><path pathLength="1" class="ray" style="--dd:1000ms" d="M-45.00 0.00 L-62.00 0.00"/><path pathLength="1" class="ray" style="--dd:1025ms" d="M-44.14 -8.78 L-53.94 -10.73"/><path pathLength="1" class="ray" style="--dd:1050ms" d="M-41.57 -17.22 L-57.28 -23.73"/><path pathLength="1" class="ray" style="--dd:1075ms" d="M-37.42 -25.00 L-45.73 -30.56"/><path pathLength="1" class="ray" style="--dd:1100ms" d="M-31.82 -31.82 L-43.84 -43.84"/><path pathLength="1" class="ray" style="--dd:1125ms" d="M-25.00 -37.42 L-30.56 -45.73"/><path pathLength="1" class="ray" style="--dd:1150ms" d="M-17.22 -41.57 L-23.73 -57.28"/><path pathLength="1" class="ray" style="--dd:1175ms" d="M-8.78 -44.14 L-10.73 -53.94"/><path pathLength="1" class="ray" style="--dd:1200ms" d="M-0.00 -45.00 L-0.00 -62.00"/><path pathLength="1" class="ray" style="--dd:1225ms" d="M8.78 -44.14 L10.73 -53.94"/><path pathLength="1" class="ray" style="--dd:1250ms" d="M17.22 -41.57 L23.73 -57.28"/><path pathLength="1" class="ray" style="--dd:1275ms" d="M25.00 -37.42 L30.56 -45.73"/><path pathLength="1" class="ray" style="--dd:1300ms" d="M31.82 -31.82 L43.84 -43.84"/><path pathLength="1" class="ray" style="--dd:1325ms" d="M37.42 -25.00 L45.73 -30.56"/><path pathLength="1" class="ray" style="--dd:1350ms" d="M41.57 -17.22 L57.28 -23.73"/><path pathLength="1" class="ray" style="--dd:1375ms" d="M44.14 -8.78 L53.94 -10.73"/></g></g>
+<path d="M0 258 C60 238 110 252 150 246 C200 238 240 230 300 244 V370 H0Z" fill="#E4C69E"/>
+<path d="M0 292 C70 274 140 296 200 284 C240 276 270 268 300 276 V370 H0Z" fill="#D6B287"/>
+<g transform="translate(212 262)"><path d="M-14 0 Q-14 -15 0 -18 Q14 -15 14 0 Z" fill="#FBF1DF" stroke="#9C6F22" stroke-width="1"/><path d="M-3 0 V-7 H3 V0" fill="#C99A55"/><path d="M-10 -9 Q0 -12 10 -9" fill="none" stroke="#9C6F22" stroke-width=".8"/></g>
+<path d="M0 328 C80 312 170 338 300 316 V370 H0Z" fill="#C49A6B"/>
+<path d="M0 258 C60 238 110 252 150 246 C200 238 240 230 300 244" fill="none" stroke="#B48A3E" stroke-width=".8" opacity=".7"/></svg></div>
+      </div>
+      <h1 class="names serif">Айбек<span class="amp">пен</span>Дана</h1>
+      <div class="divider"><i class="ln"></i><svg class="draw" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg><i class="ln"></i></div>
+    </header>
+
+    <section class="sec reveal">
+      <p class="greet">Құрметті<br>Ерлан ағай отбасы!</p>
+      <p class="body-text">Сіздерді ұлымыз Айбек пен келініміз Дананың үйлену тойына арналған салтанатты ақ дастарханымыздың қадірлі қонағы болуға шақырамыз.</p>
+    </section>
+
+    <section class="sec reveal" aria-label="Күні мен уақыты">
+      <div class="datebox">
+        <div class="side">Жексенбі</div>
+        <div class="mid"><div class="day">15</div><div class="mon">қараша</div></div>
+        <div class="side">18:00</div>
+      </div>
+      <div class="count">Тойға <b>37</b> күн қалды</div>
+    </section>
+
+    <section class="sec reveal">
+      <div class="card venue">
+        <svg class="corner k1" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner k2" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg>
+        <svg class="ico-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        <h3>«Шаңырақ» мейрамханасы</h3>
+        <p>Атырау қ., Абай даңғылы, 15</p>
+        <a class="btn-i" href="#" style="margin-top:20px"><svg viewBox="0 0 24 24" ><path d="M14.1 6 9.9 4 3 6.6v13.4l6.9-2.6 4.2 2 6.9-2.6V3.4Z"/><path d="M9.9 4v13.4"/><path d="M14.1 6v13.4"/></svg>Картаны ашу</a>
+      </div>
+    </section>
+
+    <section class="sec reveal hosts">
+      <div class="lbl">Той иелері</div>
+      <div class="nm">Серік — Гүлжан</div>
+    </section>
+
+    <section class="sec reveal" id="rsvp">
+      <!-- Обычная форма POST /i/{token}: работает и без JS; JS только даёт −/+ и скрывает число мест при «Келмейміз» -->
+      <form class="card rsvp st-form" method="post" action="#rsvp">
+        <h2>Тойға келесіз бе?</h2>
+        <p class="sub">Жауабыңызды осы жерде белгілеңізші</p>
+        <fieldset class="choice" style="border:0;padding:0;margin:0"><legend class="sr-only">Жауабыңыз</legend>
+          <label><input type="radio" name="attending" value="yes" checked><svg viewBox="0 0 24 24" ><circle cx="12" cy="12" r="10"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>Келеміз</label>
+          <label><input type="radio" name="attending" value="no"><svg viewBox="0 0 24 24" ><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Келе алмаймыз</label>
+        </fieldset>
+        <div class="seats">
+          <label class="q" for="seats">Неше орын керек?</label>
+          <div class="stepper-i"><button type="button" data-step="-1" aria-label="Орынды азайту"><svg viewBox="0 0 24 24" ><path d="M5 12h14"/></svg></button><div class="v"><input id="seats" name="seats" type="number" inputmode="numeric" min="1" max="30" value="4"><small>орын</small></div><button type="button" data-step="1" aria-label="Орынды көбейту"><svg viewBox="0 0 24 24" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div>
+          <p class="hint">Кішкентай балаларды санамаңыз.</p>
+        </div>
+        <button class="btn-i fill" type="submit"><svg viewBox="0 0 24 24" ><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>Жіберу</button>
+        <p class="note">Жауапты той күніне дейін өзгертуге болады.</p>
+      </form>
+
+      <div class="card rsvp st-answered keep">
+        <svg class="done-orn draw" viewBox="0 0 120 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" class="d2" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" class="d2" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" class="d3" d="M60 60 V19"/><path pathLength="1" class="d3" d="M60 4 L65 11 L60 18 L55 11 Z"/></svg>
+        <h2>Рақмет! Сізді күтеміз</h2>
+        <div class="done-sum"><svg class="check-draw" viewBox="0 0 24 24"><path pathLength="1" d="M20 6 9 17l-5-5"/></svg>Келеміз · 4 орын</div>
+        <p class="note">Жауапты той күніне дейін өзгертуге болады.</p>
+        <a class="btn-i" href="#" style="margin-top:16px"><svg viewBox="0 0 24 24" ><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>Жауапты өзгерту</a>
+      </div>
+
+      <div class="card tableno st-table" style="margin-top:16px">
+        <svg class="corner k1" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner k2" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner k3" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg><svg class="corner k4" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+<path pathLength="1" d="M5 94 V40 C5 20 20 5 40 5 H94"/><path pathLength="1" class="d2" d="M15 94 V48 C15 30 30 15 48 15 H94"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 48 38 54 32 C60 26 54 18 48 22 C44 25 47 29 50 28"/>
+<path pathLength="1" class="d3" d="M26 26 C36 36 38 48 32 54 C26 60 18 54 22 48 C25 44 29 47 28 50"/><path pathLength="1" class="d4" d="M5 5 L11 11"/></svg>
+        <div class="lbl">Сіздің үстеліңіз</div>
+        <div class="n">10</div>
+        <div class="unit">үстел</div>
+        <svg class="minimap" viewBox="0 0 220 230" aria-label="Залдағы үстеліңіз: 10-үстел" role="img"><text x="110" y="12">ТӨР</text><rect class="yt" x="75" y="22" width="70" height="14" rx="7"/><circle class="t" cx="35" cy="66" r="11"/><circle class="t" cx="85" cy="66" r="11"/><circle class="t" cx="135" cy="66" r="11"/><circle class="t" cx="185" cy="66" r="11"/><circle class="t" cx="35" cy="108" r="11"/><circle class="t" cx="85" cy="108" r="11"/><circle class="t" cx="135" cy="108" r="11"/><circle class="t" cx="185" cy="108" r="11"/><circle class="t" cx="35" cy="150" r="11"/><circle class="me-ring" cx="85" cy="150" r="13"/><circle class="me" cx="85" cy="150" r="13"/><text x="85" y="154" style="fill:var(--on-accent);font-size:12px;letter-spacing:0;font-weight:400">10</text><circle class="t" cx="135" cy="150" r="11"/><circle class="t" cx="185" cy="150" r="11"/><circle class="t" cx="35" cy="192" r="11"/><circle class="t" cx="85" cy="192" r="11"/><circle class="t" cx="135" cy="192" r="11"/><circle class="t" cx="185" cy="192" r="11"/><text x="110" y="224">КІРЕБЕРІС</text></svg>
+        <p class="note">Кіреберісте көмекшіміз Сізді қарсы алып, үстеліңізге апарады.</p>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="wm"><svg viewBox="-32 -32 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><circle r="17"/><path d="M-6 -15.8 Q-8.5 0 -6 15.8 M6 -15.8 Q8.5 0 6 15.8 M-15.8 -6 Q0 -8.5 15.8 -6 M-15.8 6 Q0 8.5 15.8 6"/><path d="M22.0 0.0 L29.0 0.0 M19.1 11.0 L25.1 14.5 M11.0 19.1 L14.5 25.1 M0.0 22.0 L0.0 29.0 M-11.0 19.1 L-14.5 25.1 M-19.1 11.0 L-25.1 14.5 M-22.0 0.0 L-29.0 0.0 M-19.1 -11.0 L-25.1 -14.5 M-11.0 -19.1 L-14.5 -25.1 M-0.0 -22.0 L-0.0 -29.0 M11.0 -19.1 L14.5 -25.1 M19.1 -11.0 L25.1 -14.5"/></svg>Той</div>
+      <div style="margin-top:6px">«Той» қызметінде жасалған</div>
+    </footer>
+  </div>
+</main>
+
+<!-- Ванильный JS-островок (в продукте ≤ 10 КБ, без React): конверт + музыка + −/+ + пауза анимаций вне экрана.
+     Без JS: форма уходит обычным POST; сервер для no-JS отдаёт сразу открытое приглашение (<noscript> со стилем .scene{display:none}). -->
+<noscript><style>.scene{display:none}.invite{opacity:1}</style></noscript>
+<script>
+  (function () {
+    var h = document.documentElement, st = (location.hash || '').slice(1);
+    h.dataset.state = st === 'mid' ? '' : st;
+    if (st === 'open' || st === 'answered' || st === 'table') h.classList.add('is-open');
+    if (st === 'lite') h.classList.add('lite');
+    if (st === 'mid') { h.classList.add('is-opening'); setTimeout(function () { h.dataset.state = 'mid'; }, 1150); }
+    document.getElementById('open').addEventListener('click', function () {
+      h.classList.add('is-opening');                         /* + audio.play() в продукте */
+      setTimeout(function () { h.classList.add('opened'); }, 2300);
+    });
+    document.querySelectorAll('[data-step]').forEach(function (b) {
+      b.addEventListener('click', function () { var i = document.getElementById('seats'); i.value = Math.min(30, Math.max(1, (+i.value || 1) + +b.dataset.step)); });
+    });
+    document.querySelectorAll('input[name=attending]').forEach(function (r) {
+      r.addEventListener('change', function () { document.querySelector('.seats').hidden = (r.value === 'no' && r.checked); });
+    });
+    if ('IntersectionObserver' in window) {   /* N4: пауза бесконечных анимаций вне экрана */
+      var io = new IntersectionObserver(function (es) { es.forEach(function (e) { e.target.classList.toggle('paused', !e.isIntersecting); }); });
+      document.querySelectorAll('[data-ambient], .tableno').forEach(function (el) { io.observe(el); });
+    }
+    document.addEventListener('visibilitychange', function () { h.classList.toggle('page-hidden', document.hidden); });
+  })();
+</script>
+</body>
+</html>

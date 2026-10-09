@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Разделитель «линия — мотив — линия». В вёрстке линии — flex-элементы (тянутся по ширине) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 34" width="320" height="34" fill="none" stroke="#B48A3E" stroke-width="1.6" stroke-linecap="round">
+<title>Бөлгіш</title><path d="M0 22 H120"/><path d="M200 22 H320"/>
+<g transform="translate(128 0) scale(.53)" stroke-width="3"><path pathLength="1" d="M60 60 C60 44 53 32 41 27 C29 22 16 26 13.5 37 C11 47 18 53.5 26 51.5 C32.5 50 34 42.5 29 39.5 C25.5 37.5 21.5 39.5 22.5 43.5"/>
+<path pathLength="1" d="M60 60 C60 44 67 32 79 27 C91 22 104 26 106.5 37 C109 47 102 53.5 94 51.5 C87.5 50 86 42.5 91 39.5 C94.5 37.5 98.5 39.5 97.5 43.5"/>
+<path pathLength="1" d="M60 46 C58.5 38 53 33.5 46.5 34"/><path pathLength="1" d="M60 46 C61.5 38 67 33.5 73.5 34"/>
+<path pathLength="1" d="M60 60 V19"/><path pathLength="1" d="M60 4 L65 11 L60 18 L55 11 Z"/></g></svg>

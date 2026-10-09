@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Зал · Той v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/screens.css">
+<style>
+  /* Варианты: body[data-sheet] — открыта шторка стола 7; #dup — подсветка дублей; #move — режим «Қай үстелге?» */
+  .table-detail { display: none; }
+  @media (min-width: 1024px) {
+    .stage { padding: 22px 24px 18px; }
+  }
+  body:not([data-sheet]) .sheet, body:not([data-sheet]) .scrim { display: none; }
+  html:not([data-state="dup"]) .s-dup { display: none !important; }
+  html[data-state="dup"] .toast { display: none; }
+  .dup-float { position: fixed; z-index: 34; left: 16px; right: 16px; bottom: calc(var(--h-tabbar) + 12px); background: var(--paper); border: 2px solid var(--dup); border-radius: var(--r-lg); padding: 12px 12px 12px 16px; display: flex; align-items: center; gap: 12px; box-shadow: var(--sh-raised); font: 400 16px/22px var(--font-ui); }
+  .dup-float .mk { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--dup); color: #fff; font: 600 13px/1 var(--font-ui); margin-right: 6px; vertical-align: -4px; }
+  .dup-float .btn { flex: none; }
+  @media (min-width: 1024px) { .dup-float { left: auto; right: 32px; bottom: 24px; width: 440px; } }
+  /* B1-состояния: #all — все проблемы сразу (неразмещённые впервые = баннер), #seen — после первого просмотра (чип), #sum — сводка раскрыта */
+  html:not([data-state="all"]) .s-unplaced-new { display: none !important; }
+  html:not([data-state="seen"]) .s-unplaced-seen { display: none !important; }
+  html:not([data-state="sum"]) .s-sum { display: none !important; }
+  .hall-head-row { display: flex; align-items: center; gap: 16px; }
+  .hall-head-row .segment { width: 300px; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" aria-label="Мәзір">
+    <a class="wordmark brand" href="#"><span data-orn="mark"></span><b>Той</b></a>
+    <div class="event-mini"><span data-orn="shanyraq" class="deco"></span><div class="nm">Айбек пен Дана</div><div class="meta">Үйлену тойы · 15 қараша, 18:00</div></div>
+    <a class="nav-item" href="01-guests.html"><svg class="ico"><use href="#i-users"/></svg>Қонақтар</a>
+    <a class="nav-item" href="03-hall.html" aria-current="page"><svg class="ico"><use href="#i-grid"/></svg>Зал<span class="dot"></span></a>
+    <a class="nav-item" href="#"><svg class="ico"><use href="#i-chart"/></svg>Қорытынды</a>
+    <a class="nav-item" href="#"><svg class="ico"><use href="#i-wallet"/></svg>Шығындар</a>
+    <div class="side-foot"><button class="nav-item menu-item" aria-haspopup="dialog"><svg class="ico"><use href="#i-more"/></svg><span>Той мәзірі</span></button>
+      <div class="who"><span class="avatar">С</span><div><b style="font-weight:600">Серік</b><div class="t-body t-muted">Әкесі · Тізім және отырғызу</div></div></div></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar desk-hide">
+      <h1 class="t-h1">Зал</h1>
+      <div class="segment compact" role="group" aria-label="Көрініс"><button aria-pressed="true"><svg class="ico"><use href="#i-grid"/></svg>Схема</button><button aria-pressed="false"><svg class="ico"><use href="#i-list"/></svg>Тізім</button></div>
+    </header>
+
+    <main class="content">
+      <div class="page wide-aside">
+        <div class="col-main">
+          <div class="page-head o1">
+            <div class="ttl"><h2 class="t-h1">Зал</h2><p>4 қатар · 16 үстел · 12 орын</p></div>
+            <div class="segment" style="width:300px"><button aria-pressed="true"><svg class="ico"><use href="#i-grid"/></svg>Схема</button><button aria-pressed="false"><svg class="ico"><use href="#i-list"/></svg>Тізім</button></div>
+          </div>
+
+          <!-- Телефон: сводка одной строкой (свёрнута по умолчанию) + статус-чипы -->
+          <div class="mob-only o2">
+            <button class="sum-line" aria-expanded="false" aria-controls="sum-full" aria-label="Толығырақ көрсету"><span class="tx"><b>173 / 192 орын · 19 бос</b><span>Мейрамханаға: 173 адам → 15 үстел</span></span><svg class="ico"><use href="#i-down"/></svg></button>
+            <div class="hall-sum card s-sum" id="sum-full" style="padding:4px 14px 14px;border-radius:0 0 var(--r-lg) var(--r-lg)">
+              <div class="sub">16 үстел · 150 келеді · 23 жауап жоқ · 19 бос</div>
+              <div class="resto"><svg class="ico sm"><use href="#i-users"/></svg>Мейрамханаға: 173 адам → 15 үстел</div>
+            </div>
+          </div>
+          <div class="mob-only o3" style="margin-top:8px">
+            <a class="banner error s-unplaced-new" href="#" style="min-height:56px;padding:6px 10px 6px 12px;margin-bottom:8px"><span class="bi" style="width:36px;height:36px"><svg class="ico"><use href="#i-user-x"/></svg></span><span class="bt"><b>8 адамға орын жоқ · тағы 1 үстел керек</b></span><svg class="ico"><use href="#i-right"/></svg></a>
+            <div class="chips" role="list">
+              <a class="chip error" role="listitem" href="#" aria-label="2 үстелде орын жетпейді"><svg class="ico"><use href="#i-alert"/></svg>2 үстел тығыз</a>
+              <a class="chip dup" role="listitem" href="#" aria-label="Ұқсас қонақтар: 2. Бір адам екі рет жазылған болуы мүмкін."><svg class="ico"><use href="#i-users"/></svg>Ұқсас: 2</a>
+              <a class="chip unplaced s-unplaced-seen" role="listitem" href="#" aria-label="8 адамға орын жоқ"><svg class="ico"><use href="#i-user-x"/></svg>Орынсыз: 8</a>
+            </div>
+          </div>
+
+          <div class="o5" style="margin-top:12px">
+            <div class="stage"><svg class="hall" id="hall" role="group" aria-label="Зал схемасы"></svg></div>
+            <div class="legend" aria-label="Белгілер">
+              <span><i class="lt"></i>Бос емес</span><span><i class="lf"></i>Бос</span><span><i class="lo">!</i>Орын жетпейді</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-aside">
+          <div class="aside-summary desk-only">
+            <div class="hall-sum card" style="padding:18px 18px 16px">
+              <div class="big num">173 / 192 орын <small>· 19 бос</small></div>
+              <div class="sub">16 үстел · 150 келеді · 23 жауап жоқ · 19 бос</div>
+              <div class="resto"><svg class="ico sm"><use href="#i-users"/></svg>Мейрамханаға: 173 адам → 15 үстел</div>
+            </div>
+          </div>
+          <div class="aside-summary desk-only" style="margin-top:12px">
+            <a class="banner error" href="#"><span class="bi"><svg class="ico"><use href="#i-alert"/></svg></span><span class="bt"><b>2 үстелде орын жетпейді</b><span>7-үстел (−2) · 12-үстел (−1)</span></span><svg class="ico"><use href="#i-right"/></svg></a>
+            <a class="banner dup" href="#" style="margin-top:8px"><span class="bi"><svg class="ico"><use href="#i-users"/></svg></span><span class="bt"><b>Ұқсас қонақтар: 2</b><span>Көру үшін басыңыз</span></span><svg class="ico"><use href="#i-right"/></svg></a>
+          </div>
+          <div class="aside-summary o6" style="margin-top:20px">
+            <nav class="links">
+              <a class="link-row" href="#"><span class="li"><svg class="ico"><use href="#i-order"/></svg></span><span class="lt"><b>Отырғызу реті</b><span>Құдалар, Өз туыстар, Нағашылар, Достар…</span></span><svg class="ico"><use href="#i-right"/></svg></a>
+              <a class="link-row" href="#"><span class="li"><svg class="ico"><use href="#i-history"/></svg></span><span class="lt"><b>Өзгерістер тарихы · 6</b><span>Соңғы өзгеріс: бүгін, 09:15</span></span><svg class="ico"><use href="#i-right"/></svg></a>
+              <a class="link-row" href="#"><span class="li"><svg class="ico"><use href="#i-sliders"/></svg></span><span class="lt"><b>Залды өзгерту</b><span>4 қатар · 16 үстел · 12 орын</span></span><svg class="ico"><use href="#i-right"/></svg></a>
+            </nav>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Шторка стола: телефон — Vaul снизу; ≥1024 — Vaul direction="right" 480 px (решение ревью 3.3) -->
+<div class="scrim"></div>
+<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="sh-t">7-үстел</h2><button class="icon-btn" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></button></div>
+  <div class="sheet-body tbl-body"></div>
+  <div class="sheet-foot"><button class="btn secondary">Келесі: 12-үстел<svg class="ico"><use href="#i-right"/></svg></button></div>
+</div>
+
+<template id="tbl-tpl">
+  <div class="alert-box"><svg class="ico"><use href="#i-alert"/></svg><b>2 орын жетпейді</b><p>14 адам, ал үстелде 12 орын. Бір отбасын басқа үстелге ауыстырыңыз.</p></div>
+  <svg class="big-table" aria-hidden="true"></svg>
+  <p class="table-cap"><b>14 / 12 орын</b> · Нағашылар</p>
+  <p class="field-label" style="margin-bottom:10px">Кімдер отыр</p>
+  <div class="fam-list">
+    <div class="fam"><span class="no over">1</span><b>Мейрамбек нағашы отбасы</b><span class="meta">Нағашылар · 6 орын · Келеді</span><span class="locked"><svg class="ico xs"><use href="#i-lock"/></svg>Қолмен қойылған (Анасы)</span>
+      <div class="acts"><button class="btn secondary row"><svg class="ico"><use href="#i-move"/></svg>Ауыстыру</button><button class="btn text">Қолмен қоюды алу</button></div></div>
+    <div class="fam"><span class="no over">2</span><b>Гүлнар апай отбасы</b><span class="meta">Нағашылар · 5 орын · Келеді</span><span class="locked"><svg class="ico xs"><use href="#i-lock"/></svg>Қолмен қойылған (Анасы)</span>
+      <div class="acts"><button class="btn secondary row"><svg class="ico"><use href="#i-move"/></svg>Ауыстыру</button><button class="btn text">Қолмен қоюды алу</button></div></div>
+    <div class="fam"><span class="no over">3</span><b>Әйгерім отбасы</b><span class="meta">Нағашылар · 3 орын · Келеді</span><span class="locked"><svg class="ico xs"><use href="#i-lock"/></svg>Қолмен қойылған (Анасы)</span>
+      <div class="acts"><button class="btn secondary row"><svg class="ico"><use href="#i-move"/></svg>Ауыстыру</button><button class="btn text">Қолмен қоюды алу</button></div></div>
+  </div>
+</template>
+
+<div class="dup-float s-dup" role="status"><div style="flex:1"><span class="mk">1</span>Бақытжан отбасы — 12-үстел<br><span class="mk">2</span>Бақытжан Омаров отбасы — 15-үстел</div><button class="btn secondary row auto" style="padding:0 16px">Жабу</button></div>
+
+<div class="toast" role="status" aria-live="polite"><span class="msg">16-үстелге ауыстырылды: Мейрамбек нағашы отбасы</span><button class="undo"><svg class="ico sm"><use href="#i-undo"/></svg>Қайтару</button><i class="timer"></i></div>
+
+<nav class="tabbar" aria-label="Бөлімдер" style="--tabs:3">
+  <a class="tab" href="01-guests.html"><span class="pill"><svg class="ico"><use href="#i-users"/></svg></span><span>Қонақтар</span></a>
+  <a class="tab" href="#" aria-current="page"><span class="pill"><svg class="ico"><use href="#i-grid"/></svg></span><span>Зал</span><i class="dot"></i></a>
+  <a class="tab" href="#"><span class="pill"><svg class="ico"><use href="#i-chart"/></svg></span><span>Қорытынды</span></a>
+</nav>
+
+<script src="js/mock.js"></script>
+<script>
+  const sel = document.body.dataset.sheet ? 7 : null;
+  renderHall(document.getElementById('hall'), { mode: TOI_STATE === 'dup' ? 'dup' : 'normal', sel });
+  if (TOI_STATE === 'sum') document.querySelector('.sum-line').setAttribute('aria-expanded', 'true');
+  if (sel) {
+    document.querySelector('.toast').remove();
+    document.querySelectorAll('.tbl-body').forEach(b => { b.append(document.getElementById('tbl-tpl').content.cloneNode(true)); renderTableBig(b.querySelector('.big-table'), 7); });
+  }
+</script>
+</body>
+</html>
