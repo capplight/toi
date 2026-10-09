@@ -296,7 +296,7 @@ UI и маршрутов в фазе нет. `pnpm build` и Playwright не м�
 Коммит **`ce63240` `fix(F7a): review Д1–Д3 …`** на `phase/F7a-seating`. Перед правками ветки перебазированы на `main` (`b2ca030`, ревью + план v1.4): сначала `phase/F0-setup` на `main`, потом `phase/F7a-seating` на `phase/F0-setup`, оба раза `Successfully rebased`. Поэтому хэши прежних коммитов сменились: `feat(F7a)` теперь `a623e72`, handover — `76b3546`.
 
 ```
-$ git diff --stat a623e72~0 ce63240 -- src tests   (только коммит правок)
+$ git diff --stat ce63240~1 ce63240   (только коммит правок)
  src/domain/seating/events.ts            |  39 ++++++------
  src/domain/seating/hall.ts              |  34 +++++++++++   (новый)
  src/domain/seating/index.ts             |   1 +
