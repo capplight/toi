@@ -87,7 +87,9 @@ export class EnvError extends Error {
 }
 
 export function parseEnv(source: Record<string, string | undefined>): Env {
-  const result = schema.safeParse(source);
+  // Vercel Preview: each deployment has its own URL, so APP_URL may be left empty there.
+  const appUrl = source.APP_URL?.trim() || (source.VERCEL_URL ? `https://${source.VERCEL_URL}` : undefined);
+  const result = schema.safeParse({ ...source, APP_URL: appUrl });
   if (!result.success) {
     // Only variable names and rule descriptions — never values.
     const issues = result.error.issues.map((i) => `${i.path.join(".") || "(root)"}: ${i.message}`);

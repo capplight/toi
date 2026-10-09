@@ -64,4 +64,9 @@ describe("env", () => {
     expect(e.s3?.region).toBe("auto");
     expect(e.sentryEnabled).toBe(true);
   });
+
+  it("falls back to https://VERCEL_URL when APP_URL is empty (Vercel Preview)", () => {
+    const e = parseEnv({ ...base, APP_URL: "", VERCEL_URL: "toi-git-x.vercel.app" });
+    expect(e.APP_URL).toBe("https://toi-git-x.vercel.app");
+  });
 });
