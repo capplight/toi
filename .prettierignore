@@ -1,0 +1,20 @@
+# Documents are owned by other agents — never reformat them.
+architecture/
+content/
+design/
+docs/
+prototype/
+research/
+HANDOVER_v2.md
+AGENTS.md
+CLAUDE.md
+README.md
+
+# Generated
+db/migrations/meta/
+pnpm-lock.yaml
+.next/
+coverage/
+playwright-report/
+test-results/
+next-env.d.ts

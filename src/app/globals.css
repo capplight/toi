@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+/* Ф0: neutral styles only. Design v2 tokens and fonts arrive in Ф1/Ф5. */
+body {
+  background: #ffffff;
+  color: #1a1a1a;
+  font-family: system-ui, sans-serif;
+}

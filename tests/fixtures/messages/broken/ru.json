@@ -1,0 +1,5 @@
+{
+  "common": { "save": "Сохранить", "seats": "{count, plural, one {# место} many {# мест} other {# места}}" },
+  "kind": "{kind, select, uilenu_toi {Свадьба} other {Той}}",
+  "consent": "Отвечая, вы соглашаетесь с <privacyLink>политикой конфиденциальности</privacyLink>."
+}

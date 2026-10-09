@@ -1,0 +1,6 @@
+{
+  "common": { "save": "Сақтау", "seats": "{count} орын" },
+  "kind": "{kind, select, uilenu_toi {Үйлену тойы} other {Той}}",
+  "consent": "Жауап беру арқылы {name} <privacyLink>құпиялылық саясатымен</privacyLink> келісесіз.",
+  "extra": "Артық кілт"
+}
