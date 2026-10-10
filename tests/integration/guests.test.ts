@@ -76,7 +76,7 @@ describe("guest actions: access (plan 5.3)", () => {
       () => svc.markSent(db(), stranger, anyFamily, "invite"),
       () => svc.waClicked(db(), stranger, anyFamily, "invite"),
       () => svc.recordAnswerByMember(db(), stranger, { familyId: anyFamily, attending: true, seats: 2 }),
-      () => svc.revertAnswer(db(), stranger, { familyId: anyFamily, previous: { rsvp: "pending", confirmed: null } }),
+      () => svc.revertAnswer(db(), stranger, { historyId: 999_999 }),
       () => svc.createCategory(db(), stranger, { eventId: s.eventId, labelKk: "Ауылдастар", afterCategoryId: null }),
       () =>
         svc.keepBothDuplicates(db(), stranger, {
@@ -263,7 +263,7 @@ describe("addFamily", () => {
     for (const rv of reviews) expect(rv.familyA < rv.familyB).toBe(true);
   });
 
-  it("without a configured hall the family is saved unplaced, no history, version unchanged", async () => {
+  it("without a configured hall the family is saved unplaced: version grows (П1), no history", async () => {
     const { s, cat, ana } = await setup();
     await db().update(events).set({ hallColumns: null, tablesCount: null }).where(eq(events.id, s.eventId));
     await db().update(families).set({ tableNo: null, seatLocked: false, lockedByMemberId: null });
@@ -276,7 +276,9 @@ describe("addFamily", () => {
     });
     if (!r.ok) throw new Error(JSON.stringify(r));
     expect(r.tableNo).toBeNull();
-    expect(await version(s.eventId)).toBe(v0);
+    expect(await version(s.eventId)).toBe(v0 + 1);
+    const hist = await db().select().from(seatingChanges).where(eq(seatingChanges.eventId, s.eventId));
+    expect(hist.every((h) => h.seatingVersionAfter !== v0 + 1)).toBe(true);
   });
 
   it("acceptance 2: seated families never move when guests are added on the seeded hall", async () => {
@@ -472,7 +474,8 @@ describe("sending and answers", () => {
     expect(r).toMatchObject({ rsvp: "no", answeredBy: "member", answeredByMemberId: s.memberIds.ana, tableNo: null });
     expect(await version(s.eventId)).toBe(v0 + 1);
 
-    await svc.revertAnswer(db(), ana, { familyId: row.id, previous: { rsvp: "pending", confirmed: null } });
+    if (!no.ok) throw new Error("answer");
+    expect(await svc.revertAnswer(db(), ana, { historyId: no.historyId })).toMatchObject({ ok: true });
     r = await fam(row.id);
     expect(r.rsvp).toBe("pending");
     expect(r.answeredBy).toBeNull();
@@ -536,16 +539,158 @@ describe("categories and the read model", () => {
     expect(bad.list.own).toBe(true);
   });
 
-  it("withSeating without seat changes writes no history and keeps the version", async () => {
+  it("withSeating (П1): noop keeps the version; an empty diff bumps it without history; record: true writes it", async () => {
     const { s } = await setup();
     const v0 = await version(s.eventId);
-    const out = await withSeating(db(), s.eventId, { kind: "system", memberId: null }, async ({ state }) => ({
-      result: { state, deltas: [], warnings: [] },
-      action: "auto_place",
-      summary: {},
-      value: 1,
-    }));
-    expect(out).toMatchObject({ seatingVersion: v0, changes: [], value: 1 });
-    expect(out.historyId).toBeUndefined();
+    const step = (extra: { noop?: boolean; record?: boolean }) =>
+      withSeating(db(), s.eventId, { kind: "system", memberId: null }, async ({ state }) => ({
+        result: { state, deltas: [], warnings: [] },
+        action: "auto_place" as const,
+        summary: { reason: "test" },
+        value: 1,
+        ...extra,
+      }));
+    const a = await step({ noop: true });
+    expect(a).toMatchObject({ seatingVersion: v0, changes: [], value: 1 });
+    expect(a.historyId).toBeUndefined();
+    const b = await step({});
+    expect(b.seatingVersion).toBe(v0 + 1);
+    expect(b.historyId).toBeUndefined();
+    const c = await step({ record: true });
+    expect(c.seatingVersion).toBe(v0 + 2);
+    expect(c.historyId).toBeGreaterThan(0);
+  });
+});
+
+describe("Ф4 review П1: version and history rule", () => {
+  const lastChange = async (eventId: string) =>
+    (
+      await db()
+        .select()
+        .from(seatingChanges)
+        .where(eq(seatingChanges.eventId, eventId))
+        .orderBy(desc(seatingChanges.id))
+        .limit(1)
+    )[0]!;
+
+  it("seat count of a seated family grows (overflow, Р3): stays, version + 1, history «from → to»", async () => {
+    const { s, ana } = await setup();
+    const row = (await db().select().from(families).where(eq(families.eventId, s.eventId))).find(
+      (f) => f.tableNo !== null && f.rsvp === "pending" && !f.seatLocked,
+    )!;
+    const v0 = await version(s.eventId);
+    const r = await svc.updateFamily(db(), ana, {
+      familyId: row.id,
+      version: row.version,
+      name: row.name,
+      phone: row.phone,
+      categoryId: row.categoryId,
+      seats: 20,
+    });
+    expect(r.ok).toBe(true);
+    expect((await fam(row.id)).tableNo).toBe(row.tableNo);
+    expect(await version(s.eventId)).toBe(v0 + 1);
+    const h = await lastChange(s.eventId);
+    expect(h).toMatchObject({ action: "answer", seatingVersionAfter: v0 + 1 });
+    expect(h.summary).toMatchObject({ from: row.expectedCount, to: 20 });
+    expect((h.diff as { families: unknown[] }).families).toEqual([]);
+  });
+
+  it("«Келеміз» on the same table: no move, version + 1, an answer record (no seats in the diff)", async () => {
+    const { s, ana } = await setup();
+    const row = (await db().select().from(families).where(eq(families.eventId, s.eventId))).find(
+      (f) => f.tableNo !== null && f.rsvp === "pending" && !f.seatLocked,
+    )!;
+    const v0 = await version(s.eventId);
+    const r = await svc.recordAnswerByMember(db(), ana, {
+      familyId: row.id,
+      attending: true,
+      seats: row.expectedCount,
+    });
+    if (!r.ok) throw new Error("answer");
+    expect((await fam(row.id)).tableNo).toBe(row.tableNo);
+    expect(await version(s.eventId)).toBe(v0 + 1);
+    const h = await lastChange(s.eventId);
+    expect(h.id).toBe(r.historyId);
+    expect(h).toMatchObject({ action: "answer", actorKind: "member" });
+    expect(h.summary).toMatchObject({ to: { rsvp: "yes", confirmed: row.expectedCount }, from: { rsvp: "pending" } });
+    expect((h.diff as { families: unknown[] }).families).toEqual([]);
+  });
+
+  it("a new category: through the adapter, version + 1, history with `order`", async () => {
+    const { s, cat, ana } = await setup();
+    const v0 = await version(s.eventId);
+    const r = await svc.createCategory(db(), ana, {
+      eventId: s.eventId,
+      labelKk: "Ауылдастар",
+      labelRu: "Односельчане",
+      afterCategoryId: cat("kuda"),
+    });
+    if (!r.ok) throw new Error("category");
+    expect(await version(s.eventId)).toBe(v0 + 1);
+    const h = await lastChange(s.eventId);
+    expect(h.action).toBe("reorder");
+    const order = (h.diff as { order?: { before: string[]; after: string[] } }).order!;
+    expect(order.after[1]).toBe(r.category.id);
+    expect(order.after).toHaveLength(order.before.length + 1);
+    // Н3: duplicates by the Russian name too
+    expect(
+      await svc.createCategory(db(), ana, { eventId: s.eventId, labelKk: "односельчане", afterCategoryId: null }),
+    ).toEqual({ ok: false, field: "exists" });
+    expect(await version(s.eventId)).toBe(v0 + 1);
+  });
+
+  it("an edit of the phone only is a no-op for seating: no version, no history", async () => {
+    const { s, ana } = await setup();
+    const row = (await db().select().from(families).where(eq(families.eventId, s.eventId))).find((f) => !f.phone)!;
+    const v0 = await version(s.eventId);
+    const before = (await db().select().from(seatingChanges)).length;
+    const r = await svc.updateFamily(db(), ana, {
+      familyId: row.id,
+      version: row.version,
+      name: row.name,
+      phone: "+7 705 000 11 22",
+      categoryId: row.categoryId,
+      seats: row.rsvp === "yes" ? row.confirmedCount! : row.expectedCount,
+    });
+    expect(r.ok).toBe(true);
+    expect(await version(s.eventId)).toBe(v0);
+    expect((await db().select().from(seatingChanges)).length).toBe(before);
+  });
+});
+
+describe("Ф4 review П2: safe «Қайтару» of an answer by phone", () => {
+  it("refused when the guest answered meanwhile; another member cannot undo my record", async () => {
+    const { s, ana, owner } = await setup();
+    const row = (await db().select().from(families).where(eq(families.eventId, s.eventId))).find(
+      (f) => f.rsvp === "pending" && !f.seatLocked,
+    )!;
+    const r = await svc.recordAnswerByMember(db(), ana, { familyId: row.id, attending: false });
+    if (!r.ok) throw new Error("answer");
+    await expect(svc.revertAnswer(db(), owner, { historyId: r.historyId })).rejects.toBeInstanceOf(ForbiddenError);
+
+    // The guest answers by the link within the 8 s of the toast (Ф5 writes answered_by = 'guest').
+    await db()
+      .update(families)
+      .set({ rsvp: "yes", confirmedCount: 3, answeredBy: "guest", answeredByMemberId: null })
+      .where(eq(families.id, row.id));
+    expect(await svc.revertAnswer(db(), ana, { historyId: r.historyId })).toMatchObject({
+      ok: false,
+      reason: "changed",
+    });
+    expect(await fam(row.id)).toMatchObject({ rsvp: "yes", confirmedCount: 3, answeredBy: "guest" });
+  });
+
+  it("refused after a second answer by phone (the first record is not the current answer any more)", async () => {
+    const { s, ana } = await setup();
+    const row = (await db().select().from(families).where(eq(families.eventId, s.eventId))).find(
+      (f) => f.rsvp === "pending" && !f.seatLocked,
+    )!;
+    const first = await svc.recordAnswerByMember(db(), ana, { familyId: row.id, attending: true, seats: 2 });
+    const second = await svc.recordAnswerByMember(db(), ana, { familyId: row.id, attending: true, seats: 3 });
+    if (!first.ok || !second.ok) throw new Error("answer");
+    expect(await svc.revertAnswer(db(), ana, { historyId: first.historyId })).toMatchObject({ ok: false });
+    expect(await svc.revertAnswer(db(), ana, { historyId: second.historyId })).toMatchObject({ ok: true });
+    expect(await fam(row.id)).toMatchObject({ rsvp: "yes", confirmedCount: 2 });
   });
 });

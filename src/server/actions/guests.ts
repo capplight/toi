@@ -125,23 +125,23 @@ export async function recordAnswerAction(input: z.input<typeof answerInput>) {
     const r = await svc.recordAnswerByMember(db(), user, p.data);
     if (!r.ok) return r;
     refresh(r.family.eventId);
-    return { ok: true as const, previous: r.previous };
+    return { ok: true as const, historyId: r.historyId };
   });
 }
 
-const revertInput = z.object({
-  familyId: uuid,
-  previous: z.object({ rsvp: z.enum(["pending", "yes", "no"]), confirmed: z.number().int().nullable() }),
-});
+const revertInput = z.object({ historyId: z.number().int().positive() });
 
-/** «Қайтару» after an answer recorded by phone. */
+/**
+ * «Қайтару» after an answer recorded by phone (Ф4 review П2): `{ ok: false, reason: "changed" }` when the
+ * answer is no longer the one this member recorded (e.g. the guest answered meanwhile) — nothing is changed.
+ */
 export async function revertAnswerAction(input: z.input<typeof revertInput>) {
   const p = revertInput.safeParse(input);
   if (!p.success) return { ok: false as const, error: "invalid" as const };
   return guarded(async (user) => {
     const r = await svc.revertAnswer(db(), user, p.data);
     refresh(r.eventId);
-    return { ok: true as const };
+    return r.ok ? { ok: true as const } : { ok: false as const, reason: r.reason };
   });
 }
 

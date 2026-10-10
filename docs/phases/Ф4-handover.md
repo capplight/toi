@@ -66,6 +66,8 @@ type SeatingStep<T> = (ctx: { tx: Tx; state: SeatingState }) => Promise<{
   action: SeatingAction;            // enum seating_action: auto_place | answer | move | unseat | undo | …
   summary: Record<string, unknown>; // для текста истории: names, from, to, reason…
   value: T;                         // что вернуть вызывающему
+  noop?: boolean;                   // данные рассадки не менялись: ни версии, ни истории (правка по ревью П1)
+  record?: boolean;                 // писать историю и без изменения мест/порядка/зала (ответы, число мест)
 }>;
 type SeatingOutcome<T> = { seatingVersion: number; changes: Delta[]; warnings: Warning[]; historyId?: number; value: T };
 
@@ -75,7 +77,20 @@ function rowToFamily(row): Family; function familySeatColumns(f: Family): { tabl
 function historyDiff(before: SeatingState, after: SeatingState): SeatingDiff;
 class NotFound extends Error {} // событие удалено / не найдено
 ```
-Правила: шаг сам пишет «не-местные» колонки (rsvp, deleted_at, insert) в `tx`; колонки мест пишет только адаптер по `deltas`; семья, исчезнувшая из состояния (мягкое удаление), сохраняет прежний стол в строке. Зал берётся из `events.hall_columns / tables_count / seats_per_table` (строки `hall_tables` создаёт мастер/настройка зала и нужны для FK). Ф5 (ответ гостя) — `actor {kind:'guest', memberId:null}`, `action:'answer'`, `setRsvp`. Ф7b — `move / unseat / order / hall / full_reseat / undo` тем же способом.
+**Правило версии и истории (правка П1):** `seating_version` растёт при каждом успешном шаге, если он не вернул `noop: true`; запись `seating_changes` — если `historyDiff` не пуст (семьи, `order`, `hall`) или шаг вернул `record: true`.
+
+Пример шага Ф5 (ответ гостя):
+
+```ts
+await withSeating(db, eventId, { kind: "guest", memberId: null }, async ({ tx, state }) => {
+  await tx.update(families).set({ rsvp, confirmedCount, answeredBy: "guest", respondedAt: now }).where(eq(families.id, id));
+  return { result: setRsvp(state, id, rsvp, { confirmed: confirmedCount }), action: "answer",
+           summary: { names, familyId: id, by: "guest", from: {…}, to: { rsvp, confirmed: confirmedCount } },
+           value: null, record: true };
+});
+```
+
+Правила: шаг сам пишет «не-местные» колонки (rsvp, deleted_at, insert, categories) в `tx`; колонки мест пишет только адаптер по `deltas`; семья, исчезнувшая из состояния (мягкое удаление), сохраняет прежний стол в строке. Зал берётся из `events.hall_columns / tables_count / seats_per_table` (строки `hall_tables` создаёт мастер/настройка зала и нужны для FK). Ф5 (ответ гостя) — `actor {kind:'guest', memberId:null}`, `action:'answer'`, `setRsvp`. Ф7b — `move / unseat / order / hall / full_reseat / undo` тем же способом.
 
 ## 5. Проверки — реальный вывод
 
@@ -183,3 +198,56 @@ S1-E, S1-L, S1-Err и S5-E без скриншотов: в сиде нет пу�
 - [x] Тексты только из `content/messages`; `check:messages` OK.
 - [x] Доступность: axe без serious/critical, цели ≥ 48, 130 %, фокус на «Иә, жіберілді», ошибки `role="alert"`, «Назад» закрывает шторки.
 - [x] Все проверки зелёные (раздел 5). Серверы, запущенные для проверок, остановлены.
+
+---
+
+## 12. Правки по ревью (`docs/phases/Ф4-review.md`, вердикт «нужны правки»)
+
+Цепочка F0 → F7a → F2 → F1 → F4 перебазирована на `main` `5630d01` без конфликтов.
+
+### П1 — правило версии рассадки и истории (`src/server/seating/adapter.ts`, `service.ts`)
+- Шаг `withSeating` может вернуть `noop: true` (ничего не пишется) и `record: true` (история и без изменения мест). Версия растёт при **каждом** успешном шаге без `noop`. История пишется, если `historyDiff` не пуст (семьи, `order`, `hall`) или `record: true`. Контракт и пример шага Ф5 — раздел 4.
+- `updateFamily`: изменение числа мест → `record: true`, `summary { from, to }` («3 → 4 орын»); если сменился только телефон — `noop` (на «Зале» ничего не меняется).
+- `recordAnswerByMember`: всегда `record: true`. `summary` хранит `familyId`, `from` (rsvp, мест, кто и когда ответил) и `to`. Возвращает `historyId`.
+- `addFamily` неразмещённой семьи (зал не настроен) повышает версию без записи истории.
+- `createCategory` идёт через `withSeating`: ранги сдвигаются под блокировкой события, версия растёт, в истории — запись `reorder` с `diff.order`.
+- Н3: дубль категории ищется без учёта регистра и по kk-названию, и по ru-названию.
+
+### П2 — безопасная отмена ответа по телефону
+- `revertAnswer({ historyId })` берёт запись истории этого ответа и ничего не принимает от клиента. Отмена разрешена, только если запись — `answer` этого составителя, а у семьи всё ещё именно этот ответ: `rsvp`, `confirmed_count`, `answered_by = 'member'`, `answered_by_member_id` = он. Иначе ответ `{ ok: false, reason: "changed" }` и ничего не меняется. Чужая запись → 403.
+- Отмена тоже идёт через адаптер (`action: undo`, `record: true`, `undoOf`).
+- Клиент при отказе показывает тост `errors.conflict` («Мұны басқа адам өзгертіп қойды…»). **Запрос контент-лиду:** отдельный ключ «Жауап өзгеріп кетті» / «Ответ уже изменился» — после него заменить.
+
+### П3 — жест «Назад» на «Жаңа қонақ»
+- Как у шторок Ф1: «грязная» форма добавляет свою запись в историю (`toiForm`). Когда «Назад» её снимает, открывается «Қонақ сақталмайды. Шығасыз ба?». «Жоқ, жалғастыру» возвращает запись, «Иә, шығу» уходит назад.
+- Закрытие шторки (категория, дубль, успех) жестом «Назад» подтверждение не вызывает.
+- Сохранение и «Қоспаймын» сначала снимают запись формы (`leaveForm`), поэтому «Назад» из списка не возвращает на форму.
+- Отклонение 6 снято.
+
+### Конкурентность и производительность в CI
+- `tests/integration/concurrency.test.ts` выполняется только на настоящем Postgres (`TEST_DATABASE_URL`). Локально на PGlite он пропускается; в CI без `TEST_DATABASE_URL` падает с ошибкой.
+- Тест 1: два параллельных `addFamily`, у каждой записи своя версия, нет переполнения при авторазмещении.
+- Тест 2: два параллельных `moveFamily` в стол, где места хватает только одной семье. Ровно одна переезжает, вторая получает `move_overflow`, стол не переполнен.
+- Логика проверена прогоном на PGlite через `TEST_DATABASE_URL` (2 passed). Но PGlite выполняет транзакции по очереди, поэтому что `for update` действительно защищает, покажет только CI.
+- Производительность: `tests/e2e/guests-perf.spec.ts` уже входит в `pnpm test:e2e` в CI (Linux, postgres:16) и утверждает медиану < 1 с.
+
+### Проверки — реальный вывод
+```
+$ pnpm check:messages
+check:messages: OK — 772 keys, kk/ru: ICU, variables, tags, select/other, ru plural forms
+$ pnpm typecheck && pnpm lint && pnpm format:check
+✓ Types generated successfully · eslint --max-warnings=0 (0) · All matched files use Prettier code style!
+$ pnpm test
+      Tests  153 passed (153)
+$ pnpm test:integration                (PGlite)
+ Test Files  7 passed | 1 skipped (8)
+      Tests  79 passed | 2 skipped (81)   (+6 П1/П2; 2 пропуска — concurrency только на Postgres)
+$ TEST_DATABASE_URL=<PGlite> vitest run tests/integration/concurrency.test.ts   (проверка логики)
+      Tests  2 passed (2)
+$ E2E_CHANNEL=chrome DATABASE_URL=…PGlite… pnpm test:e2e --workers=1
+S1 interactive (CPU ×4): first uncached 1815 ms; warm runs 787, 840, 927, 956, 1057 ms
+  9 skipped
+  103 passed (4.3m)                     (+2: П3 «Назад» на 360 и 1440)
+$ gitleaks protect --staged
+INF no leaks found
+```

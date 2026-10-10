@@ -1,4 +1,4 @@
-import { and, eq, gte, isNull, ne, sql } from "drizzle-orm";
+import { and, asc, eq, gte, isNull, ne, sql } from "drizzle-orm";
 import { normalizePhone } from "@/domain/guests/phone";
 import { similar } from "@/domain/guests/duplicates";
 import {
@@ -12,7 +12,7 @@ import { MAX_FAMILY_SEATS } from "@/domain/seating/family";
 import { authorize, ForbiddenError, type Principal } from "../auth/access";
 import { randomToken } from "../crypto";
 import type { Db } from "../db";
-import { activityLog, categories, duplicateReviews, eventMembers, families } from "../schema";
+import { activityLog, categories, duplicateReviews, eventMembers, families, seatingChanges } from "../schema";
 import { type Actor, rowToFamily, withSeating } from "../seating/adapter";
 
 /**
@@ -253,11 +253,16 @@ export async function updateFamily(
           families: state.families.map((f) => (f.id === row.id ? { ...f, categoryId: row.categoryId } : f)),
         };
         const result = setSeats(withCategory, row.id, yes ? { confirmed: input.seats } : { expected: input.seats });
+        const fromSeats = yes ? (current.confirmedCount ?? 0) : current.expectedCount;
+        const seatsChanged = fromSeats !== input.seats;
         return {
           result,
           action: "answer",
-          summary: { names: [row.name], seats: input.seats, reason: "edited" },
+          summary: { names: [row.name], familyId: row.id, from: fromSeats, to: input.seats, reason: "seats" },
           value: row,
+          // Only the phone changed: «Зал» shows nothing new (П1). A seat count change goes to the history.
+          noop: !seatsChanged && row.name === current.name && row.categoryId === current.categoryId,
+          record: seatsChanged,
         };
       },
     );
@@ -393,52 +398,97 @@ export async function recordAnswerByMember(
         .where(eq(families.id, current.id))
         .returning();
       const result = setRsvp(state, current.id, input.attending ? "yes" : "no", { confirmed: seats });
-      return {
-        result,
-        action: "answer",
-        summary: { names: [current.name], attending: input.attending, seats, by: "member" },
-        value: row!,
+      const summary: AnswerSummary = {
+        names: [current.name],
+        familyId: current.id,
+        by: "member",
+        from: {
+          rsvp: current.rsvp,
+          confirmed: current.confirmedCount,
+          respondedAt: current.respondedAt?.toISOString() ?? null,
+          answeredBy: current.answeredBy,
+          answeredByMemberId: current.answeredByMemberId,
+        },
+        to: { rsvp: input.attending ? "yes" : "no", confirmed: seats },
       };
+      return { result, action: "answer", summary, value: row!, record: true };
     },
   );
   return {
     ok: true as const,
     family: out.value,
-    previous: { rsvp: current.rsvp, confirmed: current.confirmedCount },
+    historyId: out.historyId!,
     seatingVersion: out.seatingVersion,
     warnings: out.warnings,
   };
 }
 
-/** «Қайтару» after an answer by phone: back to the previous answer (through the engine, like any answer). */
-export async function revertAnswer(
-  db: Db,
-  who: Principal,
-  input: { familyId: string; previous: { rsvp: FamilyRow["rsvp"]; confirmed: number | null } },
-) {
-  const current = await familyEvent(db, input.familyId);
-  const m = await authorize(db, who, current.eventId, "member");
-  if (current.deletedAt) throw new ForbiddenError();
-  const { rsvp } = input.previous;
-  const confirmed = rsvp === "yes" ? input.previous.confirmed : null;
-  if (rsvp === "yes" && (!Number.isInteger(confirmed) || confirmed! < 1 || confirmed! > MAX_FAMILY_SEATS)) {
+/** History summary of an answer (H7 «3 → 4 орын»); `from` also serves «Қайтару» (Ф4 review П2). */
+export type AnswerSummary = {
+  names: string[];
+  familyId: string;
+  by: "member" | "guest";
+  from: {
+    rsvp: FamilyRow["rsvp"];
+    confirmed: number | null;
+    respondedAt: string | null;
+    answeredBy: FamilyRow["answeredBy"];
+    answeredByMemberId: string | null;
+  };
+  to: { rsvp: FamilyRow["rsvp"]; confirmed: number | null };
+};
+
+/**
+ * «Қайтару» after an answer by phone (Ф4 review П2). Bound to the history record of that answer: undone only if
+ * the record is this member's and the family still has exactly that answer. A guest may have answered in
+ * between; then nothing changes and the caller shows a refusal.
+ */
+export async function revertAnswer(db: Db, who: Principal, input: { historyId: number }) {
+  const [h] = await db.select().from(seatingChanges).where(eq(seatingChanges.id, input.historyId));
+  if (!h) throw new ForbiddenError();
+  const m = await authorize(db, who, h.eventId, "member");
+  const sum = h.summary as AnswerSummary;
+  if (h.action !== "answer" || h.actorMemberId !== m.memberId || !sum?.familyId || !sum.from || !sum.to) {
     throw new ForbiddenError();
   }
+  const current = await familyEvent(db, sum.familyId);
+  const changed = { ok: false as const, eventId: h.eventId, reason: "changed" as const };
+  if (current.eventId !== h.eventId || current.deletedAt) return changed;
+  const still =
+    current.rsvp === sum.to.rsvp &&
+    (current.confirmedCount ?? null) === (sum.to.confirmed ?? null) &&
+    current.answeredBy === "member" &&
+    current.answeredByMemberId === m.memberId;
+  if (!still) return changed;
+  const f = sum.from;
   await withSeating(db, current.eventId, { kind: "member", memberId: m.memberId }, async ({ tx, state }) => {
     await tx
       .update(families)
       .set({
-        rsvp,
-        confirmedCount: confirmed,
-        respondedAt: rsvp === "pending" ? null : current.respondedAt,
-        answeredBy: rsvp === "pending" ? null : current.answeredBy,
-        answeredByMemberId: rsvp === "pending" ? null : current.answeredByMemberId,
+        rsvp: f.rsvp,
+        confirmedCount: f.rsvp === "yes" ? f.confirmed : null,
+        respondedAt: f.respondedAt ? new Date(f.respondedAt) : null,
+        answeredBy: f.answeredBy,
+        answeredByMemberId: f.answeredByMemberId,
         version: sql`${families.version} + 1`,
         updatedAt: new Date(),
       })
       .where(eq(families.id, current.id));
-    const result = setRsvp(state, current.id, rsvp, { confirmed });
-    return { result, action: "undo", summary: { names: [current.name], reason: "answerReverted" }, value: null };
+    const result = setRsvp(state, current.id, f.rsvp, { confirmed: f.rsvp === "yes" ? f.confirmed : null });
+    return {
+      result,
+      action: "undo",
+      summary: {
+        names: [current.name],
+        familyId: current.id,
+        from: sum.to,
+        to: { rsvp: f.rsvp, confirmed: f.confirmed },
+        reason: "answerReverted",
+        undoOf: h.id,
+      },
+      value: null,
+      record: true,
+    };
   });
   return { ok: true as const, eventId: current.eventId };
 }
@@ -454,16 +504,27 @@ export async function createCategory(
   who: Principal,
   input: { eventId: string; labelKk: string; labelRu?: string | null; afterCategoryId: string | null },
 ): Promise<CreateCategoryResult> {
-  await authorize(db, who, input.eventId, "member");
+  const m = await authorize(db, who, input.eventId, "member");
   const labelKk = input.labelKk.trim();
   const labelRu = input.labelRu?.trim() || null;
   if (!labelKk) return { ok: false, field: "required" };
   if (labelKk.length > 40 || (labelRu?.length ?? 0) > 40) return { ok: false, field: "tooLong" };
-  return db.transaction(async (tx) => {
+  // Through the adapter (П1): the seating order changes under the event lock, the version grows and the
+  // history gets an `order` record.
+  const out = await withSeating(db, input.eventId, { kind: "member", memberId: m.memberId }, async ({ tx, state }) => {
     const cats = await tx.select().from(categories).where(eq(categories.eventId, input.eventId));
-    const lower = labelKk.toLocaleLowerCase("kk");
-    if (cats.some((c) => c.labelKk.toLocaleLowerCase("kk") === lower))
-      return { ok: false as const, field: "exists" as const };
+    const same = (a: string | null, b: string | null) =>
+      a !== null && b !== null && a.toLocaleLowerCase("kk") === b.toLocaleLowerCase("kk");
+    // Н3: duplicates by the Kazakh and the Russian name, case-insensitive
+    if (cats.some((c) => same(c.labelKk, labelKk) || same(c.labelRu, labelRu) || same(c.labelRu, labelKk))) {
+      return {
+        result: { state, deltas: [], warnings: [] },
+        action: "reorder" as const,
+        summary: {},
+        value: null,
+        noop: true,
+      };
+    }
     const after = input.afterCategoryId ? cats.find((c) => c.id === input.afterCategoryId) : undefined;
     const rank = after ? after.seatingRank + 1 : Math.max(0, ...cats.map((c) => c.seatingRank)) + 1;
     await tx
@@ -474,8 +535,19 @@ export async function createCategory(
       .insert(categories)
       .values({ eventId: input.eventId, labelKk, labelRu, seatingRank: rank, isCustom: true, colorToken: "cat-8" })
       .returning();
-    return { ok: true as const, category: category! };
+    const order = await tx
+      .select({ id: categories.id, rank: categories.seatingRank })
+      .from(categories)
+      .where(eq(categories.eventId, input.eventId))
+      .orderBy(asc(categories.seatingRank));
+    return {
+      result: { state: { ...state, categories: order }, deltas: [], warnings: [] },
+      action: "reorder" as const,
+      summary: { category: labelKk, after: after?.labelKk ?? null, reason: "categoryAdded" },
+      value: category!,
+    };
   });
+  return out.value ? { ok: true, category: out.value } : { ok: false, field: "exists" };
 }
 
 /** «Екеуі де қалсын»: the pair is marked as different people (no duplicate warning any more). */

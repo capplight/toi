@@ -104,10 +104,18 @@ function SheetBody({
   const saveAnswer = (attending: boolean) =>
     run(async () => {
       const r = await recordAnswerAction({ familyId: g.id, attending, seats: attending ? seats : undefined });
-      if (!r.ok || !("previous" in r)) return failed("error" in r ? r : undefined);
+      if (!r.ok || !("historyId" in r)) return failed("error" in r ? r : undefined);
       onClose();
       const message = attending ? t("answer.toastYes", { seats, name: g.name }) : t("answer.toastNo", { name: g.name });
-      undoToast(message, () => void revertAnswerAction({ familyId: g.id, previous: r.previous }));
+      const historyId = r.historyId;
+      undoToast(message, () => {
+        void revertAnswerAction({ historyId })
+          .then((u) => {
+            // П2: the answer changed meanwhile (e.g. the guest answered by the link) — nothing was undone.
+            if (!u.ok) showToast({ message: te("reason" in u ? "conflict" : "unknown") });
+          })
+          .catch(() => showToast({ message: te("network") }));
+      });
     });
 
   const remove = () =>

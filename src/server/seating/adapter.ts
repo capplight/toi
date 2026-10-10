@@ -104,6 +104,13 @@ export type SeatingStep<T> = (ctx: { tx: Tx; state: SeatingState }) => Promise<{
   summary: Record<string, unknown>;
   /** Extra value returned to the caller (e.g. the inserted family). */
   value: T;
+  /** Nothing in the seating data changed (e.g. an edit of the name only): no version, no history. */
+  noop?: boolean;
+  /**
+   * Write a history record even when no seat/order/hall changed — answers and seat counts
+   * («Қонақтың жауабы: 3 → 4 орын»); `summary` then carries `from` / `to`.
+   */
+  record?: boolean;
 }>;
 
 export type SeatingOutcome<T> = {
@@ -115,9 +122,14 @@ export type SeatingOutcome<T> = {
 };
 
 /**
- * Run a seating step for an event. The step may write non-seat columns itself (rsvp, deleted_at, insert);
- * seat columns (table_no, seat_locked, locked_by_member_id) are written here from the engine deltas.
- * A history record and a new seating version are written only when seats actually changed.
+ * Run a seating step for an event. The step may write non-seat columns itself (rsvp, deleted_at, insert,
+ * categories); seat columns (table_no, seat_locked, locked_by_member_id) are written here from the engine deltas.
+ *
+ * Version and history rule (Ф4 review П1):
+ * - `events.seating_version` grows on every successful step unless it returns `noop: true` — what «Зал» shows
+ *   (seat counts, answers, unplaced families, categories, order) can change without anybody moving (7.5 polling);
+ * - a `seating_changes` record is written when `historyDiff` is not empty (families, `order`, `hall`) or the step
+ *   returns `record: true` (answers, seat counts).
  */
 export async function withSeating<T>(
   db: Db,
@@ -133,7 +145,7 @@ export async function withSeating<T>(
       .for("update");
     if (!locked) throw new NotFound();
     const before = await loadSeatingState(tx, eventId);
-    const { result, action, summary, value } = await step({ tx, state: before });
+    const { result, action, summary, value, noop, record } = await step({ tx, state: before });
 
     const after = new Map(result.state.families.map((f) => [f.id, f]));
     for (const d of result.deltas) {
@@ -142,14 +154,16 @@ export async function withSeating<T>(
       await tx.update(families).set(familySeatColumns(f)).where(eq(families.id, f.id));
     }
 
-    if (result.deltas.length === 0)
-      return { seatingVersion: locked.version, changes: [], warnings: result.warnings, value };
+    if (noop) return { seatingVersion: locked.version, changes: result.deltas, warnings: result.warnings, value };
 
     const seatingVersion = locked.version + 1;
     await tx
       .update(events)
       .set({ seatingVersion, updatedAt: sql`now()` })
       .where(eq(events.id, eventId));
+    const diff = historyDiff(before, result.state);
+    const hasDiff = diff.families.length > 0 || Boolean(diff.order) || Boolean(diff.hall);
+    if (!hasDiff && !record) return { seatingVersion, changes: result.deltas, warnings: result.warnings, value };
     const [rec] = await tx
       .insert(seatingChanges)
       .values({
@@ -158,7 +172,7 @@ export async function withSeating<T>(
         actorMemberId: actor.memberId,
         action,
         summary,
-        diff: historyDiff(before, result.state),
+        diff,
         seatingVersionAfter: seatingVersion,
       })
       .returning({ id: seatingChanges.id });

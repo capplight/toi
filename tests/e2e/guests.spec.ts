@@ -202,8 +202,12 @@ test.describe("Ф4 guests", () => {
 
   test("filters, search and empty search", async ({ page }) => {
     await page.goto(list());
-    await page.locator(".counter.no").click();
-    await expect(page.locator(".counter.no")).toHaveAttribute("aria-pressed", "true");
+    // tap until hydrated (a tap before hydration does nothing)
+    const no = page.locator(".counter.no");
+    await expect(async () => {
+      if ((await no.getAttribute("aria-pressed")) !== "true") await no.click();
+      await expect(no).toHaveAttribute("aria-pressed", "true", { timeout: 500 });
+    }).toPass();
     await expect(page.locator(".guest", { hasText: "Гүлмира" })).toHaveCount(1);
     for (const status of await page.locator(".guest .badge").allTextContents())
       expect(status).toBe(kk.common.status.no);
@@ -270,5 +274,29 @@ test.describe("Ф4 guests", () => {
       );
       expect(small, path).toEqual([]);
     }
+  });
+});
+
+test.describe("Ф4 review П3", () => {
+  test.beforeEach(async ({ context, baseURL }) => {
+    needDb();
+    await login(context, baseURL!);
+  });
+
+  test("system «Back» on a filled «Жаңа қонақ» asks «Қонақ сақталмайды. Шығасыз ба?»", async ({ page }) => {
+    await page.goto(list());
+    await visible(page, "link", kk.guests.list.addButton).click();
+    await expect(page).toHaveURL(/\/add/);
+    await page.getByLabel(kk.guestForm.name.label, { exact: true }).fill("Қайтпайтын қонақ");
+    await page.goBack();
+    const alert = page.getByRole("alertdialog");
+    await expect(alert.getByRole("heading")).toHaveText(kk.guestForm.leave.title);
+    await alert.getByRole("button", { name: kk.guestForm.leave.no }).click();
+    await expect(page).toHaveURL(/\/add/);
+    await expect(page.getByLabel(kk.guestForm.name.label, { exact: true })).toHaveValue("Қайтпайтын қонақ");
+    // the entry is back: «Back» asks again; «Иә, шығу» leaves to the list
+    await page.goBack();
+    await page.getByRole("alertdialog").getByRole("button", { name: kk.guestForm.leave.yes }).click();
+    await expect(page).toHaveURL(new RegExp(`${list()}$`));
   });
 });

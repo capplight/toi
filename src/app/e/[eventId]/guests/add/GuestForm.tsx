@@ -23,6 +23,8 @@ type Initial = { id: string; version: number; name: string; phone: string; categ
 type Success = { familyId: string; token: string; name: string; phone: string | null; seats: number; category: string };
 
 const NAME_MAX = 80;
+/** `leaveTo` value for the system «Back» (vs. an in-app link path). */
+const BACK = "\u0000back";
 
 export function GuestForm({
   data,
@@ -59,6 +61,9 @@ export function GuestForm({
   const [success, setSuccess] = useState<Success | null>(null);
   const [catSheet, setCatSheet] = useState(false);
   const [leaveTo, setLeaveTo] = useState<string | null>(null);
+  const leaving = useRef(false);
+  /** The confirm itself (opened by «Back») closes with a history step of its own — not a second «Back». */
+  const closingConfirm = useRef(false);
   const [busy, start] = useTransition();
   const nameRef = useRef<HTMLDivElement>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
@@ -69,9 +74,20 @@ export function GuestForm({
       ? name !== initial.name || phone !== initial.phone || categoryId !== initial.categoryId || seats !== initial.seats
       : name.trim() !== prefillName.trim() || phone.trim() !== "");
 
-  // «Қонақ сақталмайды. Шығасыз ба?» — any in-app link while the form has unsaved input.
+  // «Қонақ сақталмайды. Шығасыз ба?» — any in-app link while the form has unsaved input, and the system «Back»
+  // (Android gesture, Ф4 review П3): like the Ф1 sheets, a dirty form holds its own history entry; when «Back»
+  // pops it, the confirm opens; «Жоқ» puts the entry back, «Иә» goes back for real.
   useEffect(() => {
     if (!dirty) return;
+    if (!window.history.state?.toiForm)
+      window.history.pushState({ ...(window.history.state ?? {}), toiForm: true }, "");
+    const onPop = () => {
+      if (leaving.current || closingConfirm.current) return;
+      // A sheet closing by «Back» returns to the form entry (still toiForm) — not a leave.
+      if (window.history.state?.toiForm) return;
+      setLeaveTo(BACK);
+    };
+    window.addEventListener("popstate", onPop);
     const onClick = (e: MouseEvent) => {
       const a = (e.target as HTMLElement).closest?.("a[href]") as HTMLAnchorElement | null;
       if (!a || a.target === "_blank" || a.origin !== window.location.origin) return;
@@ -86,8 +102,22 @@ export function GuestForm({
     return () => {
       document.removeEventListener("click", onClick, true);
       window.removeEventListener("beforeunload", onUnload);
+      window.removeEventListener("popstate", onPop);
     };
   }, [dirty]);
+
+  /** Navigate away: first drop the form's own history entry (if any), so «Back» later does not land on it. */
+  const leaveForm = (go: () => void) =>
+    afterSheetClosed(() => {
+      if (!window.history.state?.toiForm) return go();
+      leaving.current = true;
+      const once = () => {
+        window.removeEventListener("popstate", once);
+        go();
+      };
+      window.addEventListener("popstate", once);
+      window.history.back();
+    });
 
   const categoryLabel = (id: string) => data.categories.find((c) => c.id === id)?.label ?? "";
   const member = (id: string) => data.members.find((m) => m.id === id);
@@ -132,7 +162,7 @@ export function GuestForm({
           setDup(null);
           if (initial) {
             showToast({ message: t("savedToast", { name: trimmed }) });
-            router.push(backHref);
+            leaveForm(() => router.push(backHref));
           } else {
             const added = r as unknown as { familyId: string; token: string };
             setSuccess({
@@ -194,7 +224,7 @@ export function GuestForm({
   const toList = (familyId?: string) => {
     const sep = backHref.includes("?") ? "&" : "?";
     setSuccess(null);
-    afterSheetClosed(() => router.push(familyId ? `${backHref}${sep}new=${familyId}` : backHref));
+    leaveForm(() => router.push(familyId ? `${backHref}${sep}new=${familyId}` : backHref));
   };
 
   const conflictMember = phoneConflict ? member(phoneConflict.memberId) : undefined;
@@ -321,7 +351,7 @@ export function GuestForm({
               onClick={() => {
                 showToast({ message: t("dup.notAddedToast", { name: name.trim() }) });
                 setDup(null);
-                afterSheetClosed(() => router.push(backHref));
+                leaveForm(() => router.push(backHref));
               }}
             >
               {t("dup.same")}
@@ -419,17 +449,31 @@ export function GuestForm({
 
       <AlertDialog
         open={leaveTo !== null}
-        onOpenChange={(o) => !o && setLeaveTo(null)}
+        onOpenChange={(o) => {
+          if (o) return;
+          const was = leaveTo;
+          setLeaveTo(null);
+          // «Жоқ, жалғастыру» after «Back»: put the form's history entry back.
+          if (was === BACK && !leaving.current) {
+            closingConfirm.current = true;
+            afterSheetClosed(() => {
+              closingConfirm.current = false;
+              window.history.pushState({ ...(window.history.state ?? {}), toiForm: true }, "");
+            });
+          }
+        }}
         title={t("leave.title")}
         description=""
         confirmLabel={t("leave.yes")}
         cancelLabel={t("leave.no")}
         onConfirm={() => {
           const to = leaveTo;
+          leaving.current = true;
           setLeaveTo(null);
           setName(initial?.name ?? prefillName);
           setPhone(initial?.phone ?? "");
-          if (to) router.push(to);
+          if (to === BACK) afterSheetClosed(() => window.history.back());
+          else if (to) leaveForm(() => router.push(to));
         }}
       />
       <SendAsk />
