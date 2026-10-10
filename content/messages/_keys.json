@@ -305,6 +305,14 @@
       "remove": "",
       "later": ""
     },
+    "hall": {
+      "skip": ""
+    },
+    "review": {
+      "title": "",
+      "intro": "",
+      "submit": ""
+    },
     "done": {
       "title": "",
       "body": "",
@@ -312,7 +320,13 @@
       "toList": ""
     },
     "leave": {
-      "title": ""
+      "title": "",
+      "yes": "",
+      "no": ""
+    },
+    "needFullLogin": {
+      "title": "",
+      "body": ""
     }
   },
   "settings": {

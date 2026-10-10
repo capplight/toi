@@ -2189,6 +2189,46 @@
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "—"
   },
+  "wizard.hall.skip": {
+    "release": "A",
+    "context": "текстовая кнопка шага «Залды баптау»: настроить зал позже (D2 17.2, макет 10-wizard, добавлено 2026-10-10)",
+    "audience": "Х",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Кейін баптаймын",
+    "currentRu": "Настрою позже",
+    "issues": "Пара к wizard.music.later («Кейін қосамын»)"
+  },
+  "wizard.review.title": {
+    "release": "A",
+    "context": "шаг «проверка» перед созданием: заголовок и подпись шага в рейке (D2 17.2, макет 10-wizard, добавлено 2026-10-10)",
+    "audience": "Х",
+    "maxLength": "22",
+    "variables": "—",
+    "currentKk": "Тексеру",
+    "currentRu": "Проверка",
+    "issues": "Одно слово — годится и для рейки, и для заголовка"
+  },
+  "wizard.review.intro": {
+    "release": "A",
+    "context": "строка под заголовком шага проверки (D2 17.2, макет 10-wizard, добавлено 2026-10-10)",
+    "audience": "Х",
+    "maxLength": "90",
+    "variables": "—",
+    "currentKk": "Той ашпас бұрын мәліметтерді қарап шығыңыз.",
+    "currentRu": "Перед созданием тоя проверьте данные.",
+    "issues": "—"
+  },
+  "wizard.review.submit": {
+    "release": "A",
+    "context": "главная кнопка шага проверки (D2 17.2, макет 10-wizard, добавлено 2026-10-10)",
+    "audience": "Х",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Той ашу",
+    "currentRu": "Создать той",
+    "issues": "Конкретный глагол вместо «Дайын / Готово» (стайлгайд 5)"
+  },
   "wizard.done.title": {
     "release": "A",
     "context": "финал (D2 8.15)",
@@ -2237,6 +2277,46 @@
     "variables": "—",
     "currentKk": "[НЕТ ТЕКСТА]",
     "currentRu": "[НЕТ ТЕКСТА]",
+    "issues": "—"
+  },
+  "wizard.leave.yes": {
+    "release": "A",
+    "context": "кнопка диалога выхода из мастера (D2 17.2, макет 10-wizard, добавлено 2026-10-10)",
+    "audience": "Х",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Иә, шығу",
+    "currentRu": "Да, выйти",
+    "issues": "Как guestForm.leave.yes"
+  },
+  "wizard.leave.no": {
+    "release": "A",
+    "context": "кнопка диалога выхода, главная, с фокусом (D2 17.2, макет 10-wizard, добавлено 2026-10-10)",
+    "audience": "Х",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Жоқ, жалғастыру",
+    "currentRu": "Нет, продолжить",
+    "issues": "Как guestForm.leave.no"
+  },
+  "wizard.needFullLogin.title": {
+    "release": "A",
+    "context": "сессия по ссылке пытается создать той — нужен вход по SMS (план 6.2) (D2 17.2, макет 10-wizard, добавлено 2026-10-10)",
+    "audience": "С",
+    "maxLength": "40",
+    "variables": "—",
+    "currentKk": "Жаңа той ашу үшін SMS-кодпен кіріңіз",
+    "currentRu": "Чтобы создать той, войдите по коду из SMS",
+    "issues": "Кнопка — существующий ключ auth.join.expired.smsLogin"
+  },
+  "wizard.needFullLogin.body": {
+    "release": "A",
+    "context": "пояснение под заголовком (D2 17.2, макет 10-wizard, добавлено 2026-10-10)",
+    "audience": "С",
+    "maxLength": "120",
+    "variables": "—",
+    "currentKk": "Сіз сілтеме арқылы кірдіңіз: ол тек бір тойдың тізімін ашады.",
+    "currentRu": "Вы вошли по ссылке — она открывает только список одного тоя.",
     "issues": "—"
   },
   "settings.title": {
