@@ -135,6 +135,13 @@
       "body": "",
       "submit": "",
       "alreadySignedIn": "",
+      "switchUser": {
+        "title": "",
+        "body": "",
+        "note": "",
+        "confirm": "",
+        "cancel": ""
+      },
       "tooManyAttempts": "",
       "expired": {
         "title": "",
@@ -581,6 +588,7 @@
       "newLinkConfirm": ""
     },
     "delete": {
+      "title": "",
       "confirm": "",
       "yes": "",
       "no": "",
@@ -614,6 +622,7 @@
     "tiles": {
       "yes": "",
       "pending": "",
+      "pendingNotSent": "",
       "no": ""
     },
     "byCategory": {

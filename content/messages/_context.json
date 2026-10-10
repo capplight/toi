@@ -999,6 +999,56 @@
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "Состояния нет в дизайне (повторное нажатие ссылки из чата — частый случай)"
   },
+  "auth.join.switchUser.title": {
+    "release": "A",
+    "context": "диалог: ссылку входа открыли на телефоне, где вошёл другой человек (Ф3, добавлено 2026-10-10)",
+    "audience": "С",
+    "maxLength": "40",
+    "variables": "—",
+    "currentKk": "Бұл телефонда басқа адам кірген",
+    "currentRu": "На этом телефоне вошёл другой человек",
+    "issues": "Без имён — кто вошёл, не показываем"
+  },
+  "auth.join.switchUser.body": {
+    "release": "A",
+    "context": "вопрос под заголовком",
+    "audience": "С",
+    "maxLength": "40",
+    "variables": "—",
+    "currentKk": "Оның орнына Сіз кіресіз бе?",
+    "currentRu": "Войти вместо него?",
+    "issues": "—"
+  },
+  "auth.join.switchUser.note": {
+    "release": "A",
+    "context": "что будет с другим человеком",
+    "audience": "С",
+    "maxLength": "140",
+    "variables": "—",
+    "currentKk": "Ол бұл телефоннан шығады. Оның тізімі сақталады. Қайта кіру үшін оған жаңа сілтеме немесе SMS-код керек болады.",
+    "currentRu": "Он выйдет на этом телефоне. Его список сохранится. Чтобы войти снова, ему понадобится новая ссылка или код из SMS.",
+    "issues": "Частый случай у 50+: один телефон на двоих"
+  },
+  "auth.join.switchUser.confirm": {
+    "release": "A",
+    "context": "основная кнопка",
+    "audience": "С",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Иә, мен кіремін",
+    "currentRu": "Да, войти мне",
+    "issues": "—"
+  },
+  "auth.join.switchUser.cancel": {
+    "release": "A",
+    "context": "вторичная кнопка: оставить вход как есть",
+    "audience": "С",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Жоқ, қалсын",
+    "currentRu": "Нет, оставить",
+    "issues": "—"
+  },
   "auth.join.tooManyAttempts": {
     "release": "A",
     "context": "лимит: 10 неудачных попыток в час на IP (AP 6.1)",
@@ -4079,9 +4129,19 @@
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "—"
   },
+  "guestSheet.delete.title": {
+    "release": "A",
+    "context": "заголовок диалога удаления гостя (добавлено 2026-10-10)",
+    "audience": "С",
+    "maxLength": "28",
+    "variables": "—",
+    "currentKk": "Қонақты өшіру керек пе?",
+    "currentRu": "Удалить гостя?",
+    "issues": "Без имени; имя — в guestSheet.delete.confirm отдельной строкой"
+  },
   "guestSheet.delete.confirm": {
     "release": "A",
-    "context": "подтверждение удаления (DS 4.7)",
+    "context": "текст диалога под заголовком guestSheet.delete.title; имя отдельной строкой (DS 4.7, изменено 2026-10-10)",
     "audience": "С",
     "maxLength": "60",
     "variables": "{name}",
@@ -4288,6 +4348,16 @@
     "currentKk": "Жауап күтілуде · {families} отбасы · ~{seats} орын",
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "НЕСОГЛ: статус везде «Жауап жоқ»; здесь «Жауап күтілуде». И включает ли плитка «Жіберілмеді»? Уточнить"
+  },
+  "summary.tiles.pendingNotSent": {
+    "release": "A",
+    "context": "подстрока плитки «Жауап жоқ»: сколько из них ещё не получили приглашение (решение архитектора А4, добавлено 2026-10-10)",
+    "audience": "С",
+    "maxLength": "32",
+    "variables": "{count}",
+    "currentKk": "Оның ішінде жіберілмеген: {count}",
+    "currentRu": "из них не отправлено: {count}",
+    "issues": "Число после двоеточия — ru без plural"
   },
   "summary.tiles.no": {
     "release": "A",
@@ -5566,8 +5636,8 @@
     "maxLength": "8",
     "variables": "—",
     "currentKk": "ТӨР",
-    "currentRu": "Төр",
-    "issues": "ru в DS «Төр», в прототипе «ТӨР». Капс CSS; слово одно"
+    "currentRu": "ТӨР",
+    "issues": "Метка схемы капсом, как в дизайне (2026-10-10: ru «Төр» → «ТӨР»)"
   },
   "hall.map.entrance": {
     "release": "B",
@@ -5576,8 +5646,8 @@
     "maxLength": "12",
     "variables": "—",
     "currentKk": "КІРЕБЕРІС",
-    "currentRu": "Вход",
-    "issues": "—"
+    "currentRu": "ВХОД",
+    "issues": "Метка схемы капсом, как в дизайне (2026-10-10: ru «Вход» → «ВХОД»)"
   },
   "hall.map.coupleTable": {
     "release": "B",
