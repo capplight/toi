@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/tokens.css">
 <style>
   /* /join/{token} (по умолчанию), #expired — «Сілтеме ескірген», #sms — /login телефон, #code — ввод кода и «Код келмеді» */
-  html:not([data-state=""]):not([data-state="join"]) .s-join, html:not([data-state="expired"]) .s-expired, html:not([data-state="sms"]) .s-sms, html:not([data-state="code"]) .s-code { display: none !important; }
+  html:not([data-state=""]):not([data-state="join"]):not([data-state="switch"]) .s-join, html:not([data-state="switch"]) .s-switch, html:not([data-state="expired"]) .s-expired, html:not([data-state="sms"]) .s-sms, html:not([data-state="code"]) .s-code { display: none !important; }
   body { min-height: 100vh; }
   .auth { min-height: 100vh; display: grid; grid-template-rows: auto 1fr; }
   .auth-art { position: relative; overflow: hidden; color: var(--on-night); padding: 22px 20px 64px; text-align: center;
@@ -88,6 +88,14 @@
       <div class="btns"><button class="btn wa"><svg class="ico fill"><use href="#i-wa"/></svg>Той иесінен сілтеме сұрау</button><button class="btn text" style="width:100%">Жаңа код сұрау</button></div>
     </div>
   </main>
+</div>
+<!-- /join, когда на телефоне уже вошёл другой человек (auth.join.switchUser.*) -->
+<div class="scrim s-switch"></div>
+<div class="sheet center s-switch" role="alertdialog" aria-modal="true" aria-labelledby="sw-t" aria-describedby="sw-b" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="sw-t">Бұл телефонда басқа адам кірген</h2></div>
+  <div class="sheet-body"><p id="sw-b" style="margin:0;font-weight:600">Оның орнына Сіз кіресіз бе?</p><p class="t-body t-muted" style="margin:8px 0 0">Ол бұл телефоннан шығады. Оның тізімі сақталады. Қайта кіру үшін оған жаңа сілтеме немесе SMS-код керек болады.</p></div>
+  <div class="sheet-foot" style="border-top:0"><button class="btn secondary" autofocus>Жоқ, қалсын</button><button class="btn primary">Иә, мен кіремін</button></div>
 </div>
 <script src="js/mock.js"></script>
 </body>

@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Тізімді кім толтырады · Той v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/flows.css">
+<!-- Состояния (#hash): по умолчанию · add · add-other · add-error · newlink · signout · remove · nopilot. Тексты — members.*, roles.*, category.names.*, legal.pilotBanner -->
+<style>
+  html:not([data-state="add"]):not([data-state="add-other"]):not([data-state="add-error"]) .s-add { display: none !important; }
+  html:not([data-state="add-other"]) .s-other { display: none !important; }
+  html:not([data-state="add-error"]) .s-err { display: none !important; }
+  html:not([data-state="signout"]) .s-signout { display: none !important; }
+  html:not([data-state="remove"]) .s-remove { display: none !important; }
+  html:not([data-state="newlink"]) .toast { display: none; }
+  html[data-state="add-other"] .who-mother { background: var(--paper); border: 1.5px solid var(--line-strong); color: var(--ink); font-weight: 400; }
+  html[data-state="add-other"] .who-mother .ico { display: none; }
+  html:not([data-state="add-other"]) .who-other .ico { display: none; }
+  html[data-state="add-other"] .who-other { background: var(--lapis-soft); border: 2.5px solid var(--lapis); color: var(--lapis); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" aria-label="Мәзір">
+    <a class="wordmark brand" href="#"><span data-orn="mark"></span><b>Той</b></a>
+    <div class="event-mini"><span data-orn="shanyraq" class="deco"></span><div class="nm">Айбек пен Дана</div><div class="meta">Үйлену тойы · 15 қараша, 18:00</div></div>
+    <a class="nav-item" href="01-guests.html"><svg class="ico"><use href="#i-users"/></svg>Қонақтар</a>
+    <a class="nav-item" href="03-hall.html"><svg class="ico"><use href="#i-grid"/></svg>Зал</a>
+    <a class="nav-item" href="#"><svg class="ico"><use href="#i-chart"/></svg>Қорытынды</a>
+    <a class="nav-item" href="#"><svg class="ico"><use href="#i-wallet"/></svg>Шығындар</a>
+    <a class="nav-item" href="#" aria-current="page"><svg class="ico"><use href="#i-gear"/></svg>Баптаулар</a>
+    <div class="side-foot">
+      <button class="nav-item menu-item" aria-haspopup="dialog"><svg class="ico"><use href="#i-more"/></svg><span>Той мәзірі</span></button>
+      <div class="who"><span class="avatar">С</span><div><b style="font-weight:600">Серік</b><div class="t-body t-muted">Той иесі</div></div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="pilot" role="status"><svg class="ico"><use href="#i-alert"/></svg><p>Бұл — сынақ нұсқасы. Ақау байқасаңыз, бізге хабарлаңыз.</p><button class="icon-btn" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></button></div>
+    <header class="topbar desk-hide">
+      <a class="icon-btn" href="#" aria-label="Артқа"><svg class="ico"><use href="#i-back"/></svg></a>
+      <h1 class="t-h1 with-sub">Тізімді кім толтырады<small>Баптаулар</small></h1>
+      <button class="icon-btn menu-btn" aria-label="Той мәзірі" aria-haspopup="dialog"><svg class="ico"><use href="#i-more"/></svg></button>
+    </header>
+
+    <main class="content">
+      <div class="page">
+        <div class="col-main">
+          <div class="page-head o1">
+            <div class="ttl"><h2 class="t-h1">Тізімді кім толтырады</h2><p>Баптаулар</p></div>
+            <a class="btn primary" href="#add"><svg class="ico"><use href="#i-user-plus"/></svg>Адам қосу</a>
+          </div>
+          <div class="o2">
+            <p class="mem-intro">Қонақ тізімін бірге толтыру үшін отбасы мүшелерін қосыңыз. Әркім өз тізімін жүргізеді.</p>
+            <a class="btn primary mob-only" href="#add" style="margin-bottom:1rem"><svg class="ico"><use href="#i-user-plus"/></svg>Адам қосу</a>
+
+            <div class="mem-grid">
+              <!-- Хозяин -->
+              <article class="mem owner">
+                <div class="top"><span class="avatar">С</span><b>Той иесі · Серік</b><span class="ph">+7 701 *** ** 41</span></div>
+                <div class="chips2"><span class="pchip"><svg class="ico"><use href="#i-grid"/></svg>Тізім және отырғызу</span><span class="pchip"><svg class="ico"><use href="#i-wallet"/></svg>Шығындар</span></div>
+                <div class="mstat ok"><svg class="ico"><use href="#i-yes"/></svg>Кірді · Android · Chrome · 09.11, 10:20</div>
+              </article>
+              <!-- Анасы: кірді -->
+              <article class="mem">
+                <div class="top"><span class="avatar">Г</span><b>Анасы · Гүлжан</b><span class="ph">+7 702 *** ** 66</span></div>
+                <div class="chips2"><span class="pchip"><svg class="ico"><use href="#i-grid"/></svg>Тізім және отырғызу</span><span class="pchip"><svg class="ico"><use href="#i-wallet"/></svg>Шығындар</span></div>
+                <div class="mstat ok"><svg class="ico"><use href="#i-yes"/></svg>Кірді · Android · Chrome · 12.11, 14:05</div>
+                <div class="acts"><a class="btn secondary" href="#newlink">Жаңа сілтеме</a><a class="btn danger" href="#signout">Құрылғылардан шығару</a><a class="btn text" href="#remove">Тойдан алып тастау</a></div>
+              </article>
+              <!-- Жастар: әлі кірмеді -->
+              <article class="mem">
+                <div class="top"><span class="avatar">А</span><b>Жастар · Айбек</b><span class="ph">+7 707 *** ** 03</span></div>
+                <div class="chips2"><span class="pchip plain"><svg class="ico"><use href="#i-eye"/></svg>Тек тізім</span></div>
+                <div class="mstat wait"><svg class="ico"><use href="#i-clock"/></svg>Әлі кірмеді · сілтеме тағы 48 сағат жарамды</div>
+                <div class="acts"><button class="btn wa"><svg class="ico fill"><use href="#i-wa"/></svg>WhatsApp-қа жіберу</button><a class="btn secondary" href="#newlink">Жаңа сілтеме</a><a class="btn text" href="#remove">Тойдан алып тастау</a></div>
+              </article>
+              <!-- Басқа: сілтеме мерзімі өтті -->
+              <article class="mem">
+                <div class="top"><span class="avatar">С</span><b>Әпкесі · Сәуле</b><span class="ph">+7 705 *** ** 18</span></div>
+                <div class="chips2"><span class="pchip plain"><svg class="ico"><use href="#i-eye"/></svg>Тек тізім</span></div>
+                <div class="mstat exp"><svg class="ico"><use href="#i-alert"/></svg>Әлі кірмеді · сілтеме мерзімі өтті</div>
+                <div class="acts"><a class="btn primary" href="#newlink" style="flex:1 1 100%">Жаңа сілтеме</a><a class="btn text" href="#remove">Тойдан алып тастау</a></div>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-aside">
+          <section class="door-card o3" aria-labelledby="door-t">
+            <h3 id="door-t"><svg class="ico"><use href="#i-door"/></svg>Кіреберіс сілтемесі</h3>
+            <p>Кіреберісте қонақтарды қарсы алатын адамға жіберіңіз. Ол сілтемені тойдан бұрын, интернет бар кезде ашсын: тізім телефонына сақталады.</p>
+            <div class="inline-actions"><button class="btn wa row"><svg class="ico fill"><use href="#i-wa"/></svg>WhatsApp-қа жіберу</button><button class="btn secondary row">Жаңа сілтеме</button></div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<nav class="tabbar" aria-label="Бөлімдер" style="--tabs:3">
+  <a class="tab" href="01-guests.html"><span class="pill"><svg class="ico"><use href="#i-users"/></svg></span><span>Қонақтар</span></a>
+  <a class="tab" href="03-hall.html"><span class="pill"><svg class="ico"><use href="#i-grid"/></svg></span><span>Зал</span></a>
+  <a class="tab" href="#"><span class="pill"><svg class="ico"><use href="#i-chart"/></svg></span><span>Қорытынды</span></a>
+</nav>
+
+<!-- Адам қосу: телефон — шторка снизу, ≥1024 — правая шторка Vaul 480 px -->
+<div class="scrim s-add"></div>
+<div class="sheet s-add" role="dialog" aria-modal="true" aria-labelledby="add-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="add-t">Адам қосу</h2><button class="icon-btn" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></button></div>
+  <div class="sheet-body">
+    <div class="form-sec">
+      <label class="field-label" for="mp">Телефон</label>
+      <div class="input focus"><span class="prefix">+7</span><input id="mp" inputmode="tel" value="702 381 07 66"></div>
+      <div class="field-err s-err" role="alert"><svg class="ico sm"><use href="#i-alert"/></svg>Бұл адам тойға қосылған. Сілтемені оның карточкасынан жіберіңіз.</div>
+    </div>
+    <div class="form-sec">
+      <span class="field-label" id="wl">Кім?</span>
+      <div class="tiles" role="radiogroup" aria-labelledby="wl">
+        <button class="tile" role="radio" aria-checked="false">Әкесі</button>
+        <button class="tile who-mother" role="radio" aria-checked="true"><svg class="ico"><use href="#i-check"/></svg>Анасы</button>
+        <button class="tile" role="radio" aria-checked="false">Жастар</button>
+        <button class="tile who-other" role="radio" aria-checked="false"><svg class="ico"><use href="#i-check"/></svg>Басқа</button>
+      </div>
+      <div class="s-other" style="margin-top:.75rem"><label class="field-label" for="cw">Кім? Мысалы: Әпкесі</label><div class="input"><input id="cw" value="Әпкесі"></div></div>
+    </div>
+    <div class="form-sec">
+      <label class="field-label" for="mn">Аты</label>
+      <div class="input"><input id="mn" value="Гүлжан"></div>
+    </div>
+    <div class="form-sec">
+      <span class="field-label" id="pl">Не істей алады?</span>
+      <div class="perm" role="radiogroup" aria-labelledby="pl">
+        <button class="opt" role="radio" aria-checked="false"><span class="rd"></span><b>Тек тізім</b><span>Қонақ қосып, шақыру жібере алады. Отырғызуды тек көреді.</span></button>
+        <button class="opt" role="radio" aria-checked="true"><span class="rd"></span><b>Тізім және отырғызу</b><span>Қонақ қосып, шақыру жібере алады. Үстелдер мен отырғызуды да өзгерте алады.</span></button>
+      </div>
+    </div>
+    <div class="form-sec">
+      <div class="sw-row" role="switch" aria-checked="true" tabindex="0"><div class="tx"><b>Шығындар</b><span>Шығындарды көріп, өзгерте алады.</span></div><span class="switch" aria-hidden="true"></span></div>
+    </div>
+    <div class="form-sec">
+      <span class="field-label" id="dcl">Ол қосқан қонақтар қай санатта?</span>
+      <div class="cats" role="radiogroup" aria-labelledby="dcl">
+        <button class="cat" role="radio" aria-checked="false"><i class="sw" style="background:var(--cat-kuda)"></i>Құдалар</button>
+        <button class="cat" role="radio" aria-checked="false"><i class="sw" style="background:var(--cat-oz)"></i>Өз туыстар</button>
+        <button class="cat" role="radio" aria-checked="true"><svg class="ico sm"><use href="#i-check"/></svg>Нағашылар</button>
+        <button class="cat" role="radio" aria-checked="false"><i class="sw" style="background:var(--cat-dos)"></i>Достар</button>
+      </div>
+    </div>
+  </div>
+  <div class="sheet-foot"><button class="btn wa"><svg class="ico fill"><use href="#i-wa"/></svg>Қосу және сілтеме жіберу</button></div>
+</div>
+
+<!-- Құрылғылардан шығару / Тойдан алып тастау — подтверждение -->
+<div class="scrim s-signout"></div>
+<div class="sheet center s-signout" role="alertdialog" aria-modal="true" aria-labelledby="so-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="so-t">Құрылғылардан шығару</h2></div>
+  <div class="sheet-body"><p style="margin:0">«Анасы» барлық құрылғыдан шығады. Қайта кіру үшін оған жаңа сілтеме керек болады.</p></div>
+  <div class="sheet-foot" style="border-top:0"><button class="btn danger-fill">Құрылғылардан шығару</button><button class="btn secondary" autofocus>Бас тарту</button></div>
+</div>
+<div class="scrim s-remove"></div>
+<div class="sheet center s-remove" role="alertdialog" aria-modal="true" aria-labelledby="rm-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="rm-t">Тойдан алып тастау</h2></div>
+  <div class="sheet-body"><p style="margin:0">«Анасы» бұл тойға енді кіре алмайды. Ол қосқан қонақтар тізімде қалады.</p></div>
+  <div class="sheet-foot" style="border-top:0"><button class="btn danger-fill">Тойдан алып тастау</button><button class="btn secondary" autofocus>Бас тарту</button></div>
+</div>
+
+<div class="toast" role="status" aria-live="polite"><span class="msg">Ескі сілтеме жабылды</span></div>
+<script src="js/mock.js"></script>
+</body>
+</html>

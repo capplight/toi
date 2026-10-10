@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Жаңа той · мастер · Той v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/flows.css">
+<!-- Состояния (#hash): kind (по умолч.) · who · leave · venue · venue-error · text · text-edit · template · music · music-up · music-proc · music-ready · music-error · hall · hall2 · review · done · scope.
+     Тексты — ключи wizard.*, hall.setup.*, legal.*, events.kind.* из content/messages/kk.json. Пунктир с подписью «нет в kk.json» — строки, которых нет в финальном файле. -->
+</head>
+<body>
+<div class="wz">
+  <div class="wz-top">
+    <div class="pilot" role="status"><svg class="ico"><use href="#i-alert"/></svg><p>Бұл — сынақ нұсқасы. Ақау байқасаңыз, бізге хабарлаңыз.</p><button class="icon-btn" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></button></div>
+    <header class="wz-head">
+      <a class="icon-btn" href="#leave" aria-label="Артқа"><svg class="ico"><use href="#i-back"/></svg></a>
+      <h1 class="t-h1">Жаңа той</h1>
+      <span class="prog" id="prog">1 / 8</span>
+    </header>
+    <div class="wz-bar" aria-hidden="true"><i id="bar" style="width:12.5%"></i></div>
+  </div>
+
+  <div class="wz-main">
+    <!-- Десктоп: рейка шагов -->
+    <nav class="wz-rail" aria-label="Қадамдар">
+      <ol id="rail">
+        <li data-i="1"><span class="n">1</span>Той түрі</li>
+        <li data-i="2"><span class="n">2</span>Кімнің тойы?</li>
+        <li data-i="3"><span class="n">3</span>Той қайда өтеді?</li>
+        <li data-i="4"><span class="n">4</span>Шақыру мәтіні</li>
+        <li data-i="5"><span class="n">5</span>Шаблон</li>
+        <li data-i="6"><span class="n">6</span>Музыка (міндетті емес)</li>
+        <li data-i="7"><span class="n">7</span>Залды баптау</li>
+        <li data-i="8"><span class="n">8</span><span class="missing" data-key="wizard.review.title">Тексеру</span></li>
+      </ol>
+    </nav>
+
+    <main class="wz-body">
+      <!-- 1. Той түрі -->
+      <section class="wz-step" data-s="kind" aria-labelledby="s1">
+        <h2 id="s1">Той түрі</h2>
+        <div class="tiles" role="radiogroup" aria-labelledby="s1" style="margin-top:1rem">
+          <button class="tile big" role="radio" aria-checked="true"><svg class="ico"><use href="#i-check"/></svg>Үйлену тойы</button>
+          <button class="tile big" role="radio" aria-checked="false">Қыз ұзату</button>
+          <button class="tile big" role="radio" aria-checked="false">Сүндет той</button>
+          <button class="tile big" role="radio" aria-checked="false">Бесік той</button>
+          <button class="tile big" role="radio" aria-checked="false">Мерейтой</button>
+          <button class="tile big" role="radio" aria-checked="false">Басқа</button>
+        </div>
+      </section>
+
+      <!-- 2. Кімнің тойы? -->
+      <section class="wz-step" data-s="who" aria-labelledby="s2">
+        <h2 id="s2">Кімнің тойы?</h2>
+        <div class="sec" style="margin-top:1rem">
+          <label class="field-label" for="nm">Жастардың аттары</label>
+          <div class="input focus"><input id="nm" value="Айбек пен Дана" placeholder="Мысалы: Айбек пен Дана"></div>
+          <p class="field-hint">Қонақтар дәл осылай көреді: біз ештеңе қоспаймыз және өзгертпейміз.</p>
+        </div>
+        <div class="sec">
+          <label class="field-label" for="hs">Той иелері</label>
+          <div class="input"><input id="hs" value="Серік — Гүлжан" placeholder="Мысалы: Серік — Гүлжан"></div>
+        </div>
+        <div class="sec row2">
+          <div><label class="field-label" for="dt">Күні</label><div class="input"><svg class="ico"><use href="#i-cal"/></svg><input id="dt" value="15.11.2026"></div></div>
+          <div><label class="field-label" for="tm">Уақыты</label><div class="input"><svg class="ico"><use href="#i-clock"/></svg><input id="tm" value="18:00"></div></div>
+        </div>
+      </section>
+
+      <!-- 3. Той қайда өтеді? -->
+      <section class="wz-step" data-s="venue" aria-labelledby="s3">
+        <h2 id="s3">Той қайда өтеді?</h2>
+        <div class="sec" style="margin-top:1rem">
+          <label class="field-label" for="vn">Атауы</label>
+          <div class="input"><input id="vn" value="«Шаңырақ» мейрамханасы"></div>
+        </div>
+        <div class="sec">
+          <label class="field-label" for="va">Мекенжайы</label>
+          <div class="input"><svg class="ico"><use href="#i-pin"/></svg><input id="va" value="Атырау қ., Абай даңғылы, 15"></div>
+        </div>
+        <div class="sec">
+          <label class="field-label" for="vm">Карта сілтемесі (2ГИС немесе Google)</label>
+          <div class="input s-mapok"><input id="vm" value="https://2gis.kz/atyrau/firm/70000001…" inputmode="url"></div>
+          <div class="input error s-maperr"><input value="2gis.kz/atyrau/firm/7000…" inputmode="url" aria-invalid="true" aria-describedby="vm-e"></div>
+          <div class="field-err s-maperr" id="vm-e"><svg class="ico sm"><use href="#i-alert"/></svg>Сілтеме https:// деп басталуы керек. Картадан қайта көшіріңіз.</div>
+          <p class="field-hint">2ГИС немесе Google картасында мейрамхананы ашып, «Бөлісу» арқылы сілтемені көшіріңіз де, осында қойыңыз.</p>
+        </div>
+      </section>
+
+      <!-- 4. Шақыру мәтіні -->
+      <section class="wz-step" data-s="text" aria-labelledby="s4">
+        <h2 id="s4">Шақыру мәтіні</h2>
+        <p class="intro">Дайын мәтінді таңдаңыз немесе өзіңіз жазыңыз.</p>
+        <span class="lang-tag">Қазақша мәтін</span>
+        <div role="radiogroup" aria-label="Қазақша мәтін" class="s-presets">
+          <div class="preset" role="radio" aria-checked="true"><div class="ptxt">Құрметті ағайын, құда-жекжат, дос-жаран! Сіздерді ұлымыз <mark>Айбек</mark> пен келініміз <mark>Дана</mark>ның үйлену тойына арналған салтанатты ақ дастарханымыздың қадірлі қонағы болуға шақырамыз.</div>
+            <div class="pfoot"><span class="chk"><svg class="ico sm"><use href="#i-check"/></svg></span><a class="btn text" href="#text-edit">Өзгерту</a></div></div>
+          <div class="preset" role="radio" aria-checked="false"><div class="ptxt">Ұлымыз бен келініміздің үйлену тойына шақырамыз. Келіп, қуанышымызға ортақ болыңыздар!</div>
+            <div class="pfoot"><span class="chk"><svg class="ico sm"><use href="#i-check"/></svg></span><a class="btn text" href="#text-edit">Өзгерту</a></div></div>
+        </div>
+        <div class="s-edit">
+          <label class="field-label" for="kkt">Қазақша мәтін</label>
+          <textarea class="textarea focus" id="kkt" rows="6">Құрметті ағайын, құда-жекжат, дос-жаран! Сіздерді ұлымыз Айбек пен келініміз Дананың үйлену тойына арналған салтанатты ақ дастарханымыздың қадірлі қонағы болуға шақырамыз.</textarea>
+          <div class="counter-ch">178 / 600</div>
+        </div>
+        <div class="sec">
+          <span class="lang-tag">Орысша мәтін (міндетті емес)</span>
+          <div role="radiogroup" aria-label="Орысша мәтін (міндетті емес)">
+            <div class="preset" role="radio" aria-checked="false" lang="ru"><div class="ptxt">Дорогие родные и друзья! Приглашаем вас разделить с нами радость: наши дети создают семью. Будем счастливы видеть вас на свадебном тое.</div>
+              <div class="pfoot"><span class="chk"><svg class="ico sm"><use href="#i-check"/></svg></span><span class="btn text">Өзгерту</span></div></div>
+            <div class="preset" role="radio" aria-checked="false" lang="ru"><div class="ptxt">С большой радостью приглашаем вас на свадьбу наших детей. Ваше присутствие станет для нас лучшим подарком. Ждём вас, чтобы вместе отпраздновать этот светлый день.</div>
+              <div class="pfoot"><span class="chk"><svg class="ico sm"><use href="#i-check"/></svg></span><span class="btn text">Өзгерту</span></div></div>
+          </div>
+          <p class="note">Орысша мәтін болмаса, «РУС» батырмасын басқан қонақ қазақша мәтінді көреді.</p>
+        </div>
+      </section>
+
+      <!-- 5. Шаблон -->
+      <section class="wz-step" data-s="template" aria-labelledby="s5">
+        <h2 id="s5">Шаблон</h2>
+        <div class="tpl-cards" role="radiogroup" aria-labelledby="s5" style="margin-top:1rem">
+          <div class="tpl-card" role="radio" aria-checked="true"><span class="sw sw-ak"></span><div><b>Ақ шаңырақ</b><span class="h">Күндізгі той үшін: ақ, жарық, сабырлы</span><div class="act"><span class="chk" style="color:var(--lapis);display:inline-flex;gap:.375rem;align-items:center;font:600 1rem/1 var(--font-ui)"><svg class="ico sm"><use href="#i-check"/></svg></span><a class="btn secondary" href="05-invite-ak-shanyraq.html"><svg class="ico sm"><use href="#i-eye"/></svg>Көру</a></div></div></div>
+          <div class="tpl-card" role="radio" aria-checked="false"><span class="sw sw-kok"></span><div><b>Көк түн</b><span class="h">Кешкі той үшін: түнгі аспан, жұлдыздар</span><div class="act"><span></span><a class="btn secondary" href="06-invite-kok-tun.html"><svg class="ico sm"><use href="#i-eye"/></svg>Көру</a></div></div></div>
+          <div class="tpl-card" role="radio" aria-checked="false"><span class="sw sw-kyz"></span><div><b>Қызғалдақ</b><span class="h">Анар түсі мен дала қызғалдақтары</span><div class="act"><span></span><a class="btn secondary" href="07-invite-kyzgaldak.html"><svg class="ico sm"><use href="#i-eye"/></svg>Көру</a></div></div></div>
+        </div>
+      </section>
+
+      <!-- 6. Музыка -->
+      <section class="wz-step" data-s="music" aria-labelledby="s6">
+        <h2 id="s6">Музыка (міндетті емес)</h2>
+        <div class="drop s-m-empty" style="margin-top:1rem"><svg class="ico"><use href="#i-music"/></svg><button class="btn primary">Музыка жүктеу</button>
+          <p class="note" style="margin:0">MP3 немесе M4A файлы, ең көбі 20 МБ. Қонақ шақыруды ашқанда ойнайды.</p></div>
+        <div class="s-m-up" style="margin-top:1rem"><div class="player"><span class="play" style="background:var(--sand);color:var(--ink-2)"><svg class="ico"><use href="#i-music"/></svg></span><div class="meta"><b>kelinzhan-ani.mp3</b><span style="color:var(--ink-2)">Жүктелуде: 64%</span><div class="progress" style="margin-top:.375rem"><i style="width:64%"></i></div></div></div></div>
+        <div class="s-m-proc" style="margin-top:1rem"><div class="player"><span class="play" style="background:var(--sand);color:var(--ink-2)"><svg class="ico"><use href="#i-music"/></svg></span><div class="meta"><b>kelinzhan-ani.mp3</b></div></div>
+          <div class="msg-proc" role="status"><span class="spin" aria-hidden="true"></span>Музыка дайындалып жатыр. Бір-екі минут күтіңіз.</div></div>
+        <div class="s-m-ready" style="margin-top:1rem"><div class="player"><button class="play" aria-label="Музыканы тыңдау"><svg class="ico fill"><use href="#i-play"/></svg></button><div class="meta"><b>kelinzhan-ani.mp3</b><span><svg class="ico xs"><use href="#i-check"/></svg>Музыка дайын</span><div class="wave"></div></div></div>
+          <div class="inline-actions"><button class="btn secondary row">Басқасын жүктеу</button><button class="btn text">Алып тастау</button></div></div>
+        <div class="s-m-error" style="margin-top:1rem"><div class="drop" style="border-color:var(--danger)"><svg class="ico" style="color:var(--danger)"><use href="#i-music"/></svg><button class="btn primary">Музыка жүктеу</button></div>
+          <div class="msg-err" role="alert"><svg class="ico sm"><use href="#i-alert"/></svg>Бұл файлды ашу мүмкін болмады. Басқа файлды жүктеп көріңіз.</div></div>
+        <p class="note">Музыканы жүктеу арқылы Сіз оны шақыруда қолдануға құқығыңыз бар екенін растайсыз.</p>
+        <a class="btn text" href="#hall" style="margin-top:.5rem;padding:0">Кейін қосамын</a>
+      </section>
+
+      <!-- 7. Залды баптау (hall.setup.*) -->
+      <section class="wz-step" data-s="hall" aria-labelledby="s7">
+        <h2 id="s7">Залды баптау</h2>
+        <div class="sec" style="margin-top:1rem">
+          <span class="field-label" id="cl">Үстелдер неше қатар тұрады?</span>
+          <div class="cols-tiles" role="radiogroup" aria-labelledby="cl">
+            <button class="tile" role="radio" id="c2" aria-checked="false"><span class="mini-cols" style="grid-template-columns:repeat(2,.625rem)"><i></i><i></i><i></i><i></i></span>2 қатар</button>
+            <button class="tile" role="radio" id="c4" aria-checked="true"><span class="mini-cols" style="grid-template-columns:repeat(4,.625rem)"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>4 қатар</button>
+          </div>
+          <p class="field-hint">Қатар — төрден кіреберіске қарай тізіліп тұрған үстелдер.</p>
+        </div>
+        <div class="sec">
+          <span class="field-label">Үстел саны</span>
+          <div class="stepper"><button aria-label="Үстел саны: азайту"><svg class="ico"><use href="#i-minus"/></svg></button><div class="val"><b class="num">16</b></div><button aria-label="Үстел саны: көбейту"><svg class="ico"><use href="#i-plus"/></svg></button></div>
+        </div>
+        <div class="sec">
+          <span class="field-label">Бір үстелде неше орын?</span>
+          <div class="stepper"><button aria-label="Орын: азайту"><svg class="ico"><use href="#i-minus"/></svg></button><div class="val"><b class="num">12</b></div><button aria-label="Орын: көбейту"><svg class="ico"><use href="#i-plus"/></svg></button></div>
+        </div>
+        <div class="total-card" role="status">
+          <div class="lbl">Барлық орын</div>
+          <div class="f">16 × 12 = 192</div>
+        </div>
+        <a class="btn text missing" data-key="wizard.hall.skip" href="#review" style="margin-top:.75rem;padding:0">Кейін баптаймын</a>
+        <div class="hall-mini mob-only"><p class="cap">Зал осылай болады</p><svg class="hall" id="hallm" aria-hidden="true"></svg></div>
+      </section>
+
+      <!-- 8. Тексеру (ключей wizard.review.* нет в kk.json) -->
+      <section class="wz-step" data-s="review" aria-labelledby="s8">
+        <h2 id="s8" class="missing" data-key="wizard.review.title">Тексеріңіз</h2>
+        <div class="review" style="margin-top:1rem">
+          <div class="r"><span class="k">Той түрі</span><span class="v">Үйлену тойы</span><a class="btn text" href="#kind">Өзгерту</a></div>
+          <div class="r"><span class="k">Жастардың аттары</span><span class="v">Айбек пен Дана</span><a class="btn text" href="#who">Өзгерту</a></div>
+          <div class="r"><span class="k">Той иелері</span><span class="v">Серік — Гүлжан</span><a class="btn text" href="#who">Өзгерту</a></div>
+          <div class="r"><span class="k">Күні · Уақыты</span><span class="v">15.11.2026 · 18:00</span><a class="btn text" href="#who">Өзгерту</a></div>
+          <div class="r"><span class="k">Той қайда өтеді?</span><span class="v">«Шаңырақ» мейрамханасы · Атырау қ., Абай даңғылы, 15</span><a class="btn text" href="#venue">Өзгерту</a></div>
+          <div class="r"><span class="k">Шақыру мәтіні</span><span class="v">Қазақша мәтін</span><a class="btn text" href="#text">Өзгерту</a></div>
+          <div class="r"><span class="k">Шаблон</span><span class="v">Ақ шаңырақ</span><a class="btn text" href="#template">Өзгерту</a></div>
+          <div class="r"><span class="k">Музыка (міндетті емес)</span><span class="v">Музыка дайын</span><a class="btn text" href="#music">Өзгерту</a></div>
+          <div class="r"><span class="k">Залды баптау</span><span class="v">4 қатар · 16 үстел · 12 орын</span><a class="btn text" href="#hall">Өзгерту</a></div>
+        </div>
+      </section>
+
+      <!-- Дайын! -->
+      <section class="wz-step" data-s="done" aria-labelledby="s9">
+        <div class="done-wrap">
+          <span data-orn="horn" class="success-orn draw"></span>
+          <h2 id="s9" class="success-ttl">Дайын!</h2>
+          <p class="success-sub">Той құрылды. Енді тізім толтыратындарды қосыңыз.</p>
+          <div style="display:grid;gap:.625rem;max-width:26rem;margin:1.75rem auto 0">
+            <a class="btn primary" href="11-members.html"><svg class="ico"><use href="#i-user-plus"/></svg>Тізім толтыратындарды қосу</a>
+            <a class="btn secondary" href="01-guests.html">Тізімге өту</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Сессия по ссылке (scope = events): создавать той нельзя, нужен вход по SMS (план 6.2). Текстов нет в kk.json -->
+      <section class="wz-step" data-s="scope" aria-labelledby="s10">
+        <h2 id="s10" class="missing" data-key="wizard.needFullLogin.title">Жаңа той ашу үшін SMS-кодпен кіріңіз</h2>
+        <p class="intro missing" data-key="wizard.needFullLogin.body">Сіз сілтеме арқылы кірдіңіз: ол тек бір тойдың тізімін ашады.</p>
+        <a class="btn primary" href="09-join-login.html#sms" style="margin-top:.5rem"><svg class="ico"><use href="#i-sms"/></svg>SMS-кодпен кіру</a>
+      </section>
+
+      <!-- Низ мастера: «Артқа» / «Жалғастыру» -->
+      <div class="wz-foot" id="foot">
+        <div class="in">
+          <a class="btn text desk-only" href="#" id="backbtn">Артқа</a>
+          <button class="btn primary" id="next">Жалғастыру</button>
+          <p class="legal s-legal">Жалғастыру арқылы Сіз <a href="#">пайдалану шарттарымен</a> және <a href="#">құпиялылық саясатымен</a> келісесіз.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Десктоп: живой предпросмотр -->
+    <aside class="wz-preview" aria-label="Шақыру">
+      <div class="s-pv-inv">
+        <div class="phone"><div class="scr">
+          <div class="k">Үйлену тойы</div>
+          <div class="arch"><img src="../assets/covers/cover-svg-ak.svg" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+          <div class="nm">Айбек пен Дана</div>
+          <div class="sm">15.11.2026 · 18:00<br>«Шаңырақ» мейрамханасы</div>
+        </div></div>
+      </div>
+      <div class="s-pv-hall"><p class="cap">Зал осылай болады</p><div class="hall-mini" style="margin:0"><svg class="hall" id="halld" aria-hidden="true"></svg></div></div>
+    </aside>
+  </div>
+</div>
+
+<!-- Шығу керек пе? (wizard.leave.title; кнопок wizard.leave.* нет — предлагаются guestForm.leave.yes/no) -->
+<div class="scrim s-leave"></div>
+<div class="sheet center s-leave" role="alertdialog" aria-modal="true" aria-labelledby="lv-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="lv-t">Шығу керек пе? Өзгерістер сақталмайды</h2></div>
+  <div class="sheet-foot" style="border-top:0"><button class="btn primary missing" data-key="wizard.leave.no" autofocus>Жоқ, жалғастыру</button><button class="btn danger missing" data-key="wizard.leave.yes">Иә, шығу</button></div>
+</div>
+
+<script src="js/mock.js"></script>
+<script>
+  // Только для макета: выбор шага, прогресс, рейка, видимость блоков по hash
+  (function () {
+    var st = TOI_STATE || 'kind', h = document.documentElement;
+    var map = { kind: 1, who: 2, leave: 2, venue: 3, 'venue-error': 3, text: 4, 'text-edit': 4, template: 5, music: 6, 'music-up': 6, 'music-proc': 6, 'music-ready': 6, 'music-error': 6, hall: 7, hall2: 7, review: 8, done: 9, scope: 0 };
+    var i = map[st] || (st === 'scope' ? 0 : 1);
+    document.getElementById('prog').textContent = i >= 1 && i <= 8 ? i + ' / 8' : '';
+    document.getElementById('bar').style.width = (Math.min(i, 8) / 8 * 100) + '%';
+    document.querySelectorAll('#rail li').forEach(function (li) { var n = +li.dataset.i; li.className = n < i ? 'done' : (n === i ? 'cur' : ''); if (n < i) li.querySelector('.n').innerHTML = '✓'; });
+    function show(sel, on) { document.querySelectorAll(sel).forEach(function (e) { e.style.display = on ? '' : 'none'; }); }
+    show('.s-leave', st === 'leave');
+    show('.s-maperr', st === 'venue-error'); show('.s-mapok', st !== 'venue-error');
+    show('.s-edit', st === 'text-edit'); show('.s-presets', st !== 'text-edit');
+    show('.s-m-empty', st === 'music'); show('.s-m-up', st === 'music-up'); show('.s-m-proc', st === 'music-proc'); show('.s-m-ready', st === 'music-ready'); show('.s-m-error', st === 'music-error');
+    show('.s-legal', i === 1);
+    show('#foot', i >= 1 && i <= 8); show('#backbtn', i > 1);
+    if (i === 8) document.getElementById('next').textContent = 'Дайын';
+    show('.s-pv-hall', i === 7); show('.s-pv-inv', i !== 7);
+    if (st === 'done' || st === 'scope') { show('.wz-rail', false); show('.wz-preview', false); }
+    var cols = st === 'hall2' ? 2 : 4;
+    if (cols === 2) { document.getElementById('c2').setAttribute('aria-checked', 'true'); document.getElementById('c4').setAttribute('aria-checked', 'false'); }
+    ['hallm', 'halld'].forEach(function (id) { renderHall(document.getElementById(id), { empty: true, cols: cols, n: 16, cap: 12, noLabels: false }); });
+  })();
+</script>
+</body>
+</html>
