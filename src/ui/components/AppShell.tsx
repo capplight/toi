@@ -59,7 +59,7 @@ export function AppShell({
   /** Second line under the phone title («Әкесінің тізімі», mockup 01). */
   subtitle?: string;
   /** «←» in the top bar (S2, S5): the bar is then shown on every width (mockup 02). */
-  back?: { href: string; label: string };
+  back?: { href: string; label: string; mobileOnly?: boolean };
   /** Form screens (S2): no bottom tabs, the main button sits at the very bottom. */
   hideTabs?: boolean;
   /** Extra control in the top bar (e.g. «Схема | Тізім» on «Зал»). */
@@ -104,6 +104,16 @@ export function AppShell({
             )}
           </Link>
         ))}
+        {isOwner && (
+          <Link
+            href={`${base}/settings`}
+            className="nav-item"
+            aria-current={pathname.startsWith(`${base}/settings`) ? "page" : undefined}
+          >
+            <Icon name="gear" />
+            <span>{t("settings")}</span>
+          </Link>
+        )}
         <div className="side-foot">
           <button type="button" className="nav-item" onClick={() => setMenu(true)} aria-haspopup="dialog">
             <span aria-hidden="true" className="menu-dots">
@@ -131,7 +141,12 @@ export function AppShell({
             header line — the title never collapses. */}
         <header
           ref={headerRef}
-          className={cn("topbar", !back && "desk-hide", back && "with-back", headerMode !== "full" && headerMode)}
+          className={cn(
+            "topbar",
+            (!back || back.mobileOnly) && "desk-hide",
+            back && "with-back",
+            headerMode !== "full" && headerMode,
+          )}
         >
           {back && (
             <Link href={back.href} className="btn icon" aria-label={back.label}>

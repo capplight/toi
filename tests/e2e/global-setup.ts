@@ -35,9 +35,11 @@ export default async function globalSetup() {
   const { eq } = await import("drizzle-orm");
   const { DEMO_PHONES } = await import("../../scripts/lib/seed-sample");
   const sessions: Record<string, string> = {};
-  for (const who of ["ake", "jas"] as const) {
-    const u = await upsertUser(db(), { phone: DEMO_PHONES[who], locale: "kk", now: new Date(), updateLocale: false });
-    await db().update(eventMembers).set({ userId: u.id }).where(eq(eventMembers.phone, DEMO_PHONES[who]));
+  for (const who of ["ake", "jas", "akeSwitch_mobile", "akeSwitch_desktop"] as const) {
+    // akeSwitch_*: other devices of the owner for the Ф3 `#switch` test (those sessions are replaced there).
+    const phone = DEMO_PHONES[who.startsWith("akeSwitch") ? "ake" : (who as "ake" | "jas")];
+    const u = await upsertUser(db(), { phone, locale: "kk", now: new Date(), updateLocale: false });
+    await db().update(eventMembers).set({ userId: u.id }).where(eq(eventMembers.phone, phone));
     sessions[who] = (
       await createSession(db(), { userId: u.id, method: "sms", scope: "all", userAgent: null, now: new Date() })
     ).token;

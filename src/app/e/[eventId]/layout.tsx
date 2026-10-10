@@ -32,6 +32,7 @@ const CLIENT_NAMESPACES = [
   "noAnswer",
   "category",
   "wa",
+  "members",
 ];
 
 /** Frame of every working screen of an event (Ф1): access check (Ф2) + the three navigation modes. */

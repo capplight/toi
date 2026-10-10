@@ -5,15 +5,21 @@ import { redirect } from "next/navigation";
 import { logoutAction } from "@/server/actions/auth";
 import { sessionEventIds } from "@/server/auth/session";
 import { currentUser } from "@/server/authz";
+import { canCreateEvents } from "@/server/events/service";
 import { db } from "@/server/db";
 import { eventMembers, events } from "@/server/schema";
 import { EmptyState, LinkRow, LinkRows } from "@/ui/components/Display";
+import { Icon } from "@/ui/components/Icon";
+import Link from "next/link";
 import { Mark } from "@/ui/ornaments/generated";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
-/** «Менің тойларым» — simple list in the new style (Ф1); the full screen with «Жаңа той ашу» is Ф3. */
+/**
+ * «Менің тойларым» (Ф3): «Жаңа той ашу» for those who may create events (scope 'all' + allowed_owners); an owner
+ * without events goes straight to the wizard after the first login. Others see `events.list.createRestricted`.
+ */
 export default async function EventsPage() {
   const user = await currentUser();
   if (!user) redirect("/login");
@@ -40,6 +46,8 @@ export default async function EventsPage() {
       ),
     )
     .orderBy(asc(events.startsOn));
+  const can = await canCreateEvents(db(), user);
+  if (rows.length === 0 && can === "ok") redirect("/e/new");
 
   return (
     <main className="content" data-testid="events-page" style={{ paddingBottom: 48 }}>
@@ -52,6 +60,12 @@ export default async function EventsPage() {
       <h1 className="t-h1" style={{ marginBottom: 16 }}>
         {t("events.list.title")}
       </h1>
+      {can === "ok" && (
+        <Link href="/e/new" className="btn primary mb-4" data-testid="create-event">
+          <Icon name="plus" />
+          {t("events.list.create")}
+        </Link>
+      )}
       {rows.length === 0 ? (
         <EmptyState title={t("auth.noEvents.title")} body={t("auth.noEvents.body")} />
       ) : (
@@ -71,6 +85,7 @@ export default async function EventsPage() {
           ))}
         </LinkRows>
       )}
+      {can !== "ok" && <p className="t-body t-muted mt-4">{t("events.list.createRestricted")}</p>}
       <form action={logoutAction} style={{ marginTop: 24 }}>
         <button type="submit" className="btn secondary">
           {t("nav.logout")}

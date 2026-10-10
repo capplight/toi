@@ -22,6 +22,7 @@ export function EventShell({
   const tm = useTranslations("meta.pages");
   const tf = useTranslations("guestForm.title");
   const tn = useTranslations("noAnswer");
+  const tmem = useTranslations("members");
   const ta = useTranslations("common.actions");
   const path = usePathname();
   const query = useSearchParams();
@@ -43,6 +44,18 @@ export function EventShell({
         hideTabs={sub === "add"}
         hasCta={sub === "add"}
         section={current}
+      />
+    );
+  }
+
+  if (section === "settings" && sub === "members") {
+    return (
+      <AppShell
+        {...props}
+        title={tmem("title")}
+        subtitle={t("settings")}
+        back={{ href: `${base}/settings`, label: ta("back"), mobileOnly: true }}
+        section="settings"
       />
     );
   }

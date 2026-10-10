@@ -5,9 +5,15 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { isLocale, LOCALE_COOKIE } from "@/i18n/config";
 import { db } from "../db";
-import { consumeLink, issueMemberLink, LinkLimitError } from "../auth/loginLinks";
+import { consumeLink, inspectLink, issueMemberLink, LinkLimitError } from "../auth/loginLinks";
 import { otpDeliveryStatus, requestOtp, verifyOtp, type RequestOtpResult, type VerifyOtpResult } from "../auth/otp";
-import { revokeMemberEventAccess, revokeSessionByToken, SESSION_COOKIE, sessionCookieOptions } from "../auth/session";
+import {
+  revokeMemberEventAccess,
+  revokeSessionByToken,
+  SESSION_COOKIE,
+  sessionCookieOptions,
+  validateSession,
+} from "../auth/session";
 import { authorize, ForbiddenError } from "../auth/access";
 import { requireUser } from "../authz";
 import { eventMembers } from "../schema";
@@ -28,11 +34,20 @@ async function requestContext() {
 
 const tokenSchema = z.string().regex(/^[0-9A-Za-z]{22}$/);
 
-/** «Кіру» on /join/{token} (POST). GET never reaches this. */
+/**
+ * «Кіру» on /join/{token} (POST). GET never reaches this.
+ * Ф3 `#switch`: if this device is signed in as ANOTHER person, the POST is accepted only after «Иә, мен кіремін»
+ * (`switch=1`); then the previous person's session on this device is closed («Ол бұл телефоннан шығады»).
+ */
 export async function consumeLoginLinkAction(formData: FormData): Promise<void> {
   const parsed = tokenSchema.safeParse(formData.get("token"));
   const token = parsed.success ? parsed.data : "invalid";
   const ctx = await requestContext();
+  const current = ctx.store.get(SESSION_COOKIE)?.value;
+  const view = await inspectLink(db(), token, new Date());
+  const signedIn = current ? await validateSession(db(), current, new Date()) : null;
+  const other = Boolean(signedIn && view.status === "valid" && signedIn.phone !== view.phone);
+  if (other && formData.get("switch") !== "1") redirect(`/join/${encodeURIComponent(token)}`);
   const r = await consumeLink(db(), {
     token,
     ip: ctx.ip,
@@ -42,6 +57,7 @@ export async function consumeLoginLinkAction(formData: FormData): Promise<void> 
     currentSessionToken: ctx.store.get(SESSION_COOKIE)?.value,
   });
   if (!r.ok) redirect(`/join/${encodeURIComponent(token)}${r.reason === "tooManyAttempts" ? "?limit=1" : ""}`);
+  if (other && current) await revokeSessionByToken(db(), current, new Date());
   ctx.store.set(SESSION_COOKIE, r.sessionToken, sessionCookieOptions(r.expiresAt));
   redirect(r.redirectTo);
 }

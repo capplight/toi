@@ -180,3 +180,29 @@
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
 }
+
+/* Invitation template colours for the wizard mini-envelopes and preview (Ф3; the full templates are Ф5). */
+.tpl-ak-shanyrak {
+  --tpl-bg: linear-gradient(180deg, #f3e7d1, #e8d6b6);
+  --tpl-ink: #2b2116;
+  --tpl-arch: #f7eedc;
+  --flap: #f7eedc;
+  --s1: #d9b46c;
+  --s2: #9c6f22;
+}
+.tpl-kok-tun {
+  --tpl-bg: linear-gradient(180deg, #1a3a5c, #132c47);
+  --tpl-ink: #f4ecdd;
+  --tpl-arch: #23476e;
+  --flap: #23476e;
+  --s1: #e2c27f;
+  --s2: #a57c2e;
+}
+.tpl-kyzgaldak {
+  --tpl-bg: linear-gradient(180deg, #f6e3da, #ebcfc2);
+  --tpl-ink: #3a1a1f;
+  --tpl-arch: #f9ece5;
+  --flap: #f9ece5;
+  --s1: #9b2a3a;
+  --s2: #5e1621;
+}

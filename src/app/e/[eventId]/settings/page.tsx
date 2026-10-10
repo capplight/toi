@@ -1,8 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ForbiddenError, requireOwner } from "@/server/authz";
+import { LinkRow, LinkRows } from "@/ui/components/Display";
 
-/** «Баптаулар» — placeholder until Ф3 (owner only). */
+/** «Баптаулар» (owner only). Ф3: «Тізімді кім толтырады»; event fields and the rest of the settings follow later. */
 export default async function SettingsPage({ params }: PageProps<"/e/[eventId]/settings">) {
   const { eventId } = await params;
   try {
@@ -11,6 +12,13 @@ export default async function SettingsPage({ params }: PageProps<"/e/[eventId]/s
     if (err instanceof ForbiddenError) notFound();
     throw err;
   }
-  const t = await getTranslations("meta.pages");
-  return <h1 className="t-h1 page desk-only">{t("settings")}</h1>;
+  const t = await getTranslations();
+  return (
+    <div className="page-narrow">
+      <h1 className="t-h1 page desk-only">{t("meta.pages.settings")}</h1>
+      <LinkRows>
+        <LinkRow href={`/e/${eventId}/settings/members`} icon="users" title={t("settings.sections.members")} />
+      </LinkRows>
+    </div>
+  );
 }
