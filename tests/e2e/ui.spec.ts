@@ -130,6 +130,8 @@ test.describe("Ф1 UI kit", () => {
     await page.goto("/dev/ui/hall");
     await expect(page.locator(".toast")).toBeVisible();
     await expect(page.locator("body")).toHaveClass(/has-toast/);
+    // Same AppShell as the real frame, owner role: the pilot banner is never shown on «Зал» (Ф1 review П3)
+    await expect(page.getByText(kk.legal.pilotBanner)).toHaveCount(0);
     const vh = page.viewportSize()!.height;
     const toastTop = (await page.locator(".toast").boundingBox())!.y;
     const tor = await page.getByText(kk.hall.map.tor, { exact: true }).boundingBox();
@@ -143,6 +145,76 @@ test.describe("Ф1 UI kit", () => {
     expect(toast.height).toBeLessThanOrEqual(56.5);
     const tabbar = (await page.locator(".tabbar").boundingBox())!;
     expect(toast.y + toast.height).toBeLessThanOrEqual(tabbar.y);
+  });
+
+  test("П1 + П2 at 130 %: toast above the tab bar, ≤ 3.5rem; the header title is not truncated", async ({
+    page,
+  }, info) => {
+    test.skip(info.project.name === "desktop", "phone frame");
+    await page.goto("/dev/ui/hall");
+    await expect(page.locator(".toast")).toBeVisible();
+    await page.waitForTimeout(500); // Sonner enter animation (translateY 16px → 0)
+    for (const scale of ["100%", "130%"]) {
+      await page.addStyleTag({ content: `html { font-size: ${scale} !important; }` });
+      await page.waitForTimeout(200); // ResizeObserver re-checks the header
+      const toast = (await page.locator(".toast").boundingBox())!;
+      const tabbar = (await page.locator(".tabbar").boundingBox())!;
+      const rem = await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).fontSize));
+      expect(toast.y + toast.height, `toast above tabs @ ${scale}`).toBeLessThanOrEqual(tabbar.y + 0.5);
+      expect(toast.height, `toast height @ ${scale}`).toBeLessThanOrEqual(3.5 * rem + 0.5);
+      const h1 = await page.locator(".topbar h1").evaluate((el) => ({ cw: el.clientWidth, sw: el.scrollWidth }));
+      expect(h1.cw, `title not truncated @ ${scale}`).toBeGreaterThanOrEqual(h1.sw - 1);
+    }
+    // At 130 % on a phone the segment is icon-only or on a second header line; it keeps accessible names
+    await expect(page.locator(".topbar")).toHaveClass(/icons|stacked/);
+    await expect(
+      page
+        .getByRole("radio", { name: kk.hall.map.view.map })
+        .or(page.getByRole("button", { name: kk.hall.map.view.map })),
+    ).toBeVisible();
+  });
+
+  test("counters «Менің тізімім» at 360 px and 130 %: the row and every tile fit (no overflow)", async ({ page }) => {
+    for (const width of [320, 360]) {
+      await page.setViewportSize({ width, height: 740 });
+      await page.goto("/dev/ui");
+      await page.addStyleTag({ content: "html { font-size: 130% !important; }" });
+      const r = await page
+        .locator(".counters")
+        .first()
+        .evaluate((row) => {
+          const right = row.getBoundingClientRect().right;
+          const tiles = Array.from(row.querySelectorAll<HTMLElement>(".counter")).map((t) => ({
+            right: t.getBoundingClientRect().right,
+            over: t.scrollWidth - t.clientWidth,
+          }));
+          return { right, vw: window.innerWidth, tiles };
+        });
+      expect(r.right, `row @ ${width}`).toBeLessThanOrEqual(r.vw);
+      for (const t of r.tiles) {
+        expect(t.right, `tile edge @ ${width}`).toBeLessThanOrEqual(r.vw);
+        expect(t.over, `tile content @ ${width}`).toBeLessThanOrEqual(0);
+      }
+    }
+  });
+
+  test("AlertDialog at 320 px and 130 %: buttons ≥ 48 px, fits the screen", async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 640 });
+    await page.goto("/dev/ui");
+    await page.addStyleTag({ content: "html { font-size: 130% !important; }" });
+    await page.getByRole("button", { name: /AlertDialog/ }).click();
+    const dialog = page.getByRole("alertdialog");
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole("heading")).toHaveText(kk.guestSheet.delete.title);
+    const box = (await dialog.boundingBox())!;
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width).toBeLessThanOrEqual(320);
+    for (const b of await dialog.getByRole("button").all()) {
+      const r = (await b.boundingBox())!;
+      expect(r.height).toBeGreaterThanOrEqual(48);
+    }
+    const sw = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(sw).toBeLessThanOrEqual(320);
   });
 
   test("hall map: table cells are buttons with aria-labels from content/messages", async ({ page }) => {

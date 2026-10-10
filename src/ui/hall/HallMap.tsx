@@ -235,7 +235,7 @@ export function HallMap({
       >
         {/* Target ≥ 48 px even when the map is scaled to 288 px on 320 screens (56 × 0.88 ≈ 49). */}
         <rect x="76" y="34" width="176" height="56" fill="transparent" />
-        <g transform="translate(148 26) scale(.27)" style={{ color: "var(--gold)" }}>
+        <g transform="translate(148 26) scale(.27)" className="orn-couple">
           <KoshkarMuiz width={120} height={64} x={0} y={0} strokeWidth={4.5} />
         </g>
         <rect x="98" y="47" width="132" height="34" rx="17" className="ctable" />

@@ -19,14 +19,22 @@ const DURATION = 8000;
 export function Toaster({ hasCta = false }: { hasCta?: boolean }) {
   const desktop = useMediaQuery(DESKTOP);
   const tablet = useMediaQuery("(min-width: 768px)");
-  // Bottom offsets: tab bar 72 + 8 (+ CTA 80) on phones; 24 / 96 on ≥ 768; 24 on ≥ 1024.
-  const bottom = desktop ? 24 : tablet ? (hasCta ? 96 : 24) : 72 + 8 + (hasCta ? 80 : 0);
+  // Ф1 review П1: offsets follow the real (rem) heights of the tab bar and the sticky main button, so the
+  // toast stays above them at any system text size.
+  const cta = "var(--h-btn) + 1.5rem";
+  const bottom = desktop
+    ? "1.5rem"
+    : tablet
+      ? hasCta
+        ? `calc(${cta} + 0.5rem)`
+        : "1.5rem"
+      : `calc(var(--h-tabbar) + 0.5rem + env(safe-area-inset-bottom)${hasCta ? ` + ${cta}` : ""})`;
   return (
     <SonnerToaster
       position={desktop ? "bottom-right" : "bottom-center"}
       visibleToasts={1}
-      offset={{ bottom, right: 32 }}
-      mobileOffset={{ bottom, left: 16, right: 16 }}
+      offset={{ bottom, right: "2rem" }}
+      mobileOffset={{ bottom, left: "1rem", right: "1rem" }}
       toastOptions={{ unstyled: true, duration: DURATION }}
       gap={8}
     />

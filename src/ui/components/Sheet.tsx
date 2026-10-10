@@ -115,7 +115,7 @@ export function AlertDialog({
             <AlertDialogPrimitive.Title className="t-h2">{title}</AlertDialogPrimitive.Title>
           </div>
           <div className="sheet-body">
-            <AlertDialogPrimitive.Description className="t-body" style={{ whiteSpace: "pre-line" }}>
+            <AlertDialogPrimitive.Description className="t-body pre-line">
               {description}
             </AlertDialogPrimitive.Description>
           </div>

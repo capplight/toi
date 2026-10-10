@@ -21,5 +21,7 @@ export function EventShell(props: Omit<ComponentProps<typeof AppShell>, "title">
           : section === "settings"
             ? t("settings")
             : tm("guests");
-  return <AppShell {...props} title={title} />;
+  const known = ["guests", "hall", "summary", "budget", "settings"] as const;
+  const current = (known as readonly string[]).includes(section) ? (section as (typeof known)[number]) : undefined;
+  return <AppShell {...props} title={title} section={current} />;
 }

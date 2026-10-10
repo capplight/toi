@@ -64,7 +64,7 @@ export function Segment<T extends string>({
       {options.map((o) => (
         <ToggleGroup.Item key={o.value} value={o.value}>
           {o.icon && <Icon name={o.icon} />}
-          {o.label}
+          <span className="seg-label">{o.label}</span>
         </ToggleGroup.Item>
       ))}
     </ToggleGroup.Root>
@@ -104,7 +104,7 @@ export function CategoryTiles({
         ))}
       </RadioGroup.Root>
       {addLabel && onAdd && (
-        <div className="cats" style={{ marginTop: 8 }}>
+        <div className="cats cats-add">
           <button type="button" className="cat add" onClick={onAdd}>
             <Icon name="plus" size="sm" />
             {addLabel}
@@ -179,7 +179,7 @@ export function Stepper({
         </button>
       </div>
       {hint && limitHint && (
-        <p className="field-hint" role="status" style={{ textAlign: "center" }}>
+        <p className="field-hint center" role="status">
           {limitHint}
         </p>
       )}
@@ -269,5 +269,5 @@ export function Search({
 }
 
 export function FieldGroup({ children }: { children: ReactNode }) {
-  return <div style={{ display: "grid", gap: 20 }}>{children}</div>;
+  return <div className="field-group">{children}</div>;
 }

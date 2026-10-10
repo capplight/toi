@@ -527,7 +527,7 @@ export function Showcase({
         <AlertDialog
           open={alert}
           onOpenChange={setAlert}
-          title={t("common.actions.delete")}
+          title={t("guestSheet.delete.title")}
           description={t("guestSheet.delete.confirm", { name: "Гүлмира" })}
           confirmLabel={t("guestSheet.delete.yes")}
           cancelLabel={t("guestSheet.delete.no")}

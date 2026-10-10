@@ -118,19 +118,20 @@
   --t-sheet: 260ms;
   --t-max: 300ms;
   --t-toast: 8s;
+  /* Ф1 review П1: every height that contains text is in rem (grows with the system text size). */
 
   /* ---------- 3.5 Sizes ---------- */
-  --h-btn: 56px;
-  --h-btn-2: 52px;
-  --h-btn-row: 48px;
-  --h-field: 56px;
-  --h-tabbar: 72px;
-  --h-top: 60px;
+  --h-btn: 3.5rem;
+  --h-btn-2: 3.25rem;
+  --h-btn-row: 3rem;
+  --h-field: 3.5rem;
+  --h-tabbar: 4.5rem;
+  --h-top: 3.75rem;
   --w-rail: 104px;
   --w-sidebar: 272px;
   --w-panel: 480px;
   --w-dialog: 500px;
-  --h-toast: 56px;
+  --h-toast: 3.5rem;
 }
 
 @media (min-width: 768px) {

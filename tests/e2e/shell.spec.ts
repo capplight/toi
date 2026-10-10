@@ -96,6 +96,27 @@ test.describe("Ф1 event frame", () => {
     await expect(page.getByText(kk.legal.pilotBanner)).toHaveCount(0);
   });
 
+  test("П3: owner's pilot banner closes, stays closed on this device, never on «Зал»", async ({
+    page,
+    context,
+    baseURL,
+  }) => {
+    needDb();
+    const { eventId } = seed();
+    await loginAs(context, baseURL!, "ake");
+    await page.goto(`/e/${eventId}/hall`);
+    await expect(page.locator("h1").filter({ visible: true }).first()).toBeVisible();
+    await expect(page.getByText(kk.legal.pilotBanner)).toHaveCount(0);
+    await page.goto(`/e/${eventId}/guests`);
+    const banner = page.getByRole("note").filter({ hasText: kk.legal.pilotBanner });
+    await expect(banner).toBeVisible();
+    await banner.getByRole("button", { name: kk.common.actions.close }).click();
+    await expect(banner).toHaveCount(0);
+    await page.reload();
+    await expect(page.locator("h1").filter({ visible: true }).first()).toBeVisible();
+    await expect(page.getByText(kk.legal.pilotBanner)).toHaveCount(0);
+  });
+
   test("axe on the frame (guests, summary) — no serious/critical", async ({ page, context, baseURL }) => {
     needDb();
     const { eventId } = seed();

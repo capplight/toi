@@ -37,7 +37,8 @@ export function HallDemo({ actions }: { actions: ShellActions }) {
         permissionLabel: t("roles.permission.listAndSeating"),
         initial: "С",
       }}
-      isOwner={false}
+      isOwner
+      section="hall"
       canManageBudget
       hallAttention
       title={t("hall.map.title")}

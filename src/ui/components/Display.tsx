@@ -61,12 +61,7 @@ export function GuestCard(p: GuestCardProps) {
   const a11y = t("a11y", { name: p.name, status: statusText, seats: seatsText, table: tableText });
   return (
     <div className={cn("guest", "desktop", p.flash && "flash")}>
-      <button
-        type="button"
-        onClick={p.onOpen}
-        aria-label={a11y}
-        style={{ all: "unset", position: "absolute", inset: 0, borderRadius: "inherit", cursor: "pointer" }}
-      />
+      <button type="button" onClick={p.onOpen} aria-label={a11y} className="card-hit" />
       <div className="name">{p.name}</div>
       {p.hasPhone && (
         <span className="phone" title={t("phoneIcon")}>
@@ -80,7 +75,7 @@ export function GuestCard(p: GuestCardProps) {
         {p.tableNo && <span className="tbl">{t("table", { number: p.tableNo })}</span>}
       </div>
       {p.pendingConfirm ? (
-        <div className="pending-row" style={{ position: "relative" }}>
+        <div className="pending-row">
           <Icon name="wa" size="sm" />
           <span>{t("pendingConfirm")}</span>
           <Button variant="secondary" size="row" width="auto" onClick={p.onConfirmSent}>
@@ -88,13 +83,13 @@ export function GuestCard(p: GuestCardProps) {
           </Button>
         </div>
       ) : p.status === "notSent" && p.onSend ? (
-        <div className="act" style={{ position: "relative" }}>
+        <div className="act">
           <Button variant="wa" size="row" icon="wa" onClick={p.onSend}>
             {t("sendWhatsApp")}
           </Button>
         </div>
       ) : p.status === "noAnswer" && p.onRemind ? (
-        <div className="act" style={{ position: "relative" }}>
+        <div className="act">
           {p.sentAgo && <span className="ago">{p.sentAgo}</span>}
           <Button variant="wa-outline" icon="bell" onClick={p.onRemind}>
             {t("remind")}
@@ -177,7 +172,7 @@ export function Banner({
         <b>{title}</b>
         {text && <span>{text}</span>}
       </span>
-      {(href || onClick) && <Icon name="up" style={{ transform: "rotate(90deg)" }} />}
+      {(href || onClick) && <Icon name="up" className="rot-90" />}
     </>
   );
   const cls = cn("banner", kind);
@@ -254,7 +249,7 @@ export function SummaryLine({
           <b>{line}</b>
           <span>{restaurant}</span>
         </span>
-        <Icon name="up" style={{ transform: open ? undefined : "rotate(180deg)" }} />
+        <Icon name="up" className={open ? undefined : "rot-180"} />
       </Collapsible.Trigger>
       <Collapsible.Content className="sum-body">{children}</Collapsible.Content>
     </Collapsible.Root>
@@ -307,11 +302,7 @@ export function EventHero({
 export function LinkRows({ children, title }: { children: ReactNode; title?: string }) {
   return (
     <nav className="links" aria-label={title}>
-      {title && (
-        <div className="t-body t-muted" style={{ padding: "12px 16px 0" }}>
-          {title}
-        </div>
-      )}
+      {title && <div className="links-title">{title}</div>}
       {children}
     </nav>
   );
@@ -340,7 +331,7 @@ export function LinkRow({
         {subtitle && <span>{subtitle}</span>}
       </span>
       {count !== undefined && <span className="count num">{count}</span>}
-      <Icon name="up" style={{ transform: "rotate(90deg)" }} />
+      <Icon name="up" className="rot-90" />
     </Link>
   );
 }
@@ -354,11 +345,11 @@ export function TableAccordion({ items }: { items: AccordionEntry[] }) {
     <Accordion.Root type="multiple">
       {items.map((it) => (
         <Accordion.Item key={it.id} value={it.id} className={cn("acc-item", it.over && "over")}>
-          <Accordion.Header style={{ margin: 0 }}>
+          <Accordion.Header className="acc-head">
             <Accordion.Trigger className="acc-trigger">
               <span>{it.title}</span>
               <span className="meta num">{it.meta}</span>
-              <Icon name="up" style={{ transform: "rotate(180deg)" }} />
+              <Icon name="up" className="rot-180" />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content className="acc-content">{it.content}</Accordion.Content>
@@ -436,7 +427,7 @@ export function FamilyRow({
 /* ---------------- Skeleton / Empty / Group head ---------------- */
 
 export function Skeleton({ height = 76 }: { height?: number }) {
-  return <div className="skel" style={{ height }} aria-hidden="true" />;
+  return <div className="skel" style={{ height: `${height / 16}rem` }} aria-hidden="true" />;
 }
 
 export function EmptyState({ title, body, action }: { title: string; body?: string; action?: ReactNode }) {
@@ -453,7 +444,7 @@ export function EmptyState({ title, body, action }: { title: string; body?: stri
 export function GroupHead({ code, title, count }: { code?: string; title: string; count?: string }) {
   return (
     <div className="group-head">
-      <h3 className="t-group" style={{ margin: 0 }}>
+      <h3 className="t-group">
         <span className="sw" style={{ background: `var(--cat-${code ?? "baska"})` }} aria-hidden="true" />
         {title}
       </h3>
@@ -463,5 +454,5 @@ export function GroupHead({ code, title, count }: { code?: string; title: string
 }
 
 export function OrnamentDivider() {
-  return <Divider style={{ width: 230, color: "var(--gold)" }} />;
+  return <Divider className="orn-divider" />;
 }
