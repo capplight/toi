@@ -166,7 +166,7 @@ export async function guestsData(
       venue: ev.venueName,
       tz: ev.tz,
     },
-    wa: wev,
+    wa: { ...wev, dateText: date },
     appUrl: opts.appUrl,
     me: { memberId: m.memberId, defaultCategoryId: me?.defaultCategoryId ?? null },
     members,

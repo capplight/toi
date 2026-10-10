@@ -130,6 +130,8 @@ test.describe("Ф1 UI kit", () => {
     await page.goto("/dev/ui/hall");
     await expect(page.locator(".toast")).toBeVisible();
     await expect(page.locator("body")).toHaveClass(/has-toast/);
+    // the toast slides in: measure after the entry animation (flaky under load in the full serial run, Ф4)
+    await page.waitForTimeout(600);
     // Same AppShell as the real frame, owner role: the pilot banner is never shown on «Зал» (Ф1 review П3)
     await expect(page.getByText(kk.legal.pilotBanner)).toHaveCount(0);
     const vh = page.viewportSize()!.height;

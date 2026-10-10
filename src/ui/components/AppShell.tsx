@@ -37,6 +37,9 @@ export function AppShell({
   canManageBudget,
   hallAttention = false,
   title,
+  subtitle,
+  back,
+  hideTabs = false,
   topRight,
   hasCta = false,
   section,
@@ -53,6 +56,12 @@ export function AppShell({
   hallAttention?: boolean;
   /** Screen title in the phone top bar. */
   title: string;
+  /** Second line under the phone title («Әкесінің тізімі», mockup 01). */
+  subtitle?: string;
+  /** «←» in the top bar (S2, S5): the bar is then shown on every width (mockup 02). */
+  back?: { href: string; label: string };
+  /** Form screens (S2): no bottom tabs, the main button sits at the very bottom. */
+  hideTabs?: boolean;
   /** Extra control in the top bar (e.g. «Схема | Тізім» on «Зал»). */
   topRight?: ReactNode;
   hasCta?: boolean;
@@ -70,7 +79,7 @@ export function AppShell({
   const label = (s: Section) => t(s);
 
   return (
-    <div className="shell" data-testid="event-page">
+    <div className={cn("shell", hideTabs && "no-tabs", hasCta && "has-cta")} data-testid="event-page">
       <nav className="sidebar" aria-label={t("a11y.sidebar")}>
         <div className="brand">
           <Link href="/e" className="wordmark" aria-label={t("myEvents")}>
@@ -120,9 +129,18 @@ export function AppShell({
         {/* Ф1 review П2: when title + control + «⋯» do not fit at their natural widths (320 px, large system
             text), the control first becomes icon-only (labels stay for screen readers), then moves to a second
             header line — the title never collapses. */}
-        <header ref={headerRef} className={cn("topbar", "desk-hide", headerMode !== "full" && headerMode)}>
-          <h1 className="t-h1" ref={titleRef}>
+        <header
+          ref={headerRef}
+          className={cn("topbar", !back && "desk-hide", back && "with-back", headerMode !== "full" && headerMode)}
+        >
+          {back && (
+            <Link href={back.href} className="btn icon" aria-label={back.label}>
+              <Icon name="back" />
+            </Link>
+          )}
+          <h1 className={cn("t-h1", subtitle && "with-sub")} ref={titleRef}>
             {title}
+            {subtitle && <small>{subtitle}</small>}
           </h1>
           {topRight && (
             <div className="top-right" ref={rightRef}>
@@ -147,7 +165,7 @@ export function AppShell({
         </main>
       </div>
 
-      <nav className="tabbar" aria-label={t("a11y.sections")}>
+      <nav className="tabbar" aria-label={t("a11y.sections")} hidden={hideTabs}>
         {(["guests", "hall", "summary"] as Section[]).map((s) => (
           <Link key={s} href={href(s)} className="tab" aria-current={current(s) ? "page" : undefined}>
             <span className="pill">

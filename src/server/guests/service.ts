@@ -40,6 +40,7 @@ export type DuplicateCandidate = {
   rsvp: FamilyRow["rsvp"];
   seats: number;
   tableNo: number | null;
+  sentAt: string | null;
 };
 
 const NAME_MAX = 80;
@@ -76,6 +77,7 @@ async function candidateView(db: Db, rows: FamilyRow[]): Promise<DuplicateCandid
     rsvp: r.rsvp,
     seats: r.rsvp === "yes" ? (r.confirmedCount ?? 0) : r.expectedCount,
     tableNo: r.tableNo,
+    sentAt: r.sentAt?.toISOString() ?? null,
   }));
 }
 

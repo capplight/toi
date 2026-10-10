@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getFormatter, getMessages, getTranslations } from "next-intl/server";
@@ -7,7 +7,8 @@ import { logoutAction } from "@/server/actions/auth";
 import { setLocale } from "@/server/actions/locale";
 import { ForbiddenError, requireMember, UnauthorizedError } from "@/server/authz";
 import { db } from "@/server/db";
-import { events } from "@/server/schema";
+import { listKind } from "@/server/guests/queries";
+import { eventMembers, events } from "@/server/schema";
 import { EventShell } from "./EventShell";
 
 export const dynamic = "force-dynamic";
@@ -54,6 +55,17 @@ export default async function EventLayout({ params, children }: LayoutProps<"/e/
   const roleLabel = owner ? t("roles.owner") : m.label;
   const permissionLabel =
     owner || m.canEditSeating ? t("roles.permission.listAndSeating") : t("roles.permission.listOnly");
+  // List names of all members (top-bar title of «Басқа тізімдер», S1).
+  const memberRows = await db()
+    .select({ id: eventMembers.id, label: eventMembers.label, memberKind: eventMembers.memberKind })
+    .from(eventMembers)
+    .where(and(eq(eventMembers.eventId, eventId), isNull(eventMembers.removedAt)));
+  const lists = Object.fromEntries(
+    memberRows.map((r) => {
+      const kind = listKind(r);
+      return [r.id, kind === "custom" ? t("roles.listOf.custom", { label: r.label }) : t(`roles.listOf.${kind}`)];
+    }),
+  );
   const all = await getMessages();
   const messages = Object.fromEntries(CLIENT_NAMESPACES.map((k) => [k, all[k as keyof typeof all]]));
   return (
@@ -64,6 +76,8 @@ export default async function EventLayout({ params, children }: LayoutProps<"/e/
         isOwner={owner}
         canManageBudget={owner || m.canManageBudget}
         actions={{ setLocale, logout: logoutAction }}
+        lists={lists}
+        myMemberId={m.memberId}
       >
         {children}
       </EventShell>

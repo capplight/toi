@@ -14,6 +14,8 @@ export type WaEvent = {
   startsAt: string | null;
   venueName: string | null;
   tz: string;
+  /** Pre-formatted date (server) — client and server must render the same link (hydration). */
+  dateText?: string;
 };
 
 export type WaKind = "invite" | "reminder";
@@ -40,7 +42,7 @@ export function waText(
   const common = {
     familyName: family.name,
     eventTitle: ev.title,
-    date: formatEventDate(ev, locale),
+    date: ev.dateText ?? formatEventDate(ev, locale),
     time: ev.startsAt?.slice(0, 5) ?? "",
     link: guestLink(appUrl, family.token),
   };

@@ -50,7 +50,7 @@ export async function addFamilyAction(input: z.input<typeof addInput>) {
     const r = await svc.addFamily(db(), user, p.data);
     if (r.ok) refresh(p.data.eventId);
     // The row has the token and timestamps — return only what the client needs.
-    return r.ok ? { ok: true as const, familyId: r.family.id, tableNo: r.tableNo } : r;
+    return r.ok ? { ok: true as const, familyId: r.family.id, token: r.family.token, tableNo: r.tableNo } : r;
   });
 }
 

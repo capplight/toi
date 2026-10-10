@@ -2253,6 +2253,395 @@
     color: var(--gold);
     opacity: 0.6;
   }
+
+  /* =================== Ф4 guest screens (mockups 01/02: screens.css + inline styles) =================== */
+  /* Two columns on ≥ 1024; on phones the column children are re-ordered into one flow (o1…o7). */
+  .col-main,
+  .col-aside {
+    display: contents;
+  }
+  .page .o1 {
+    order: 1;
+  }
+  .page .o2 {
+    order: 2;
+  }
+  .page .o3 {
+    order: 3;
+  }
+  .page .o4 {
+    order: 4;
+  }
+  .page .o5 {
+    order: 5;
+  }
+  .page .o6 {
+    order: 6;
+  }
+  .page .o7 {
+    order: 7;
+  }
+  .guests-page {
+    gap: 12px;
+  }
+  @media (min-width: 1024px) {
+    .col-main,
+    .col-aside {
+      display: block;
+    }
+    .col-aside {
+      position: sticky;
+      top: 24px;
+    }
+    .col-aside > * + * {
+      margin-top: 16px;
+    }
+    .col-main > * + * {
+      margin-top: 16px;
+    }
+    .page-head .btn {
+      width: auto;
+      padding: 0 24px;
+    }
+    .page-head .ttl .t-h1 {
+      font-size: 1.875rem;
+      line-height: 2.25rem;
+    }
+  }
+  /* 65+ cards: off-screen groups skip style/layout until scrolled near (perf, brief 2.4) */
+  .guest-groups > section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 40rem;
+  }
+  .guest-groups .group-head:first-child {
+    margin-top: 6px;
+  }
+  .t-h1.with-sub small {
+    display: block;
+    font: 400 1rem/1.125rem var(--font-ui);
+    color: var(--ink-2);
+    letter-spacing: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .topbar .t-h1.with-sub {
+    font-size: 1.375rem;
+    line-height: 1.625rem;
+  }
+  .topbar.with-back {
+    padding-left: var(--s1);
+  }
+  .tabbar[hidden] {
+    display: none;
+  }
+  .shell.no-tabs .content {
+    padding-bottom: calc(var(--h-btn) + 3.5rem + env(safe-area-inset-bottom));
+  }
+  .shell.no-tabs .sticky-cta {
+    bottom: 0;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+  .totals-line {
+    margin: 8px 2px 0;
+    font: 400 1rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+  }
+  .list-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+    font: 600 1rem/1.375rem var(--font-ui);
+  }
+  .list-filter .btn {
+    width: auto;
+  }
+  /* N1: compact hero, counters and banner on phones — the first guest card is visible on 360×740 */
+  @media (max-width: 1023px) {
+    .event-hero.compact-phone {
+      padding: 14px 16px;
+      border-radius: var(--r-lg);
+    }
+    .event-hero.compact-phone .kicker,
+    .event-hero.compact-phone .divider,
+    .event-hero.compact-phone .meta br {
+      display: none;
+    }
+    .event-hero.compact-phone .names {
+      font-size: 1.75rem;
+      line-height: 2rem;
+      margin: 0;
+      padding-right: 56px;
+    }
+    .event-hero.compact-phone .meta {
+      margin-top: 4px;
+    }
+    .event-hero.compact-phone .meta b::after {
+      content: " · ";
+      font-weight: 400;
+    }
+    .event-hero.compact-phone .shanyraq {
+      width: 130px;
+      height: 130px;
+      right: -58px;
+      top: -36px;
+    }
+    .counters.compact-phone {
+      gap: 6px;
+    }
+    .counters.compact-phone .counter {
+      min-height: 0;
+      padding: 9px 8px 9px 10px;
+      border-radius: 16px;
+    }
+    .counters.compact-phone .counter .ico {
+      display: none;
+    }
+    .counters.compact-phone .counter .t-stat {
+      font-size: 1.625rem;
+      line-height: 1.875rem;
+    }
+    .banner.remind.compact-phone {
+      min-height: 3.5rem;
+      padding: 8px 10px 8px 12px;
+    }
+    .banner.remind.compact-phone .bi {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  /* S2 form */
+  .form-sec + .form-sec {
+    margin-top: 28px;
+  }
+  .form-actions {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .form-card {
+      background: var(--paper);
+      border-radius: var(--r-xl);
+      box-shadow: var(--sh-card);
+      padding: 32px 36px;
+    }
+    .form-page .cats {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+    .form-actions .btn {
+      width: auto;
+      padding: 0 32px;
+    }
+    .shell.no-tabs .sticky-cta {
+      display: none;
+    }
+  }
+  .tip {
+    padding: 20px;
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    box-shadow: var(--sh-card);
+  }
+  .tip h3 {
+    margin: 0 0 8px;
+    font: 600 1.125rem/1.5rem var(--font-ui);
+  }
+  .tip p {
+    margin: 0;
+    font: 400 1rem/1.5rem var(--font-ui);
+    color: var(--ink-2);
+  }
+  .found {
+    margin-top: 10px;
+    padding: 14px 16px;
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    border: 2px solid var(--danger);
+  }
+  .found b,
+  .dupcard .h {
+    font: 600 1.125rem/1.5rem var(--font-ui);
+  }
+  .found .row,
+  .dupcard .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 1rem;
+  }
+  .dupcard {
+    padding: 14px 16px;
+    border-radius: var(--r-lg);
+    border: 2px solid var(--dup);
+    background: var(--paper);
+    margin: 8px 0 14px;
+  }
+  .dupcard .h {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .dupcard .h .ico {
+    color: var(--dup);
+    flex: none;
+  }
+  .dupcard p {
+    margin: 4px 0 0 34px;
+    color: var(--ink-2);
+    font: 400 1rem/1.375rem var(--font-ui);
+  }
+  .dupcard .row {
+    margin-left: 34px;
+  }
+  .success-orn {
+    display: block;
+    width: 132px;
+    height: 70px;
+    margin: 4px auto 6px;
+    color: var(--gold);
+  }
+  .success-ttl {
+    text-align: center;
+    font: 600 2.125rem/2.5rem var(--font-display);
+    margin: 0;
+  }
+  .success-sub {
+    text-align: center;
+    font: 400 1.125rem/1.625rem var(--font-ui);
+    margin: 6px 0 2px;
+  }
+  .radio-rows {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .radio-rows label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 3.5rem;
+    font: 400 1.125rem/1.5rem var(--font-ui);
+    cursor: pointer;
+  }
+  .radio-rows input {
+    width: 1.375rem;
+    height: 1.375rem;
+    accent-color: var(--lapis);
+    flex: none;
+  }
+  .sheet-actions {
+    display: grid;
+    gap: 10px;
+  }
+  .sheet-actions.two {
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  }
+
+  /* S4 guest sheet */
+  .kv {
+    display: grid;
+    grid-template-columns: minmax(6rem, auto) 1fr;
+    gap: 8px 16px;
+    margin: 16px 0 0;
+    font: 400 1.125rem/1.5rem var(--font-ui);
+  }
+  .kv dt {
+    color: var(--ink-2);
+  }
+  .kv dd {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .sheet-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    font-size: 1rem;
+    color: var(--ink-2);
+  }
+  .answer-block {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .answer-block .stepper {
+    margin-top: 14px;
+  }
+  .answer-block .btn[aria-pressed="true"] {
+    border-color: var(--lapis);
+    background: var(--lapis-soft);
+  }
+
+  /* S5 no-answer */
+  .na-card {
+    background: var(--paper);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-card);
+    padding: 14px 16px;
+  }
+  .na-card + .na-card {
+    margin-top: 8px;
+  }
+  .na-card .name {
+    font: 600 1.125rem/1.5rem var(--font-ui);
+  }
+  .na-card .meta {
+    font: 400 1rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+    margin-top: 2px;
+  }
+  .na-card .done {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    color: var(--success-ink);
+    font: 600 1rem/1.375rem var(--font-ui);
+  }
+  .na-card .btn {
+    margin-top: 10px;
+  }
+  .na-head {
+    margin: 24px 0 10px;
+  }
+  .na-intro {
+    margin: 4px 0 0;
+    color: var(--ink-2);
+    font: 400 1rem/1.5rem var(--font-ui);
+  }
+  /* the card is one big target (card-hit): plain text on top of it must not swallow the tap */
+  .guest .act,
+  .guest .pending-row {
+    pointer-events: none;
+  }
+  .guest .act .btn,
+  .guest .pending-row .btn {
+    pointer-events: auto;
+  }
+  .page-narrow {
+    max-width: 680px;
+  }
+  .skel-list > .skel + .skel {
+    margin-top: 8px;
+  }
+  .skel-list {
+    margin-top: 18px;
+  }
+  .content > .pilot-banner + * {
+    margin-top: 12px;
+  }
 }
 
 @keyframes flash {

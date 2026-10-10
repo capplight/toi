@@ -45,11 +45,74 @@ export type GuestCardProps = {
   /** After «WhatsApp-қа жіберу» was pressed but not confirmed (DESIGN_v2 8.5). */
   pendingConfirm?: boolean;
   flash?: boolean;
+  /** DOM id (scroll the new card into view, W7). */
+  id?: string;
   onOpen?: () => void;
+  /**
+   * wa.me link (Ф4): the action is a real link opened in WhatsApp; `onSend` / `onRemind` run on click.
+   * A function is resolved lazily (on pointer-down / focus / hover / click, always before the link activates):
+   * building 65 long encoded texts during hydration is the main cost of the list (perf, brief 2.4).
+   * Until then the link opens the chat (`https://wa.me/<phone>`) without the text.
+   */
+  sendHref?: WaHref;
+  remindHref?: WaHref;
   onSend?: () => void;
   onRemind?: () => void;
   onConfirmSent?: () => void;
 };
+
+export type WaHref = string | { base: string; resolve: () => string };
+
+/** A WhatsApp action: a link to wa.me when `href` is given (new tab), otherwise a button. */
+function WaAction({
+  href,
+  onClick,
+  variant,
+  icon,
+  children,
+}: {
+  href?: WaHref;
+  onClick?: () => void;
+  variant: "wa" | "wa-outline";
+  icon: IconName;
+  children: ReactNode;
+}) {
+  const ta = useTranslations("common.a11y");
+  if (!href)
+    return (
+      <Button variant={variant} size="row" icon={icon} onClick={onClick}>
+        {children}
+      </Button>
+    );
+  const lazy = typeof href === "string" ? null : href;
+  const resolve = lazy
+    ? (e: { currentTarget: HTMLAnchorElement }) => {
+        if (!e.currentTarget.dataset.resolved) {
+          e.currentTarget.href = lazy.resolve();
+          e.currentTarget.dataset.resolved = "1";
+        }
+      }
+    : undefined;
+  return (
+    <a
+      href={typeof href === "string" ? href : href.base}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cn("btn", variant, "row")}
+      onPointerDown={resolve}
+      onFocus={resolve}
+      onMouseEnter={resolve}
+      onClick={(e) => {
+        resolve?.(e);
+        onClick?.();
+      }}
+    >
+      <Icon name={icon} />
+      {children}
+      <span className="sr-only">({ta("opensWhatsApp")})</span>
+    </a>
+  );
+}
 
 export function GuestCard(p: GuestCardProps) {
   const t = useTranslations("guests.card");
@@ -60,7 +123,7 @@ export function GuestCard(p: GuestCardProps) {
   const tableText = p.tableNo ? t("table", { number: p.tableNo }) : tn("notSeated");
   const a11y = t("a11y", { name: p.name, status: statusText, seats: seatsText, table: tableText });
   return (
-    <div className={cn("guest", "desktop", p.flash && "flash")}>
+    <div id={p.id} className={cn("guest", "desktop", p.flash && "flash")}>
       <button type="button" onClick={p.onOpen} aria-label={a11y} className="card-hit" />
       <div className="name">{p.name}</div>
       {p.hasPhone && (
@@ -82,18 +145,18 @@ export function GuestCard(p: GuestCardProps) {
             {t("pendingYes")}
           </Button>
         </div>
-      ) : p.status === "notSent" && p.onSend ? (
+      ) : p.status === "notSent" && (p.onSend || p.sendHref) ? (
         <div className="act">
-          <Button variant="wa" size="row" icon="wa" onClick={p.onSend}>
+          <WaAction variant="wa" icon="wa" href={p.sendHref} onClick={p.onSend}>
             {t("sendWhatsApp")}
-          </Button>
+          </WaAction>
         </div>
-      ) : p.status === "noAnswer" && p.onRemind ? (
+      ) : p.status === "noAnswer" && (p.onRemind || p.remindHref) ? (
         <div className="act">
-          {p.sentAgo && <span className="ago">{p.sentAgo}</span>}
-          <Button variant="wa-outline" icon="bell" onClick={p.onRemind}>
+          <WaAction variant="wa-outline" icon="bell" href={p.remindHref} onClick={p.onRemind}>
             {t("remind")}
-          </Button>
+          </WaAction>
+          {p.sentAgo && <span className="ago">{p.sentAgo}</span>}
         </div>
       ) : null}
     </div>
@@ -154,7 +217,9 @@ export function Banner({
   href,
   onClick,
   live = false,
+  className,
 }: {
+  className?: string;
   kind: BannerKind;
   title: string;
   text?: string;
@@ -175,7 +240,7 @@ export function Banner({
       {(href || onClick) && <Icon name="up" className="rot-90" />}
     </>
   );
-  const cls = cn("banner", kind);
+  const cls = cn("banner", kind, className);
   // A live banner is announced by a wrapping status region (the link/button keeps its own role).
   const el = href ? (
     <Link href={href} className={cls}>
@@ -269,15 +334,17 @@ export function EventHero({
   kindLabel?: string;
   dateLine: string;
   venue?: string;
-  /** Phone version (N1): ≈ 92 px, no kicker and divider. */
-  compact?: boolean;
+  /** Phone version (N1): ≈ 92 px, no kicker and divider. "phone" = compact below 1024 only (S1 aside). */
+  compact?: boolean | "phone";
 }) {
+  const phone = compact === "phone";
+  const small = compact === true;
   return (
-    <section className={cn("event-hero", compact && "compact")}>
+    <section className={cn("event-hero", small && "compact", phone && "compact-phone")}>
       <Shanyraq className="shanyraq draw spin-once" />
-      {!compact && kindLabel && <div className="kicker">{kindLabel}</div>}
+      {!small && kindLabel && <div className="kicker">{kindLabel}</div>}
       <h2 className="names">{title}</h2>
-      {!compact && (
+      {!small && (
         <div className="divider" aria-hidden="true">
           <i />
           <KoshkarMuiz />
@@ -288,7 +355,7 @@ export function EventHero({
         <b>{dateLine}</b>
         {venue && (
           <>
-            {compact ? " · " : <br />}
+            {small ? " · " : <br />}
             {venue}
           </>
         )}

@@ -59,16 +59,29 @@ const ORDER: Record<GuestStatus, number> = { notSent: 0, noAnswer: 1, yes: 2, no
  * Order inside a category group (design_spec 4.1): what needs action first — «Жіберілмеген», «Жауап жоқ»,
  * «Келеді», «Келмейді»; then alphabetically (Kazakh collation).
  */
+const collators = new Map<string, Intl.Collator>();
+/** Cached collator: `localeCompare(…, locale)` builds a new one per call (slow when sorting 65+ names). */
+export function collator(locale = "kk"): Intl.Collator {
+  let c = collators.get(locale);
+  if (!c) collators.set(locale, (c = new Intl.Collator(locale)));
+  return c;
+}
+
 export function compareGuests(a: GuestLike, b: GuestLike, locale = "kk"): number {
-  return ORDER[guestStatus(a)] - ORDER[guestStatus(b)] || a.name.localeCompare(b.name, locale);
+  return ORDER[guestStatus(a)] - ORDER[guestStatus(b)] || collator(locale).compare(a.name, b.name);
 }
 
 /** Calendar days between two instants in a time zone (for «3 күн бұрын жіберілді»). */
+const dayFormats = new Map<string, Intl.DateTimeFormat>();
 export function daysAgo(then: Date, now: Date, timeZone = "Asia/Almaty"): number {
+  let f = dayFormats.get(timeZone);
+  if (!f) {
+    f = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" });
+    dayFormats.set(timeZone, f);
+  }
+  const fmt = f;
   const day = (d: Date) => {
-    const p = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).format(
-      d,
-    );
+    const p = fmt.format(d);
     return Date.UTC(+p.slice(0, 4), +p.slice(5, 7) - 1, +p.slice(8, 10));
   };
   return Math.max(0, Math.round((day(now) - day(then)) / 86_400_000));
