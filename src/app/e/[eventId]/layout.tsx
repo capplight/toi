@@ -26,6 +26,11 @@ const CLIENT_NAMESPACES = [
   "budget",
   "errors",
   "roles",
+  "guestForm",
+  "send",
+  "noAnswer",
+  "category",
+  "wa",
 ];
 
 /** Frame of every working screen of an event (Ф1): access check (Ф2) + the three navigation modes. */

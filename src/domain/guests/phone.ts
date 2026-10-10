@@ -27,3 +27,15 @@ export function maskPhone(e164: string): string {
 export function isKzMobile(e164: string): boolean {
   return /^\+77\d{9}$/.test(e164);
 }
+
+/** `+77023145520` → `+7 702 314 55 20` (guest sheet). Anything else is returned unchanged. */
+export function formatPhone(e164: string): string {
+  const n = normalizePhone(e164)?.slice(2);
+  if (!n) return e164;
+  return `+7 ${n.slice(0, 3)} ${n.slice(3, 6)} ${n.slice(6, 8)} ${n.slice(8, 10)}`;
+}
+
+/** National part with spaces for the «+7» input when editing: `702 314 55 20`. */
+export function nationalPart(e164: string | null): string {
+  return e164 ? formatPhone(e164).replace(/^\+7 /, "") : "";
+}
