@@ -248,6 +248,8 @@ export const eventMembers = pgTable(
     role: memberRoleEnum("role").notNull().default("editor"),
     canEditSeating: boolean("can_edit_seating").notNull().default(false),
     label: text("label").notNull(),
+    /** The person's name as the owner typed it («Гүлжан», Ф3 members screen); shown as «Анасы · Гүлжан». */
+    displayName: text("display_name"),
     memberKind: memberKindEnum("member_kind").notNull().default("other"),
     canManageBudget: boolean("can_manage_budget").notNull().default(false),
     defaultCategoryId: uuid("default_category_id").references(() => categories.id, { onDelete: "set null" }),
@@ -259,6 +261,7 @@ export const eventMembers = pgTable(
     unique("event_members_event_phone_key").on(t.eventId, t.phone),
     check("event_members_phone_check", sql`${t.phone} ~ ${PHONE_RE}`),
     check("event_members_label_check", sql`length(${t.label}) <= 30`),
+    check("event_members_display_name_check", sql`length(${t.displayName}) <= 40`),
     uniqueIndex("one_owner_per_event")
       .on(t.eventId)
       .where(sql`${t.role} = 'owner'`),
