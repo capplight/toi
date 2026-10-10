@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useDeferredValue, useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useState } from "react";
 import { compareGuests, daysAgo, type GuestLike, guestStatus, listTotals, matchesQuery } from "@/domain/guests/status";
 import type { GuestsData, GuestView } from "@/server/guests/queries";
 import { Button, ButtonLink } from "@/ui/components/Button";
@@ -20,7 +20,7 @@ import { GuestSheet } from "./GuestSheet";
 import { SendAsk, startSend, useConfirmSent, usePending, useWaLinks } from "./send-flow";
 
 type Filter = "yes" | "noAnswer" | "no" | null;
-const FIRST_CARDS = 12;
+const FIRST_CARDS = 8;
 
 /** wa.me chat without text — the href until the full link is resolved (see GuestCard `WaHref`). */
 const chatUrl = (phone: string | null) => `https://wa.me/${phone ? phone.replace(/D/g, "") : ""}`;
@@ -92,8 +92,19 @@ export function GuestsScreen({
   }, [data.guests, data.categories, query, filter]);
 
   // Perf (brief 2.4, 65 families < 1 s): the first paint and hydration cover the first cards only (what fits on
-  // a phone screen and more); the rest renders right after in the background (React 19 initial deferred value).
-  const cap = useDeferredValue(Number.POSITIVE_INFINITY, FIRST_CARDS);
+  // a phone screen and more); the rest renders when the browser is idle right after (a low-priority transition),
+  // so the page reacts to taps first. Search and filters always see the whole list.
+  const [complete, setComplete] = useState(false);
+  useEffect(() => {
+    const go = () => startTransition(() => setComplete(true));
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(go, { timeout: 600 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = window.setTimeout(go, 50);
+    return () => window.clearTimeout(id);
+  }, []);
+  const cap = complete || query.trim() || filter ? Number.POSITIVE_INFINITY : FIRST_CARDS;
   const shownGroups = useMemo(() => {
     if (!Number.isFinite(cap)) return groups;
     let left = cap;

@@ -57,7 +57,6 @@ export function NoAnswerScreen({ data, backHref }: { data: GuestsData; backHref:
 
   return (
     <div className="page-narrow">
-      <h1 className="t-h1 desk-only">{t("title")}</h1>
       <p className="na-intro">{t("intro")}</p>
       {waiting.length > 0 && (
         <section aria-labelledby="na-waiting">

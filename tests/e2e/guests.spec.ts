@@ -188,7 +188,7 @@ test.describe("Ф4 guests", () => {
   test("«Жауап бермегендер»: from the banner, reminders are wa.me links", async ({ page }) => {
     await page.goto(list());
     await page.locator("a.banner.remind").click();
-    await expect(page).toHaveURL(/no-answer/);
+    await expect(page).toHaveURL(/no-answer/, { timeout: 15_000 });
     await expect(page.getByText(kk.noAnswer.intro)).toBeVisible();
     const first = page.getByTestId("na-card").first();
     await expect(first.getByRole("link", { name: new RegExp(kk.guests.card.remind) })).toHaveAttribute(

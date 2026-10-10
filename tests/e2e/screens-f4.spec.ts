@@ -65,7 +65,7 @@ for (const only of ["kk", "ru"] as const)
         await page.goto(base);
         await page.locator(".guest .card-hit").first().click();
         await shot(page, `S4_${sfx}`);
-        await page.getByRole("dialog").getByRole("button", { name: m.guestSheet.answer.yes }).click();
+        await page.getByRole("dialog").getByRole("button", { name: m.guestSheet.answer.yes, exact: true }).click();
         await shot(page, `S4-answer-yes_${sfx}`);
         await page.getByRole("dialog").getByRole("button", { name: m.common.actions.delete }).click();
         await shot(page, `S4-delete_${sfx}`);
@@ -87,7 +87,7 @@ for (const only of ["kk", "ru"] as const)
         await shot(page, `S2-dup_${sfx}`);
         await page.goto(`${base}/add`);
         n += 1;
-        const guest = `${["Бақытжан", "Нұрлыбек", "Жәнібек", "Дидарбек"][n - 1]} отбасы`;
+        const guest = `${["Тоқтарбай", "Жылқыайдар", "Сұлтанмахмұт", "Құдайберген"][n - 1]} отбасы`;
         await name.fill(guest);
         await submit.click();
         await page.getByTestId("add-success").waitFor();

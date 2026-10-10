@@ -49,8 +49,10 @@ test.describe("Ф4 performance", () => {
         .then((h) => h.jsonValue() as Promise<number>);
     };
     const first = await measure();
-    const runs = [await measure(), await measure(), await measure()].sort((x, y) => x - y);
-    const ms = runs[1]!;
+    const runs: number[] = [];
+    for (let i = 0; i < 5; i++) runs.push(await measure());
+    runs.sort((x, y) => x - y);
+    const ms = runs[2]!; // median of 5 warm loads
     await page.locator(".counter.no").click();
     await expect(page.locator(".counter.no")).toHaveAttribute("aria-pressed", "true");
     console.log(
