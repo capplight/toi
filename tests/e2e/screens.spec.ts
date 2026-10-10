@@ -54,6 +54,7 @@ test("handover screenshots", async ({ page, context, baseURL }) => {
     for (const [name, path] of shots.slice(0, 2)) {
       await page.goto(path);
       await page.addStyleTag({ content: "html { font-size: 130% !important; }" });
+      await page.waitForTimeout(800); // let the toast and header settle after the size change
       await page.screenshot({ path: `${OUT}/${name}_360_${locale}_130.png` });
     }
   }

@@ -267,3 +267,52 @@ $ grep -rnE "@/server|drizzle-orm|from \"pg\"" src/ui → пусто (и пра�
 - [x] Доступность: цели ≥ 48, текст ≥ 16 (кроме меток схемы 14), контраст из токенов (AA проверен дизайнером), aria на SVG-столах и шторках, фокус-ловушки, «Назад», reduced motion; axe без serious/critical.
 - [x] `dangerouslySetInnerHTML` нет.
 - [x] Все проверки зелёные (раздел 5).
+
+---
+
+## 11. Правки по ревью (`docs/phases/Ф1-review.md`, вердикт «нужны правки»)
+
+Цепочка перебазирована на `main` (`5e8ae03`, с текстами `ffe0f89`, `7e59841` — 764 ключа): F0 → F7a → F2 → F1, все `Successfully rebased`.
+Коммит правок: **`b40752d` `fix(F1): review П1–П3 …`** (14 файлов, +394 / −89) и пересъёмка скриншотов (этот коммит).
+
+| № | Что сделано | Где | Проверка (e2e) |
+|---|---|---|---|
+| **П1** | Все высоты элементов с текстом — в rem. Токены `--h-tabbar` 4.5rem, `--h-toast` 3.5rem, `--h-top` 3.75rem, `--h-btn` 3.5rem, `--h-btn-2` 3.25rem, `--h-btn-row` 3rem, `--h-field` 3.5rem; ещё 26 правил `components.css` переведены в rem (кнопки, сегмент, язык, чипы, сводка, баннер, строки-ссылки, счётчики, пункты меню, ячейки кода). Нижние отступы `.content` — в rem. В px остались только графика (иконки, SVG-схема, тонкие линии). Отступ Sonner берётся от фактической высоты вкладок и главной кнопки: `calc(var(--h-tabbar) + 0.5rem + env(safe-area-inset-bottom) [+ var(--h-btn) + 1.5rem])` | `tokens.css`, `components.css`, `Toast.tsx` | «П1 + П2 at 130 %»: при 100 % и 130 % нижний край тоста выше верхнего края вкладок, высота тоста ≤ 3,5rem (проекты mobile, small) |
+| **П2** | Шапка телефона измеряет себя (естественные ширины, ResizeObserver на шапке, заголовке и контроле; MutationObserver на `<html>`; `document.fonts.ready`) и выбирает один из трёх режимов: «полный» (заголовок · сегмент · ⋯) → **«только иконки»** (подписи сегмента остаются для экранного чтеца, класс `.seg-label`) → **сегмент на второй строке**. Заголовок не обрезается. На 320 × 100 % включается режим «только иконки» — так экономится место по высоте для B1 | `AppShell.tsx` (`useStackedHeader`), `Controls.tsx` (`Segment`), `components.css` | тот же тест: на 100 % и 130 % `h1.clientWidth ≥ scrollWidth`; на 130 % шапка в режиме `icons` или `stacked`, у переключателя «Схема» есть доступное имя |
+| **П3** | `PilotBanner` закрывается («✕», `aria-label` = `common.actions.close`). Выбор запоминается на устройстве (`localStorage` в `try/catch`, чтение через `useSyncExternalStore`: на сервере пометка скрыта, поэтому нет вспышки при гидратации). На «Зал» каркас пометку не показывает вообще (новый prop `section`) | `PilotBanner.tsx`, `AppShell.tsx`, `EventShell.tsx` | «П3» в `shell.spec.ts`: хозяин на `/e/{id}/hall` — пометки нет; на `/guests` — есть, закрывается, после перезагрузки не появляется. B1 на `/dev/ui/hall` теперь под ролью хозяина в том же `AppShell` — пометки нет, «ТӨР» и столы 1–4 видны (360, 320) |
+| Н2 | Встроенные стили с px в `AppShell.tsx`, `Display.tsx`, `Controls.tsx`, `Sheet.tsx` перенесены в классы на токенах (`.menu-dots`, `.flip-x`, `.card-hit`, `.rot-90`/`.rot-180`, `.links-title`, `.acc-head`, `.field-group`, `.cats-add`, `.center`, `.pre-line`, `.orn-divider`, `.orn-couple`). Встроенными остались только динамические значения: оттенок категории `var(--cat-…)`, ширина `ProgressBar` в %, высота `Skeleton` (в rem), геометрия SVG | эти файлы | grep: `style=` в `src/ui` — только динамические значения |
+| AlertDialog | Кнопки — `.btn` (3.5rem / 3.25rem ≥ 48 px). Заголовок — новый ключ `guestSheet.delete.title` | `Sheet.tsx`, витрина | «AlertDialog at 320 px and 130 %»: заголовок «Қонақты өшіру керек пе?», диалог в пределах 320 px, все кнопки ≥ 48 px, нет горизонтальной прокрутки |
+| Счётчики (запрос дизайнера) | На «Менің тізімім» при 360 px и 130 % счётчики выходили за край. Сетка `repeat(auto-fit, minmax(5.5rem, 1fr))`: 3 в ряд при 100 % вплоть до 320 px, при крупном тексте — перенос по 2. Чипы могут переносить длинный текст (`max-width: 100%`) | `components.css` | «counters … at 360 px and 130 %» на 320 и 360: правый край ряда и каждой плитки ≤ ширины экрана, содержимое плитки не переполнено |
+| Новые тексты | Заголовок диалога удаления; «ТӨР» / «ВХОД» заглавными приходят из `content/messages` (код не менялся) | — | `check:messages`: OK — 764 ключа |
+
+**Найдено при прогоне:** на 320 × 130 % с витриной горизонтально прокручивались две вещи — плитки счётчиков (жёсткая сетка в 3 колонки) и длинный чип «Сіз отырғызуды тек көресіз» (`nowrap`). Исправлено теми же правками.
+
+**Проверки после правок (реальный вывод):**
+```
+$ pnpm check:messages
+check:messages: OK — 764 keys, kk/ru: ICU, variables, tags, select/other, ru plural forms
+$ pnpm typecheck
+✓ Types generated successfully
+$ pnpm lint
+$ eslint --max-warnings=0          (0 ошибок и предупреждений)
+$ pnpm format:check
+All matched files use Prettier code style!
+$ pnpm test
+      Tests  143 passed (143)
+$ pnpm test:integration
+      Tests  51 passed (51)
+$ E2E_CHANNEL=chrome DATABASE_URL=…PGlite… pnpm test:e2e     (mobile + desktop + small, standalone)
+  4 skipped
+  79 passed (2.3m)
+$ … playwright test tests/e2e/ui.spec.ts -g "counters"     (добавлен после)
+  3 passed
+$ gitleaks protect --staged
+INF no leaks found
+```
+4 пропуска по замыслу: B1 и «П1 + П2» на десктопе (это критерии телефона), `screens.spec.ts` без `SCREENSHOTS=1`.
+
+**Пересняты все скриншоты** (`docs/phases/F1-screens/`), в том числе указанные в ревью `hall-demo_360_{kk,ru}_130.png` (тост над вкладками, сегмент — иконки, заголовок целиком) и `shell-guests_360_{kk,ru}.png` (пометка с «✕»). Скриншоты 130 % снимаются после паузы 0,8 с: тост и шапка успевают перестроиться.
+
+**Новые отклонения:**
+- В режиме «только иконки» видимые подписи «Схема | Тізім» скрыты, имена остаются для экранного чтеца. Ревью это разрешает («или только иконки»).
+- Счётчики при крупном тексте переносятся по 2 в ряд. Без крупного текста — по 3, как в дизайне.
