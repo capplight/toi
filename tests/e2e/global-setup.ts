@@ -62,19 +62,21 @@ export default async function globalSetup() {
     // Ф4 e2e relies on these two (duplicate by name / by phone): never used as Ф5 guests.
     .filter((g) => !/Ерлан|Күләш/.test(g.name))
     .map((g) => ({ token: g.token, name: g.name }));
-  // …all of them not answered yet, so every test starts from the envelope.
-  await db()
-    .update(families)
-    .set({ rsvp: "pending", confirmedCount: null, respondedAt: null, answeredBy: null, firstOpenedAt: null })
-    .where(
-      and(
-        eq(families.eventId, s.eventId),
-        inArray(
-          families.token,
-          guests.map((g) => g.token),
+  // …all of them not answered yet, so every test starts from the envelope. E2E_PRISTINE_SEED=1 keeps the seed as in
+  // design_spec 5.2 (Ф6 screenshots of «Қорытынды» with the reference numbers; the guest-page specs then can't run).
+  if (!process.env.E2E_PRISTINE_SEED)
+    await db()
+      .update(families)
+      .set({ rsvp: "pending", confirmedCount: null, respondedAt: null, answeredBy: null, firstOpenedAt: null })
+      .where(
+        and(
+          eq(families.eventId, s.eventId),
+          inArray(
+            families.token,
+            guests.map((g) => g.token),
+          ),
         ),
-      ),
-    );
+      );
   await closeDb();
   mkdirSync("playwright/.cache", { recursive: true });
   writeFileSync(

@@ -115,6 +115,7 @@ export async function seedSample(db: Db, now: Date = new Date()): Promise<Seeded
           phone: DEMO_PHONES[m.id],
           role: m.id === "ake" ? "owner" : "editor",
           label: m.label,
+          displayName: m.name, // «Әкесі · Серік» (design_spec 5.2)
           memberKind: kind,
           ...defaultRights(kind),
           defaultCategoryId: catId.get(m.defaultCategoryId)!,
