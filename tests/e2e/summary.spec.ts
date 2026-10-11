@@ -2,25 +2,27 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { type BrowserContext, expect, type Page, test } from "@playwright/test";
+import { type World, world } from "./worlds";
 
 /**
  * Ф6 «Қорытынды» (brief §3): owner and «Жастар», kk and ru, 360 and 1440 (projects), a guest answer through
- * `/i/{token}` reaches the screen by polling, axe, 130 %, 320 px. Exact numbers of the seed are checked in
- * tests/integration/summary.test.ts (other e2e specs change answers before this one runs).
+ * `/i/{token}` reaches the screen by polling, axe, 130 %, 320 px. Reads world `base` (the seed exactly as in
+ * design_spec 5.2, Ф6 review П1); the polling test writes, so it answers in its own world `summaryLive`.
  */
 const kk = JSON.parse(readFileSync(resolve(process.cwd(), "content/messages/kk.json"), "utf8"));
 const ru = JSON.parse(readFileSync(resolve(process.cwd(), "content/messages/ru.json"), "utf8"));
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    eventId: string;
-    sessions: Record<"ake" | "jas", string>;
-    guests: { token: string; name: string }[];
-  };
+const seed = () => world("base");
 const needDb = () => test.skip(!process.env.DATABASE_URL && !process.env.CI, "No Postgres: set DATABASE_URL.");
 
-async function as(context: BrowserContext, baseURL: string, who: "ake" | "jas", locale: "kk" | "ru" = "kk") {
+async function as(
+  context: BrowserContext,
+  baseURL: string,
+  who: "ake" | "jas",
+  locale: "kk" | "ru" = "kk",
+  w: World = seed(),
+) {
   await context.addCookies([
-    { name: "toi_session", value: seed().sessions[who], url: baseURL, httpOnly: true, secure: true },
+    { name: "toi_session", value: w.sessions[who], url: baseURL, httpOnly: true, secure: true },
     { name: "locale", value: locale, url: baseURL },
   ]);
 }
@@ -44,20 +46,20 @@ test.describe("Ф6 summary", () => {
   }, info) => {
     await as(context, baseURL!, "ake");
     await page.goto(`/e/${seed().eventId}/summary`);
-    await expect(page.locator(".sum-main .line")).toHaveText(/^Мейрамханаға: \d+ адам → \d+ үстел$/);
-    await expect(page.locator(".sum-main")).toHaveAttribute("aria-label", /^Мейрамханаға: \d+ адам, \d+ үстел$/);
-    await expect(page.locator(".sum-tile.yes")).toContainText(/Келеді\s*\d+ отбасы\s*\d+ орын/);
-    await expect(page.locator(".sum-tile.inv")).toContainText(/Жауап жоқ\s*\d+ отбасы\s*~\d+ орын/);
+    await expect(page.locator(".sum-main .line")).toHaveText("Мейрамханаға: 173 адам → 15 үстел");
+    await expect(page.locator(".sum-main")).toHaveAttribute("aria-label", "Мейрамханаға: 173 адам, 15 үстел");
+    await expect(page.locator(".sum-tile.yes")).toContainText(/Келеді\s*53 отбасы\s*150 орын/);
+    await expect(page.locator(".sum-tile.inv")).toContainText(/Жауап жоқ\s*9 отбасы\s*~23 орын/);
     await expect(page.locator(".sum-tile.inv .note")).toHaveText(
-      new RegExp(`^${kk.summary.tiles.pendingNotSent.replace("{count}", "[0-9]+")}$`),
+      kk.summary.tiles.pendingNotSent.replace("{count}", "2"),
     );
-    await expect(page.locator(".sum-tile.no")).toContainText(/Келмейді\s*\d+ отбасы/);
+    await expect(page.locator(".sum-tile.no")).toContainText(/Келмейді\s*3 отбасы/);
     await expect(page.getByRole("heading", { name: kk.summary.byCategory.title })).toBeVisible();
     await expect(page.locator(".sum-bars").first().locator("li").first()).toContainText("Құдалар · 28 орын");
     await expect(page.getByRole("heading", { name: kk.summary.funnel.title })).toBeVisible();
     await expect(page.getByText(kk.summary.funnel.hint)).toBeVisible();
     const lists = page.getByRole("navigation", { name: kk.summary.byList.title });
-    // the three lists of the seed (Ф3 e2e may add more members before this spec runs)
+    await expect(lists.locator(".link-row")).toHaveCount(3);
     await expect(lists.locator(".link-row").first()).toContainText("Әкесі · Серік");
     await expect(lists.locator(".link-row").nth(1)).toContainText("Анасы · Гүлжан");
     await expect(lists.locator(".link-row").nth(2)).toContainText("Жастар · Айбек, Дана");
@@ -72,13 +74,13 @@ test.describe("Ф6 summary", () => {
   test("«Жастар» (ru): no funnel, no «Расходы»; numbers in ru plural forms", async ({ page, context, baseURL }) => {
     await as(context, baseURL!, "jas", "ru");
     await page.goto(`/e/${seed().eventId}/summary`);
-    await expect(page.locator(".sum-main .line")).toHaveText(/^Для ресторана: \d+ человека? → \d+ стол(а|ов)?$/);
+    await expect(page.locator(".sum-main .line")).toHaveText("Для ресторана: 173 человека → 15 столов");
     await expect(page.getByRole("heading", { name: ru.summary.byCategory.title })).toBeVisible();
     await expect(page.getByRole("heading", { name: ru.summary.funnel.title })).toHaveCount(0);
     await expect(page.getByText(ru.summary.funnel.hint)).toHaveCount(0);
     await expect(page.locator(".summary a[href$='/budget']")).toHaveCount(0);
     await expect(page.locator(".sum-tile.inv .note")).toHaveText(
-      new RegExp(`^${ru.summary.tiles.pendingNotSent.replace("{count}", "[0-9]+")}$`),
+      ru.summary.tiles.pendingNotSent.replace("{count}", "2"),
     );
   });
 
@@ -89,10 +91,11 @@ test.describe("Ф6 summary", () => {
     browser,
   }, info) => {
     test.setTimeout(60_000);
-    await as(context, baseURL!, "ake");
-    await page.goto(`/e/${seed().eventId}/summary`);
+    const live = world("summaryLive");
+    await as(context, baseURL!, "ake", "kk", live);
+    await page.goto(`/e/${live.eventId}/summary`);
     const no0 = await count(page, "no");
-    const g = seed().guests[info.project.name === "desktop" ? 24 : 23]!;
+    const g = live.guests[info.project.name === "desktop" ? 1 : 0]!;
     const guest = await browser.newContext({ baseURL });
     const gp = await guest.newPage();
     await gp.goto(`/i/${g.token}?answered=1`);

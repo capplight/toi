@@ -1,4 +1,4 @@
-import { and, asc, eq, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
 import { listTotals, plannedSeats } from "@/domain/guests/status";
 import { totals } from "@/domain/seating";
 import type { Locale } from "@/i18n/config";
@@ -66,7 +66,7 @@ export async function summaryView(
       .from(eventMembers)
       .leftJoin(users, eq(users.id, eventMembers.userId))
       .where(and(eq(eventMembers.eventId, eventId), isNull(eventMembers.removedAt)))
-      .orderBy(asc(eventMembers.invitedAt)),
+      .orderBy(desc(sql`${eventMembers.role} = 'owner'`), asc(eventMembers.invitedAt), asc(eventMembers.id)),
   ]);
 
   const t = totals(state);

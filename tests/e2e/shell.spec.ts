@@ -2,17 +2,14 @@ import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { type BrowserContext, expect, test } from "@playwright/test";
+import { world } from "./worlds";
 
 /**
  * Ф1 criterion 3: the event frame in three navigation modes, «Шығындар» only with the right, language only
  * via «⋯ Той мәзірі», the pilot banner only for the owner. Needs the seeded DB (sessions from global setup).
  */
 const kk = JSON.parse(readFileSync(resolve(process.cwd(), "content/messages/kk.json"), "utf8"));
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    eventId: string;
-    sessions: Record<"ake" | "jas", string>;
-  };
+const seed = () => world("base");
 const needDb = () =>
   test.skip(
     !process.env.DATABASE_URL && !process.env.CI,

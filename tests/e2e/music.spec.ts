@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { expect, test } from "@playwright/test";
+import { world } from "./worlds";
 
 /**
  * Ф5 music (brief §3.3, criterion 5) on the local storage driver: wizard step 6 upload → processing → «Музыка дайын»
@@ -11,11 +12,7 @@ import { expect, test } from "@playwright/test";
  * Also: the real preview in the settings.
  */
 const kk = JSON.parse(readFileSync(resolve(process.cwd(), "content/messages/kk.json"), "utf8"));
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    eventId: string;
-    sessions: Record<string, string>;
-  };
+const seed = () => world("music");
 const needDb = () =>
   test.skip(
     !process.env.DATABASE_URL && !process.env.CI,

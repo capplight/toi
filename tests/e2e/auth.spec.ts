@@ -3,6 +3,7 @@ import { randomBytes } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { expect, test } from "@playwright/test";
+import { world } from "./worlds";
 
 // Expected strings come from content/messages (decision Д5).
 const kk = JSON.parse(readFileSync(resolve(process.cwd(), "content/messages/kk.json"), "utf8"));
@@ -14,11 +15,7 @@ const needDb = () =>
     "No Postgres: set DATABASE_URL (e.g. pnpm db:local --memory).",
   );
 
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    eventId: string;
-    memberLinks: Record<string, string>;
-  };
+const seed = () => world("base");
 
 /** `pnpm admin:owner-link` (CLI of plan 6.1 flow 4) → the printed URL. */
 function ownerLink(phone: string): string {

@@ -1,7 +1,6 @@
-import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { resolve } from "node:path";
 import { type Browser, type Page, test } from "@playwright/test";
+import { world } from "./worlds";
 
 /**
  * Ф5 handover screenshots (brief §6): the three templates × envelope / opened invitation / answer form / answered /
@@ -12,11 +11,7 @@ import { type Browser, type Page, test } from "@playwright/test";
 test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to write handover screenshots");
 
 const OUT = "docs/phases/F5-screens";
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    eventId: string;
-    guests: { token: string; name: string }[];
-  };
+const seed = () => world("screensF5");
 const TEMPLATES = ["ak-shanyrak", "kok-tun", "kyzgaldak"] as const;
 const SIZES = [
   { name: "360", width: 360, height: 740 },

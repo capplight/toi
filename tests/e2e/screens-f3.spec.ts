@@ -2,6 +2,7 @@ import { randomInt } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { type Page, test } from "@playwright/test";
+import { world } from "./worlds";
 
 /**
  * Ф3 handover screenshots (brief §5): every wizard step, «Дайын!», leaving, the link-session screen, members (+ add,
@@ -12,11 +13,7 @@ test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to write handover screens
 
 const OUT = "docs/phases/F3-screens";
 const msgs = (l: "kk" | "ru") => JSON.parse(readFileSync(resolve(process.cwd(), `content/messages/${l}.json`), "utf8"));
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    eventId: string;
-    sessions: Record<string, string>;
-  };
+const seed = () => world("screensF3");
 const SIZES = [
   { name: "360", width: 360, height: 740 },
   { name: "1440", width: 1440, height: 900 },
@@ -103,7 +100,7 @@ for (const locale of ["kk", "ru"] as const)
       await sheet.getByRole("radio", { name: m.roles.mother }).click();
       await shot(page, `M-add_${sfx}`, size.name === "360");
       // duplicate: the seed's Анасы
-      await sheet.getByLabel(m.members.add.phoneLabel).fill("700 000 00 02");
+      await sheet.getByLabel(m.members.add.phoneLabel).fill("700 009 00 02");
       await sheet.getByTestId("add-member-submit").click();
       await shot(page, `M-add-error_${sfx}`);
       await page.keyboard.press("Escape");

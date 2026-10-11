@@ -3,6 +3,7 @@ import { randomInt } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { type Browser, type BrowserContext, expect, type Page, test } from "@playwright/test";
+import { type World, world } from "./worlds";
 
 /**
  * Ф3 (brief §3.3): the wizard with and without the hall, leaving, members (add → wa.me link → the person opens
@@ -10,18 +11,14 @@ import { type Browser, type BrowserContext, expect, type Page, test } from "@pla
  * axe / 130 % for the wizard and the members screen. Runs on 360×740 and 1440×900 against the seeded DB.
  */
 const kk = JSON.parse(readFileSync(resolve(process.cwd(), "content/messages/kk.json"), "utf8"));
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    eventId: string;
-    sessions: Record<string, string>;
-  };
+const seed = () => world("events");
 const needDb = () =>
   test.skip(
     !process.env.DATABASE_URL && !process.env.CI,
     "No Postgres: set DATABASE_URL (e.g. pnpm db:local --memory).",
   );
 
-async function asOwner(context: BrowserContext, baseURL: string, session = "ake") {
+async function asOwner(context: BrowserContext, baseURL: string, session: keyof World["sessions"] = "ake") {
   await context.addCookies([
     { name: "toi_session", value: seed().sessions[session]!, url: baseURL, httpOnly: true, secure: true },
     { name: "locale", value: "kk", url: baseURL },
@@ -183,7 +180,7 @@ test.describe("Ф3 members", () => {
     context,
     baseURL,
   }, info) => {
-    await asOwner(context, baseURL!, `akeSwitch_${info.project.name}`);
+    await asOwner(context, baseURL!, `akeSwitch_${info.project.name}` as keyof World["sessions"]);
     const { eventId } = seed();
     const m = await addMember(page, context, eventId, kk.roles.couple);
     await page.goto(m.path);

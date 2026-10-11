@@ -3,6 +3,7 @@ import { randomBytes } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { type BrowserContext, expect, type Page, test } from "@playwright/test";
+import { world } from "./worlds";
 
 /**
  * Ф4 «Гости» (brief 2.4): add → highlighted card, duplicates by phone and by name, wa.me link and
@@ -11,11 +12,7 @@ import { type BrowserContext, expect, type Page, test } from "@playwright/test";
  * on guests it adds itself (names/phones unique per project and run), so projects can run in parallel.
  */
 const kk = JSON.parse(readFileSync(resolve(process.cwd(), "content/messages/kk.json"), "utf8"));
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    eventId: string;
-    sessions: Record<"ake" | "jas", string>;
-  };
+const seed = () => world("guests");
 const needDb = () =>
   test.skip(
     !process.env.DATABASE_URL && !process.env.CI,

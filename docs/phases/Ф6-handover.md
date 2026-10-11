@@ -150,3 +150,79 @@ E2E `summary.spec.ts` (mobile 360 и desktop 1440):
 - [x] Доступ на сервере (`authorize`), в том числе у маршрута версии.
 - [x] Секретов нет; `SMS_PROVIDER=console`; системные пакеты не ставились.
 - [x] Серверы, запущенные для проверок (standalone, PGlite), остановлены.
+
+## 8. Правки по ревью (`docs/phases/Ф6-review.md`, вердикт «нужны правки»)
+
+Цепочка F0 → … → F6 перебазирована на `main` (`49be69a`) через `git rebase --update-refs`. Конфликтов нет.
+
+### П1 — e2e не зависят от порядка тестов
+- **Миры.** `tests/e2e/global-setup.ts` сеет **отдельную копию демо-события на каждую спеку, которая пишет**. У каждой копии свои телефоны составителей (`+7700{n}00000{1|2|3}`), сессии, ссылки входа и ссылки гостей:
+
+  | Мир | Кто пользуется |
+  |---|---|
+  | `base` (демо-телефоны) | `summary` (чтение), `shell`, `screens`, `screens-f6`, `auth` (меняет только сессии и `joined_at`) |
+  | `events` | `events.spec` (Ф3: составители, мастер) |
+  | `guests` | `guests.spec` (Ф4) |
+  | `invite` | `invite.spec`, `invite-small.spec` (все семьи Анасы и Жастар сброшены в «нет ответа») |
+  | `music` | `music.spec` |
+  | `perf` | `guests-perf.spec` (П2) |
+  | `summaryLive` | опрос в `summary.spec`: гость отвечает в своём мире |
+  | `screensF3` / `F4` / `F5` | скриншоты, которые меняют данные |
+
+  Доступ — `world(name)` из `tests/e2e/worlds.ts`. Разные телефоны нужны, чтобы вход по SMS в `auth.spec` всегда вёл в одно событие (при нескольких событиях `/e`).
+- **`scripts/lib/seed-sample.ts`:** параметр `phones`; `dropOwnerEvents` убирает только события своего владельца, поэтому повторный прогон идемпотентен.
+- **Найдена настоящая причина «Жастар второй строкой»:** у трёх составителей сида было **одинаковое `invited_at`**, поэтому порядок «Тізімдер бойынша» и «Басқа тізімдер» в Postgres был произвольным.
+  - Исправлено в сиде: время приглашения различается на минуту.
+  - Исправлено в запросах (`summaryView`, `guestsData`): хозяин первым, затем `invited_at`, затем `id` — так же, как на экране составителей Ф3.
+- **`summary.spec` снова проверяет точные числа сида** на `base`:
+  - kk: «Мейрамханаға: 173 адам → 15 үстел», 53 / 150, 9 / ~23 и «Оның ішінде жіберілмеген: 2», 3, Құдалар 28, три списка по порядку;
+  - ru: «Для ресторана: 173 человека → 15 столов».
+- **`E2E_PRISTINE_SEED` удалён.** Отклонение 6 снято. Скриншоты `F6-screens` прежние: мир `base` даёт те же данные.
+- `screens-f3`: составитель, которого добавляет мастер на скриншотах, получает свободный номер, а не демо-номер Анасы.
+
+**Два полных прогона подряд** (`--workers=1`; mobile + desktop + small; PGlite в памяти, standalone, Chrome):
+```
+$ pnpm exec playwright test --workers=1      # прогон 1
+S1 interactive (CPU ×4): first uncached 1104 ms; warm runs 824, 688, 695, 801, 867 ms; frame «Зал» 363 ms; S1/frame 2.21
+  18 skipped
+  143 passed (7.0m)
+$ pnpm exec playwright test --workers=1      # прогон 2, сразу следом, та же база
+S1 interactive (CPU ×4): first uncached 1121 ms; warm runs 1015, 905, 926, 926, 761 ms; frame «Зал» 459 ms; S1/frame 2.02
+  18 skipped
+  143 passed (7.1m)
+```
+18 пропусков: 5 спек скриншотов без `SCREENSHOTS=1` × проекты; проверки только для одного проекта (perf и музыка) и т. п.
+
+### П2 — тест S1 на своём неизменном событии
+- Мир `perf`: 65 семей сида со смешанными статусами первых недель — на каждые 6 семей по порядку рассадки:
+  - 2 «Жіберілмеген»;
+  - 2 отправлены без ответа;
+  - 2 ответили «Келеді», каждая 12-я семья «Келмейді».
+
+  Итого 22 / 22 / 21. Другие спеки этот мир не трогают.
+- Калибровка по каркасу «Зал» сохранена; в CI проверка строгая.
+- **`--repeat-each=3`:** медианы повторов записываются рядом с результатами теста.
+  - Если тёплая медиана выросла больше чем на 30 % против первого повтора, тест падает («рост», аннотация) и прикладывает CPU-профиль Chrome (`chrome-cpu-profile.cpuprofile`, CDP `Profiler`, снят на тёплых замерах).
+  - В `ci.yml` — отдельный шаг после e2e: `playwright test tests/e2e/guests-perf.spec.ts --project=mobile --repeat-each=3 --workers=1 --retries=0`.
+- Локальная проверка режима повторов:
+```
+$ pnpm exec playwright test tests/e2e/guests-perf.spec.ts --project=mobile --repeat-each=3 --retries=0
+S1 interactive (CPU ×4): first uncached 1386 ms; warm runs 710, 655, 869, 769, 793 ms; frame «Зал» 354 ms; S1/frame 2.17
+S1 interactive (CPU ×4): first uncached 883 ms; warm runs 755, 674, 713, 701, 746 ms; frame «Зал» 321 ms; S1/frame 2.22
+repeat 1: warm median 713 ms, -7 % vs the first
+S1 interactive (CPU ×4): first uncached 831 ms; warm runs 854, 945, 741, 659, 673 ms; frame «Зал» 336 ms; S1/frame 2.20
+repeat 2: warm median 741 ms, -4 % vs the first
+  3 passed (52.6s)
+```
+- В этой сессии машина не перегружена (каркас 0,27–0,46 с). S1 на смешанных статусах — 0,7–0,93 с: в бюджете, но близко к границе. Это совпадает с выводом ревью. Список без гидратации — Л1 в РА.
+
+### Проверки после правок
+```
+$ pnpm check:messages → OK — 778 keys … · check:presets: OK
+$ pnpm typecheck && pnpm lint && pnpm format:check → ✓
+$ pnpm test → Tests 169 passed (169)
+$ pnpm test:integration → Test Files 10 passed | 1 skipped (11) · Tests 104 passed | 2 skipped (106)
+$ pnpm build → ✓
+$ gitleaks protect --staged → no leaks found
+```
+`summary.restaurantNoHall` (коммит контент-лида `8e8352a`) подключается в РА, после перебазирования на него.

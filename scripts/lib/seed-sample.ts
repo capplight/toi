@@ -53,15 +53,23 @@ export type SeededSample = {
  * «Айбек пен Дана» (design_spec 5.2): 3 members, 8 categories, 65 families, hall 4 × 16 × 12,
  * locks on tables 7 and 12, seating = full re-seat 6.1 (golden), history h1–h6.
  */
-export async function seedSample(db: Db, now: Date = new Date()): Promise<SeededSample> {
+export async function seedSample(
+  db: Db,
+  now: Date = new Date(),
+  opts: {
+    /** Member phones; another set gives an independent copy of the event (e2e: one event per writing spec). */
+    phones?: Record<"ake" | "ana" | "jas", string>;
+  } = {},
+): Promise<SeededSample> {
   assertNotProduction();
-  await dropOwnerEvents(db, DEMO_PHONES.ake);
+  const phones = opts.phones ?? DEMO_PHONES;
+  await dropOwnerEvents(db, phones.ake);
 
   return db.transaction(async (tx) => {
-    await tx.insert(allowedOwners).values({ phone: DEMO_PHONES.ake, note: "demo seed" }).onConflictDoNothing();
+    await tx.insert(allowedOwners).values({ phone: phones.ake, note: "demo seed" }).onConflictDoNothing();
     const [owner] = await tx
       .insert(users)
-      .values({ phone: DEMO_PHONES.ake, name: "Серік", locale: "kk" })
+      .values({ phone: phones.ake, name: "Серік", locale: "kk" })
       .onConflictDoUpdate({ target: users.phone, set: { name: "Серік" } })
       .returning({ id: users.id });
 
@@ -105,21 +113,22 @@ export async function seedSample(db: Db, now: Date = new Date()): Promise<Seeded
     const catId = new Map(cats.map((c) => [c.code!, c.id]));
 
     const memberIds = {} as Record<"ake" | "ana" | "jas", string>;
-    for (const m of sampleEvent.members) {
+    for (const [i, m] of sampleEvent.members.entries()) {
       const kind = KIND_BY_MEMBER[m.id];
       const [row] = await tx
         .insert(eventMembers)
         .values({
           eventId,
           userId: m.id === "ake" ? owner!.id : null,
-          phone: DEMO_PHONES[m.id],
+          phone: phones[m.id],
           role: m.id === "ake" ? "owner" : "editor",
           label: m.label,
           displayName: m.name, // «Әкесі · Серік» (design_spec 5.2)
           memberKind: kind,
           ...defaultRights(kind),
           defaultCategoryId: catId.get(m.defaultCategoryId)!,
-          invitedAt: new Date(now.getTime() - 10 * DAY),
+          // distinct times: lists are shown in invitation order (Әкесі, Анасы, Жастар)
+          invitedAt: new Date(now.getTime() - 10 * DAY + i * 60_000),
           joinedAt: m.id === "ake" ? new Date(now.getTime() - 10 * DAY) : null,
         })
         .returning({ id: eventMembers.id });

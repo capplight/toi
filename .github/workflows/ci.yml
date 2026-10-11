@@ -99,6 +99,12 @@ jobs:
           E2E_PORT: "3100"
           GIT_COMMIT: ${{ github.sha }}
 
+      - name: S1 performance — 3 repeats, strict; fails on > 30 % growth of the warm median (Ф6 review П2)
+        run: pnpm exec playwright test tests/e2e/guests-perf.spec.ts --project=mobile --repeat-each=3 --workers=1 --retries=0
+        env:
+          E2E_PORT: "3100"
+          GIT_COMMIT: ${{ github.sha }}
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:

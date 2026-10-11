@@ -1,10 +1,28 @@
 import { randomBytes } from "node:crypto";
-import { writeFileSync, mkdirSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
+import type { World, WorldName } from "./worlds";
 
 /**
- * e2e data: migrate + seed the demo event once per run. Without DATABASE_URL: nothing (DB tests skip
- * locally; in CI they fail — Ф0 review Н5).
+ * e2e data (Ф6 review П1): migrate, then seed one **independent copy of the demo event per writing spec** — a
+ * «world» with its own member phones, sessions and guest links. Specs that only read use `base` (the seed exactly
+ * as in design_spec 5.2), so no spec depends on what another spec changed or on the order of specs.
+ * Without DATABASE_URL: nothing (DB tests skip locally; in CI they fail — Ф0 review Н5).
  */
+
+/** base = the demo phones (auth logs in with them); every other world: +7700{n}00000{1|2|3}. */
+const WORLDS: WorldName[] = [
+  "base",
+  "events",
+  "guests",
+  "invite",
+  "music",
+  "perf",
+  "summaryLive",
+  "screensF3",
+  "screensF4",
+  "screensF5",
+];
+
 export default async function globalSetup() {
   if (!process.env.DATABASE_URL) {
     if (process.env.CI) throw new Error("e2e: DATABASE_URL is required in CI (Ф0 review Н5)");
@@ -18,69 +36,111 @@ export default async function globalSetup() {
   process.env.OTP_HMAC_SECRET ??= secret();
   process.env.CRON_SECRET ??= secret();
   const { migrateUrl } = await import("../../scripts/lib/migrate");
-  const { seedSample } = await import("../../scripts/lib/seed-sample");
+  const { seedSample, DEMO_PHONES } = await import("../../scripts/lib/seed-sample");
   const { db, closeDb } = await import("../../src/server/db");
+  const { issueMemberLink } = await import("../../src/server/auth/loginLinks");
+  const { upsertUser, createSession } = await import("../../src/server/auth/session");
+  const { eventMembers, families, rateLimits, otpChallenges } = await import("../../src/server/schema");
+  const { and, asc, eq, inArray, ne } = await import("drizzle-orm");
   await migrateUrl(process.env.DATABASE_URL);
   // Fresh limits for each run (a test database; repeated local runs would hit the 60 s per-number limit).
-  const { rateLimits, otpChallenges } = await import("../../src/server/schema");
   await db().delete(rateLimits);
   await db().delete(otpChallenges);
-  const s = await seedSample(db());
-  // One member login link per project (links are one-time): Анасы for mobile, Жастар for desktop.
-  const { issueMemberLink } = await import("../../src/server/auth/loginLinks");
-  const now = new Date();
-  // Ready sessions for UI-shell checks (owner Әкесі; Жастар without the budget right).
-  const { upsertUser, createSession } = await import("../../src/server/auth/session");
-  const { eventMembers } = await import("../../src/server/schema");
-  const { eq } = await import("drizzle-orm");
-  const { DEMO_PHONES } = await import("../../scripts/lib/seed-sample");
-  const sessions: Record<string, string> = {};
-  for (const who of ["ake", "jas", "akeSwitch_mobile", "akeSwitch_desktop"] as const) {
-    // akeSwitch_*: other devices of the owner for the Ф3 `#switch` test (those sessions are replaced there).
-    const phone = DEMO_PHONES[who.startsWith("akeSwitch") ? "ake" : (who as "ake" | "jas")];
-    const u = await upsertUser(db(), { phone, locale: "kk", now: new Date(), updateLocale: false });
-    await db().update(eventMembers).set({ userId: u.id }).where(eq(eventMembers.phone, phone));
-    sessions[who] = (
-      await createSession(db(), { userId: u.id, method: "sms", scope: "all", userAgent: null, now: new Date() })
-    ).token;
-  }
-  const memberLinks = {
-    mobile: new URL((await issueMemberLink(db(), { memberId: s.memberIds.ana, createdBy: null, now })).url).pathname,
-    desktop: new URL((await issueMemberLink(db(), { memberId: s.memberIds.jas, createdBy: null, now })).url).pathname,
-  };
-  // Ф5: guest links of families from Анасы's and Жастар's lists (Ф4 tests use the owner's list); each test takes
-  // its own so projects do not collide.
-  const { families } = await import("../../src/server/schema");
-  const { and, asc, inArray, ne } = await import("drizzle-orm");
-  const guests = (
-    await db()
-      .select({ token: families.token, name: families.name })
+
+  const worlds = {} as Record<WorldName, World>;
+  for (const [i, name] of WORLDS.entries()) {
+    const phones =
+      name === "base" ? DEMO_PHONES : { ake: `+7700${i}000001`, ana: `+7700${i}000002`, jas: `+7700${i}000003` };
+    const s = await seedSample(db(), new Date(), { phones });
+    const now = new Date();
+    // Ready sessions (owner Әкесі; Жастар without the budget right; akeSwitch_*: other devices of the owner for the
+    // Ф3 `#switch` test — those sessions are replaced there).
+    const sessions = {} as World["sessions"];
+    for (const who of ["ake", "jas", "akeSwitch_mobile", "akeSwitch_desktop"] as const) {
+      const phone = phones[who.startsWith("akeSwitch") ? "ake" : (who as "ake" | "jas")];
+      const u = await upsertUser(db(), { phone, locale: "kk", now, updateLocale: false });
+      await db()
+        .update(eventMembers)
+        .set({ userId: u.id })
+        .where(and(eq(eventMembers.eventId, s.eventId), eq(eventMembers.phone, phone)));
+      sessions[who] = (
+        await createSession(db(), { userId: u.id, method: "sms", scope: "all", userAgent: null, now })
+      ).token;
+    }
+    // One member login link per project (links are one-time): Анасы for mobile, Жастар for desktop.
+    const memberLinks = {
+      mobile: new URL((await issueMemberLink(db(), { memberId: s.memberIds.ana, createdBy: null, now })).url).pathname,
+      desktop: new URL((await issueMemberLink(db(), { memberId: s.memberIds.jas, createdBy: null, now })).url).pathname,
+    };
+    // Guest links of families from Анасы's and Жастар's lists, in seating order.
+    const others = await db()
+      .select({ token: families.token, name: families.name, rsvp: families.rsvp, sentAt: families.sentAt })
       .from(families)
       .where(and(eq(families.eventId, s.eventId), ne(families.addedByMemberId, s.memberIds.ake)))
-      .orderBy(asc(families.seatSeq))
-  )
-    // Ф4 e2e relies on these two (duplicate by name / by phone): never used as Ф5 guests.
-    .filter((g) => !/Ерлан|Күләш/.test(g.name))
-    .map((g) => ({ token: g.token, name: g.name }));
-  // …all of them not answered yet, so every test starts from the envelope. E2E_PRISTINE_SEED=1 keeps the seed as in
-  // design_spec 5.2 (Ф6 screenshots of «Қорытынды» with the reference numbers; the guest-page specs then can't run).
-  if (!process.env.E2E_PRISTINE_SEED)
-    await db()
-      .update(families)
-      .set({ rsvp: "pending", confirmedCount: null, respondedAt: null, answeredBy: null, firstOpenedAt: null })
-      .where(
-        and(
-          eq(families.eventId, s.eventId),
-          inArray(
-            families.token,
-            guests.map((g) => g.token),
+      .orderBy(asc(families.seatSeq));
+    let guests = others.map((g) => ({ token: g.token, name: g.name }));
+    if (name === "invite") {
+      // Ф5: every family of the pool has not answered yet, so each test starts from the envelope.
+      await db()
+        .update(families)
+        .set({ rsvp: "pending", confirmedCount: null, respondedAt: null, answeredBy: null, firstOpenedAt: null })
+        .where(
+          and(
+            eq(families.eventId, s.eventId),
+            inArray(
+              families.token,
+              guests.map((g) => g.token),
+            ),
           ),
-        ),
-      );
+        );
+    }
+    if (name === "summaryLive") {
+      // sent and not answered yet: the guest answers in the test
+      guests = others.filter((g) => g.rsvp === "pending" && g.sentAt).map((g) => ({ token: g.token, name: g.name }));
+    }
+    if (name === "perf") await realisticStatuses(s.eventId);
+    worlds[name] = { eventId: s.eventId, sessions, memberLinks, guests };
+  }
   await closeDb();
   mkdirSync("playwright/.cache", { recursive: true });
-  writeFileSync(
-    "playwright/.cache/e2e-seed.json",
-    JSON.stringify({ eventId: s.eventId, memberLinks, sessions, guests }),
-  );
+  writeFileSync("playwright/.cache/e2e-seed.json", JSON.stringify(worlds));
+
+  /**
+   * Ф6 review П2: the S1 perf event — the 65 families with the mix of the first weeks before a toi (the heavy state
+   * for S1: «Жіберілмеген» and «Жауап жоқ» cards carry more controls). Fixed by seating order: per 6 families —
+   * 2 not sent, 2 sent without an answer, 2 answered «Келеді» (every 12th family «Келмейді» instead).
+   */
+  async function realisticStatuses(eventId: string) {
+    const rows = await db()
+      .select({ id: families.id, expected: families.expectedCount })
+      .from(families)
+      .where(eq(families.eventId, eventId))
+      .orderBy(asc(families.seatSeq));
+    const sent = new Date(Date.now() - 3 * 86_400_000);
+    const answered = new Date(Date.now() - 86_400_000);
+    for (const [i, f] of rows.entries()) {
+      const k = i % 6;
+      const set =
+        k < 2
+          ? { rsvp: "pending" as const, sentAt: null, respondedAt: null, confirmedCount: null, answeredBy: null }
+          : k < 4
+            ? { rsvp: "pending" as const, sentAt: sent, respondedAt: null, confirmedCount: null, answeredBy: null }
+            : i % 12 === 5
+              ? {
+                  rsvp: "no" as const,
+                  sentAt: sent,
+                  respondedAt: answered,
+                  confirmedCount: null,
+                  answeredBy: "guest" as const,
+                }
+              : {
+                  rsvp: "yes" as const,
+                  sentAt: sent,
+                  respondedAt: answered,
+                  confirmedCount: f.expected,
+                  answeredBy: "guest" as const,
+                };
+      await db().update(families).set(set).where(eq(families.id, f.id));
+    }
+  }
 }

@@ -1,20 +1,16 @@
-import { mkdirSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { mkdirSync } from "node:fs";
 import { type Browser, test } from "@playwright/test";
+import { world } from "./worlds";
 
 /**
  * Ф6 handover screenshots (DESIGN 8.19): «Қорытынды» for the owner and «Жастар», kk and ru, 360 and 1440,
  * 130 % at 360, 320 px. Not visual regression.
- * Run: SCREENSHOTS=1 E2E_PRISTINE_SEED=1 pnpm test:e2e tests/e2e/screens-f6.spec.ts --project=desktop --workers=1 → docs/phases/F6-screens/
+ * Run: SCREENSHOTS=1 pnpm test:e2e tests/e2e/screens-f6.spec.ts --project=desktop --workers=1 → docs/phases/F6-screens/
  */
 test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to write handover screenshots");
 
 const OUT = "docs/phases/F6-screens";
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    eventId: string;
-    sessions: Record<"ake" | "jas", string>;
-  };
+const seed = () => world("base");
 
 async function open(
   browser: Browser,

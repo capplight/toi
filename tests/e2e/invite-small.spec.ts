@@ -1,13 +1,11 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { expect, type Page, test } from "@playwright/test";
+import { world } from "./worlds";
 
 /** Ф5 review, ruling 3: the guest page on the smallest phone (project `small`, 320×640) — no horizontal scroll, targets ≥ 48 px. */
 const kk = JSON.parse(readFileSync(resolve(process.cwd(), "content/messages/kk.json"), "utf8"));
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    guests: { token: string; name: string }[];
-  };
+const seed = () => world("invite");
 
 async function noScroll(page: Page, where: string) {
   const { sw, iw } = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: innerWidth }));

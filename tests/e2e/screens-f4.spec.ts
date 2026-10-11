@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { type Page, test } from "@playwright/test";
+import { world } from "./worlds";
 
 /**
  * Ф4 handover screenshots (brief §4): S1, S2 (all states), S3, S4, S5, «Жіберілді ме?», kk/ru, 360/1440, 130 %.
@@ -11,11 +12,7 @@ test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to write handover screens
 
 const OUT = "docs/phases/F4-screens";
 const msgs = (l: "kk" | "ru") => JSON.parse(readFileSync(resolve(process.cwd(), `content/messages/${l}.json`), "utf8"));
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    eventId: string;
-    sessions: Record<string, string>;
-  };
+const seed = () => world("screensF4");
 const SIZES = [
   { name: "360", width: 360, height: 740 },
   { name: "1440", width: 1440, height: 900 },

@@ -1,4 +1,4 @@
-import { and, asc, eq, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
 import { formatPhone } from "@/domain/guests/phone";
 import { plannedSeats } from "@/domain/guests/status";
 import type { Locale } from "@/i18n/config";
@@ -126,7 +126,7 @@ export async function guestsData(
       .select()
       .from(eventMembers)
       .where(and(eq(eventMembers.eventId, m.eventId), isNull(eventMembers.removedAt)))
-      .orderBy(asc(eventMembers.invitedAt)),
+      .orderBy(desc(sql`${eventMembers.role} = 'owner'`), asc(eventMembers.invitedAt), asc(eventMembers.id)),
     db.select().from(categories).where(eq(categories.eventId, m.eventId)).orderBy(asc(categories.seatingRank)),
     db
       .select()

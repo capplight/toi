@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { expect, type Page, test } from "@playwright/test";
+import { world } from "./worlds";
 
 /**
  * Ф5 guest page `/i/{token}` (brief §3.5): envelope → «Ашу» → invitation → answer → «Рақмет»; answer without JS;
@@ -10,12 +11,7 @@ import { expect, type Page, test } from "@playwright/test";
  */
 const kk = JSON.parse(readFileSync(resolve(process.cwd(), "content/messages/kk.json"), "utf8"));
 const ru = JSON.parse(readFileSync(resolve(process.cwd(), "content/messages/ru.json"), "utf8"));
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    eventId: string;
-    sessions: Record<string, string>;
-    guests: { token: string; name: string }[];
-  };
+const seed = () => world("invite");
 const needDb = () =>
   test.skip(
     !process.env.DATABASE_URL && !process.env.CI,

@@ -1,6 +1,5 @@
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { test } from "@playwright/test";
+import { world } from "./worlds";
 
 /**
  * Handover screenshots (Ф1 brief §5), not visual regression (fonts render differently on Windows and Linux CI).
@@ -9,11 +8,7 @@ import { test } from "@playwright/test";
 test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to write handover screenshots");
 
 const OUT = "docs/phases/F1-screens";
-const seed = () =>
-  JSON.parse(readFileSync(resolve(process.cwd(), "playwright/.cache/e2e-seed.json"), "utf8")) as {
-    eventId: string;
-    sessions: Record<string, string>;
-  };
+const seed = () => world("base");
 const SIZES = [
   { name: "360", width: 360, height: 740 },
   { name: "1440", width: 1440, height: 900 },
