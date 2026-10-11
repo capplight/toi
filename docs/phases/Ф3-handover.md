@@ -253,4 +253,4 @@ S1 interactive (CPU ×4): first uncached 1128 ms; warm runs 613, 644, 713, 724, 
 $ gitleaks protect --staged
 INF no leaks found
 ```
-Скриншоты Ф3 не пересняты: на них нет текстов с образцами. Готовые тексты в шаге 4 теперь без имён — на `W4-text_*` видны старые тексты, это единственное отличие.
+Скриншоты `docs/phases/F3-screens/` пересняты (`SCREENSHOTS=1 … screens-f3.spec.ts`, 2 passed): в шаге 4 (`W4-text_*`) теперь готовые тексты без имён.
