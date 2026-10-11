@@ -15,7 +15,7 @@ import { StatusBadge } from "@/ui/components/Display";
 import { Icon } from "@/ui/components/Icon";
 import { AlertDialog, Dialog } from "@/ui/components/Sheet";
 import { showToast } from "@/ui/components/Toast";
-import { KoshkarMuiz } from "@/ui/ornaments/generated";
+import { KoshkarMuiz, Mark } from "@/ui/ornaments/generated";
 import { afterSheetClosed, SendAsk, startSend, useWaLinks } from "../send-flow";
 import { CategorySheet } from "./CategorySheet";
 
@@ -327,6 +327,13 @@ export function GuestForm({
         <div className="tip">
           <h3>{t("aside.howTitle")}</h3>
           <p>{t("aside.howBody")}</p>
+          {/* Ф5 (Ф4 review, deviation 4): the envelope the guest receives, with the name as typed */}
+          <div className="mini-env" aria-hidden="true">
+            <span className="seal">
+              <Mark />
+            </span>
+            <span className="to">{name.trim() || t("name.placeholder").replace(/^[^:]*:s*/, "")}</span>
+          </div>
         </div>
         <div className="tip">
           <h3>{t("aside.categoryTitle")}</h3>

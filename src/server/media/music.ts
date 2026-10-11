@@ -140,7 +140,8 @@ export async function finalizeUpload(db: Db, who: Principal, assetId: string): P
   try {
     const { data, seconds } = await transcodeMusic(await storage().read(a.storageKey));
     const hash = createHash("sha256").update(data).digest("hex").slice(0, 32);
-    const key = `${o.prefix}/${hash}.mp3`;
+    // content hash + asset id: the same song uploaded twice still gets two rows (storage_key is unique)
+    const key = `${o.prefix}/${hash}-${assetId.slice(0, 8)}.mp3`;
     await storage().write(key, data, "audio/mpeg");
     await storage().remove(a.storageKey);
     await db

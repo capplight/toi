@@ -48,7 +48,29 @@ export default async function globalSetup() {
     mobile: new URL((await issueMemberLink(db(), { memberId: s.memberIds.ana, createdBy: null, now })).url).pathname,
     desktop: new URL((await issueMemberLink(db(), { memberId: s.memberIds.jas, createdBy: null, now })).url).pathname,
   };
+  // Ф5: guest links of families from Анасы's and Жастар's lists (Ф4 tests use the owner's list); each test takes
+  // its own so projects do not collide.
+  const { families } = await import("../../src/server/schema");
+  const { and, asc, inArray, ne } = await import("drizzle-orm");
+  const guests = (
+    await db()
+      .select({ token: families.token, name: families.name })
+      .from(families)
+      .where(and(eq(families.eventId, s.eventId), ne(families.addedByMemberId, s.memberIds.ake)))
+      .orderBy(asc(families.seatSeq))
+  )
+    // Ф4 e2e relies on these two (duplicate by name / by phone): never used as Ф5 guests.
+    .filter((g) => !/Ерлан|Күләш/.test(g.name))
+    .map((g) => ({ token: g.token, name: g.name }));
+  // …all of them not answered yet, so every test starts from the envelope.
+  await db()
+    .update(families)
+    .set({ rsvp: "pending", confirmedCount: null, respondedAt: null, answeredBy: null, firstOpenedAt: null })
+    .where(and(eq(families.eventId, s.eventId), inArray(families.token, guests.map((g) => g.token))));
   await closeDb();
   mkdirSync("playwright/.cache", { recursive: true });
-  writeFileSync("playwright/.cache/e2e-seed.json", JSON.stringify({ eventId: s.eventId, memberLinks, sessions }));
+  writeFileSync(
+    "playwright/.cache/e2e-seed.json",
+    JSON.stringify({ eventId: s.eventId, memberLinks, sessions, guests }),
+  );
 }

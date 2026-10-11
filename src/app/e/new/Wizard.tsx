@@ -95,6 +95,7 @@ export function Wizard({ musicUpload = true }: { musicUpload?: boolean }) {
   const [hallDraft, setHallDraft] = useState<HallValue>({ columns: 4, tables: 16, seatsPerTable: 12 });
   const [busy, start] = useTransition();
   const [music, setMusic] = useState<MusicValue>(null);
+  const [musicBusy, setMusicBusy] = useState(false);
   const locale = useLocale();
   const [fullPreview, setFullPreview] = useState(false);
   const top = useRef<HTMLDivElement>(null);
@@ -165,6 +166,7 @@ export function Wizard({ musicUpload = true }: { musicUpload?: boolean }) {
   };
 
   const next = () => {
+    if (step === "music" && musicBusy) return; // the file is still uploading / processing
     // «Той ашу» re-checks the text (А6): back to the text step if a [ ] sample is left.
     if (step === "review" && !check("text")) return go("text");
     if (!check(step)) return;
@@ -538,6 +540,7 @@ export function Wizard({ musicUpload = true }: { musicUpload?: boolean }) {
                     <MusicUpload
                       value={music}
                       onChange={setMusic}
+                      onBusyChange={setMusicBusy}
                       actions={{
                         createUpload: async (x) => {
                           const r = await createMusicUploadAction({ eventId: null, ...x });
@@ -648,7 +651,7 @@ export function Wizard({ musicUpload = true }: { musicUpload?: boolean }) {
                     {ta("back")}
                   </Button>
                 )}
-                <Button onClick={next} loading={busy} data-testid="wizard-next">
+                <Button onClick={next} loading={busy || (step === "music" && musicBusy)} data-testid="wizard-next">
                   {step === "review" ? t("review.submit") : ta("continue")}
                 </Button>
                 {step === "kind" && (

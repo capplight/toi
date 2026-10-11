@@ -48,7 +48,7 @@ const ICON = {
 };
 
 /** Extra rules the mockups did not need (error line, closed card, lang links as buttons, no-music). */
-const EXTRA_CSS = `.rsvp .err{margin:.75rem 0 0;color:#B42318;font-weight:600}.inv .lang-pill a{display:inline-grid;place-items:center;min-width:3rem;height:3rem;padding:0 .5rem;border-radius:62.4375rem;text-decoration:none;font:400 1rem/1 var(--font-ui);letter-spacing:.04em;color:var(--ink-2)}.inv .lang-pill a[aria-current="true"]{background:var(--accent);color:var(--on-accent)}.rsvp .closed{margin:0}.preview .inv-bar,.preview .scene{display:none}.preview .invite{opacity:1}.noru{font-size:1rem;color:var(--ink-2)}`;
+const EXTRA_CSS = `.rsvp .err{margin:.75rem 0 0;color:#B42318;font-weight:600}.inv .lang-pill a{display:inline-grid;place-items:center;min-width:3rem;height:3rem;padding:0 .5rem;border-radius:62.4375rem;text-decoration:none;font:400 1rem/1 var(--font-ui);letter-spacing:.04em;color:var(--ink-2)}.inv .lang-pill a[aria-current="true"]{background:var(--accent);color:var(--on-accent)}.rsvp .closed{margin:0}.preview .inv-bar,.preview .scene{display:none}.preview .invite{opacity:1}.noru{font-size:1rem;color:var(--ink-2)}.is-opening .side-decor{--b:1800ms}.is-opening .side-decor .draw path{animation:draw 1600ms var(--ease-draw) calc(var(--b,0ms) + var(--dd,0ms)) forwards}.is-opening .side-decor .draw .ray{animation-duration:700ms}@media (prefers-reduced-motion: reduce){.opened .reveal{animation:none!important;opacity:1!important}}`;
 
 function corners(c: string, ks: string[]): SafeHtml {
   return raw(ks.map((k) => c.replace("{{k}}", k)).join(""));

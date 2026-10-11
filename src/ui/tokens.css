@@ -206,3 +206,13 @@
   --s1: #9b2a3a;
   --s2: #5e1621;
 }
+
+/* Mini envelope «Шақыру қалай барады?» on S2 (Ф5, mockup 02 / screens.css) */
+.mini-env {
+  --menv-bg: linear-gradient(160deg, #fbf6ec, #efe4cf);
+  --menv-flap: #f5ecdb;
+  --menv-line: rgb(180 138 62 / 0.35);
+  --menv-seal: radial-gradient(circle at 35% 30%, #d9b46c, #a87a2c 70%);
+  --menv-seal-ink: #fff6e2;
+  --menv-shadow: 0 0.625rem 1.5rem -14px rgb(23 32 44 / 0.45);
+}

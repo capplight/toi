@@ -35,7 +35,10 @@ export function MusicUpload({
   value,
   onChange,
   actions,
+  onBusyChange,
 }: {
+  /** True while a file is uploading or processing (the wizard waits with «Жалғастыру»). */
+  onBusyChange?: (busy: boolean) => void;
   value: MusicValue;
   onChange: (v: MusicValue) => void;
   actions: MusicActions;
@@ -48,6 +51,9 @@ export function MusicUpload({
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [playing, setPlaying] = useState(false);
+  useEffect(() => {
+    onBusyChange?.(stage === "up" || stage === "proc");
+  }, [stage, onBusyChange]);
 
   useEffect(() => {
     const a = audio.current;
