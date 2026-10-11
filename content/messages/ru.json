@@ -635,6 +635,7 @@
     "restaurant": "Для ресторана: {people, plural, one {# человек} few {# человека} many {# человек} other {# человека}} → {tables, plural, one {# стол} few {# стола} many {# столов} other {# стола}}",
     "restaurantA11y": "Для ресторана: {people, plural, one {# человек} few {# человека} many {# человек} other {# человека}}, {tables, plural, one {# стол} few {# стола} many {# столов} other {# стола}}",
     "restaurantHint": "Сюда входят и места тех, кто ещё не ответил. Столы считаем только те, где есть гости.",
+    "restaurantNoHall": "Для ресторана: {people, plural, one {# человек} few {# человека} many {# человек} other {# человека}} · зал ещё не настроен",
     "tiles": {
       "yes": "Придут · {families, plural, one {# семья} few {# семьи} many {# семей} other {# семьи}} · {seats, plural, one {# место} few {# места} many {# мест} other {# места}}",
       "pending": "Нет ответа · {families, plural, one {# семья} few {# семьи} many {# семей} other {# семьи}} · ~{seats, plural, one {# место} few {# места} many {# мест} other {# места}}",
@@ -753,6 +754,10 @@
     "privacy": {
       "title": "Политика конфиденциальности",
       "link": "Конфиденциальность"
+    },
+    "terms": {
+      "title": "Условия использования",
+      "link": "Условия"
     }
   },
   "hall": {

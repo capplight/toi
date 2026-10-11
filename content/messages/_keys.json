@@ -635,6 +635,7 @@
     "restaurant": "",
     "restaurantA11y": "",
     "restaurantHint": "",
+    "restaurantNoHall": "",
     "tiles": {
       "yes": "",
       "pending": "",
@@ -751,6 +752,10 @@
     "ownerTerms": "",
     "guestDataNote": "",
     "privacy": {
+      "title": "",
+      "link": ""
+    },
+    "terms": {
       "title": "",
       "link": ""
     }

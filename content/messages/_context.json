@@ -4429,6 +4429,16 @@
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "Родители будут звонить ресторану с этим числом — пояснить, что в него входят ожидаемые места"
   },
+  "summary.restaurantNoHall": {
+    "release": "A",
+    "context": "главное число «Қорытынды», пока зал не настроен (ревью Ф6, откл. 1) (добавлено 2026-10-12)",
+    "audience": "С",
+    "maxLength": "44",
+    "variables": "{people, plural}",
+    "currentKk": "Мейрамханаға: {people} адам · зал әлі бапталмаған",
+    "currentRu": "Для ресторана: {people, plural, one {# человек} few {# человека} many {# человек} other {# человека}} · зал ещё не настроен",
+    "issues": "Начало как у summary.restaurant («Для ресторана:»), а не «Ресторану:». Рядом — ссылка «Залды баптау» (hall.setup.title)"
+  },
   "summary.tiles.yes": {
     "release": "A",
     "context": "(D2 8.19)",
@@ -5227,7 +5237,7 @@
     "variables": "—",
     "currentKk": "[НЕТ ТЕКСТА]",
     "currentRu": "[НЕТ ТЕКСТА]",
-    "issues": "ЮРИСТ"
+    "issues": "Текст страницы — content/legal/privacy.{kk,ru}.md (черновик для юриста)"
   },
   "legal.privacy.link": {
     "release": "A (пилот — минимум), коммерция — обязательно",
@@ -5237,6 +5247,26 @@
     "variables": "—",
     "currentKk": "[НЕТ ТЕКСТА]",
     "currentRu": "[НЕТ ТЕКСТА]",
+    "issues": "—"
+  },
+  "legal.terms.title": {
+    "release": "A (пилот — минимум), коммерция — обязательно",
+    "context": "заголовок страницы /terms и подпись ссылки в legal.ownerTerms (RA Л5) (добавлено 2026-10-12)",
+    "audience": "В",
+    "maxLength": "30",
+    "variables": "—",
+    "currentKk": "Пайдалану шарттары",
+    "currentRu": "Условия использования",
+    "issues": "Текст страницы — content/legal/terms.{kk,ru}.md"
+  },
+  "legal.terms.link": {
+    "release": "A (пилот — минимум), коммерция — обязательно",
+    "context": "короткая ссылка в подвале (добавлено 2026-10-12)",
+    "audience": "В",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Шарттар",
+    "currentRu": "Условия",
     "issues": "—"
   },
   "hall.setup.title": {
