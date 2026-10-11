@@ -8,6 +8,8 @@ import { ForbiddenError, UnauthorizedError } from "../auth/access";
 import { requireUser } from "../authz";
 import { db } from "../db";
 import * as svc from "../events/service";
+import { attachDraftMusic, createUploadUrl, removeMusic } from "../media/music";
+import { renderPreview, type PreviewDraft } from "../invite/preview";
 
 /**
  * Server Actions of Ф3 (plan 6.2): session → zod → service (authz inside) → revalidate.
@@ -56,14 +58,18 @@ const hallInput = z.object({
 export async function createEventAction(input: {
   event: z.input<typeof eventInput>;
   hall?: z.input<typeof hallInput> | null;
+  musicAssetId?: string | null;
 }) {
-  const p = z.object({ event: eventInput, hall: hallInput.nullable().optional() }).safeParse(input);
+  const p = z
+    .object({ event: eventInput, hall: hallInput.nullable().optional(), musicAssetId: uuid.nullable().optional() })
+    .safeParse(input);
   if (!p.success) return invalid;
   return guarded(async (user) => {
     if (p.data.hall && !svc.validateHallInput(p.data.hall)) return { ok: false as const, field: "hall" as const };
     const r = await svc.createEvent(db(), user, p.data.event, { locale: await locale() });
     if (!r.ok) return r;
     if (p.data.hall) await svc.setupHall(db(), user, { eventId: r.eventId, hall: p.data.hall });
+    if (p.data.musicAssetId) await attachDraftMusic(db(), user, r.eventId, p.data.musicAssetId);
     revalidatePath("/e");
     return { ok: true as const, eventId: r.eventId };
   });
@@ -183,4 +189,44 @@ export async function rotateDoorTokenAction(input: { eventId: string }) {
     revalidatePath(`/e/${p.data.eventId}`, "layout");
     return { ok: true as const };
   });
+}
+
+const uploadInput = z.object({ eventId: uuid.nullable(), mime: str(40), bytes: z.number().int() });
+
+/** Music (Ф5): where the browser PUTs the file; then `POST /api/media/finalize` processes it. */
+export async function createMusicUploadAction(input: z.input<typeof uploadInput>) {
+  const p = uploadInput.safeParse(input);
+  if (!p.success) return invalid;
+  return guarded(async (user) => createUploadUrl(db(), user, p.data));
+}
+
+export async function removeMusicAction(input: { eventId: string }) {
+  const p = z.object({ eventId: uuid }).safeParse(input);
+  if (!p.success) return invalid;
+  return guarded(async (user) => {
+    const r = await removeMusic(db(), user, p.data.eventId);
+    revalidatePath(`/e/${p.data.eventId}`, "layout");
+    return r;
+  });
+}
+
+const previewInput = z.object({
+  kind: z.enum(svc.EVENT_KINDS),
+  title: str(200),
+  hostsLine: str(200).nullable().optional(),
+  startsOn: z.string().max(10),
+  startsAt: z.string().max(5).nullable().optional(),
+  venueName: str(200).nullable().optional(),
+  venueAddress: str(300).nullable().optional(),
+  textKk: str(2000).nullable().optional(),
+  textRu: str(2000).nullable().optional(),
+  templateId: z.enum(svc.TEMPLATE_IDS),
+  locale: z.enum(["kk", "ru"]),
+});
+
+/** Real preview of the invitation (Ф5 §3.4): HTML of the same template by draft data, for `<iframe srcdoc sandbox>`. */
+export async function previewInviteAction(input: PreviewDraft) {
+  const p = previewInput.safeParse(input);
+  if (!p.success) return invalid;
+  return guarded(async () => ({ ok: true as const, html: renderPreview(p.data) }));
 }

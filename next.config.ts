@@ -6,6 +6,13 @@ import { withSentryConfig } from "@sentry/nextjs/config";
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
+  // ffmpeg-static resolves its binary next to its own file — keep it out of the bundle.
+  serverExternalPackages: ["ffmpeg-static"],
+  // Ф5: files read at runtime must be traced into the standalone output / Vercel functions.
+  outputFileTracingIncludes: {
+    "/i/[token]/opengraph-image": ["./src/server/invite/fonts/*"],
+    "/api/media/finalize": ["./node_modules/ffmpeg-static/**"],
+  },
   turbopack: {
     rules: {
       "*.css": {

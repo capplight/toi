@@ -3418,6 +3418,134 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
+
+  /* =================== Ф5 music upload and preview (mockup 10 #music…, flows.css) =================== */
+  .drop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem 1rem;
+    border: 2px dashed var(--line-strong);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    text-align: center;
+  }
+  .drop.err {
+    border-color: var(--danger);
+  }
+  .drop > .ico {
+    width: 2rem;
+    height: 2rem;
+    color: var(--lapis);
+  }
+  .player {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0.875rem;
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    box-shadow: var(--sh-card);
+  }
+  .player .play {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 0;
+    background: var(--lapis);
+    color: var(--paper);
+    display: grid;
+    place-items: center;
+    flex: none;
+  }
+  .player .play.idle {
+    background: var(--sand);
+    color: var(--ink-2);
+  }
+  .player .meta {
+    flex: 1;
+    min-width: 0;
+  }
+  .player .meta b {
+    display: block;
+    font: 600 1rem/1.375rem var(--font-ui);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .player .meta .ok {
+    font: 400 0.9375rem/1.25rem var(--font-ui);
+    color: var(--success-ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .player .meta .muted {
+    font: 400 0.9375rem/1.25rem var(--font-ui);
+    color: var(--ink-2);
+  }
+  .up-progress {
+    height: 0.5rem;
+    border-radius: 0.25rem;
+    background: var(--sand);
+    overflow: hidden;
+    margin-top: 0.375rem;
+  }
+  .up-progress i {
+    display: block;
+    height: 100%;
+    background: var(--lapis);
+  }
+  .msg-proc {
+    display: flex;
+    gap: 0.625rem;
+    align-items: center;
+    margin-top: 0.25rem;
+    font: 400 1rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+  }
+  .spin {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    border: 3px solid var(--sand);
+    border-top-color: var(--lapis);
+    animation: spinx 0.9s linear infinite;
+    flex: none;
+  }
+  @keyframes spinx {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .phone-frame iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    border: 0;
+    border-radius: 1.5rem;
+    background: var(--paper);
+  }
+  .preview-full {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+  }
+  .preview-full iframe {
+    flex: 1;
+    width: 100%;
+    border: 0;
+    background: var(--paper);
+  }
+  .preview-full .bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.5rem;
+  }
 }
 
 @keyframes flash {

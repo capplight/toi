@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { hasPlaceholder, type PresetKind, presets } from "@/domain/invitations/presets";
-import { createEventAction } from "@/server/actions/events";
+import { createEventAction, createMusicUploadAction, previewInviteAction } from "@/server/actions/events";
+import { MusicUpload, type MusicValue } from "@/ui/components/MusicUpload";
+import { InvitePreview } from "./InvitePreview";
 import { Button } from "@/ui/components/Button";
 import { Field } from "@/ui/components/Controls";
 import { Icon } from "@/ui/components/Icon";
@@ -14,7 +16,7 @@ import { AlertDialog } from "@/ui/components/Sheet";
 import { showToast, Toaster } from "@/ui/components/Toast";
 import { HallPreview, HallSetupForm, type HallValue } from "@/ui/hall/HallSetupForm";
 import { afterSheetClosed } from "@/ui/lib/history";
-import { KoshkarMuiz, Shanyraq } from "@/ui/ornaments/generated";
+import { KoshkarMuiz } from "@/ui/ornaments/generated";
 
 const KINDS = ["uilenu_toi", "kyz_uzatu", "sundet", "besik", "merey", "other"] as const;
 const KIND_KEY = {
@@ -75,7 +77,7 @@ const initial: State = {
  * the end is one `createEventAction` (+ the hall, if set). «←» on the first step / leaving asks
  * `wizard.leave.*`. Music upload is Ф5 (hidden behind `MUSIC_UPLOAD`), the live preview is simplified.
  */
-export function Wizard({ musicUpload = false }: { musicUpload?: boolean }) {
+export function Wizard({ musicUpload = true }: { musicUpload?: boolean }) {
   const t = useTranslations("wizard");
   const tk = useTranslations("events.kind");
   const th = useTranslations("hall.setup");
@@ -92,6 +94,9 @@ export function Wizard({ musicUpload = false }: { musicUpload?: boolean }) {
   const [leave, setLeave] = useState(false);
   const [hallDraft, setHallDraft] = useState<HallValue>({ columns: 4, tables: 16, seatsPerTable: 12 });
   const [busy, start] = useTransition();
+  const [music, setMusic] = useState<MusicValue>(null);
+  const locale = useLocale();
+  const [fullPreview, setFullPreview] = useState(false);
   const top = useRef<HTMLDivElement>(null);
   const idx = STEPS.indexOf(step);
   const set = <K extends keyof State>(k: K, v: State[K]) => setS((x) => ({ ...x, [k]: v }));
@@ -188,6 +193,7 @@ export function Wizard({ musicUpload = false }: { musicUpload?: boolean }) {
             templateId: s.templateId,
           },
           hall: s.hall,
+          musicAssetId: music?.assetId ?? null,
         });
         if (r.ok) {
           setDone(r.eventId);
@@ -214,6 +220,19 @@ export function Wizard({ musicUpload = false }: { musicUpload?: boolean }) {
     });
 
   const kindLabel = tk(KIND_KEY[s.kind]);
+  const draft = {
+    kind: s.kind,
+    title: s.title,
+    hostsLine: s.hostsLine || null,
+    startsOn: s.startsOn,
+    startsAt: s.startsAt || null,
+    venueName: s.venueName || null,
+    venueAddress: s.venueAddress || null,
+    textKk: s.textKk || null,
+    textRu: s.textRu || null,
+    templateId: s.templateId,
+    locale: (locale === "ru" ? "ru" : "kk") as "kk" | "ru",
+  };
   const stepTitle: Record<Step, string> = {
     kind: t("kind.title"),
     who: t("who.title"),
@@ -506,9 +525,38 @@ export function Wizard({ musicUpload = false }: { musicUpload?: boolean }) {
               </div>
             )}
 
+            {step === "template" && (
+              <Button variant="secondary" icon="eye" width="auto" className="mt-4" onClick={() => setFullPreview(true)}>
+                {t("template.preview")}
+              </Button>
+            )}
+
             {step === "music" && (
               <>
-                {musicUpload ? null : <p className="note">{t("music.hint", { maxMb: 20 })}</p>}
+                {musicUpload ? (
+                  <div className="sec">
+                    <MusicUpload
+                      value={music}
+                      onChange={setMusic}
+                      actions={{
+                        createUpload: async (x) => {
+                          const r = await createMusicUploadAction({ eventId: null, ...x });
+                          return r.ok ? r : { ok: false, error: "error" in r ? r.error : "failed" };
+                        },
+                        finalize: async (assetId) => {
+                          const res = await fetch("/api/media/finalize", {
+                            method: "POST",
+                            headers: { "content-type": "application/json" },
+                            body: JSON.stringify({ assetId }),
+                          });
+                          return (await res.json()) as { ok: true; url: string } | { ok: false; error: string };
+                        },
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <p className="note">{t("music.hint", { maxMb: 20 })}</p>
+                )}
                 <p className="note">{t("music.rights")}</p>
                 <Button variant="text" width="auto" className="mt-2" onClick={() => go("hall")}>
                   {t("music.later")}
@@ -620,28 +668,23 @@ export function Wizard({ musicUpload = false }: { musicUpload?: boolean }) {
           {step === "hall" ? (
             <HallPreview value={hallDraft} eventKind={kindLabel} eventTitle={s.title} />
           ) : (
-            <div className={`phone-frame tpl-${s.templateId}`}>
-              <div className="scr">
-                <div className="k">{kindLabel}</div>
-                <div className="arch">
-                  <Shanyraq />
-                </div>
-                <div className="nm">{s.title || t("who.namesPlaceholder").replace(/^.*?:\s*/, "")}</div>
-                <div className="sm">
-                  {dateLine}
-                  {s.venueName && (
-                    <>
-                      <br />
-                      {s.venueName}
-                    </>
-                  )}
-                </div>
-              </div>
+            <div className="phone-frame">
+              <InvitePreview draft={draft} load={previewInviteAction} title={t("template.preview")} />
             </div>
           )}
         </aside>
       </div>
 
+      {fullPreview && (
+        <div className="preview-full" role="dialog" aria-modal="true" aria-label={t("template.preview")}>
+          <div className="bar">
+            <Button variant="secondary" icon="x" width="auto" onClick={() => setFullPreview(false)}>
+              {ta("close")}
+            </Button>
+          </div>
+          <InvitePreview draft={draft} load={previewInviteAction} title={t("template.preview")} />
+        </div>
+      )}
       <AlertDialog
         open={leave}
         onOpenChange={(o) => {

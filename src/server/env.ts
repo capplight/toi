@@ -47,6 +47,9 @@ const schema = z.object({
   MOBIZON_API_KEY: optionalStr,
   MOBIZON_API_DOMAIN: z.preprocess(empty, z.string().default("api.mobizon.kz")),
 
+  /** Ф5: file storage driver — local folder (dev, tests, Docker without S3) or S3-compatible (R2 / KZ). */
+  STORAGE_DRIVER: z.preprocess(empty, z.enum(["local", "s3"]).default("local")),
+  LOCAL_STORAGE_DIR: z.preprocess(empty, z.string().default(".data/uploads")),
   S3_ENDPOINT: optionalStr,
   S3_REGION: z.preprocess(empty, z.string().default("auto")),
   S3_BUCKET: optionalStr,
@@ -102,6 +105,12 @@ export function parseEnv(source: Record<string, string | undefined>): Env {
     throw new EnvError(issues);
   }
   const raw = result.data;
+  if (
+    raw.STORAGE_DRIVER === "s3" &&
+    !(raw.S3_ENDPOINT && raw.S3_BUCKET && raw.S3_ACCESS_KEY_ID && raw.S3_SECRET_ACCESS_KEY)
+  ) {
+    throw new EnvError(["STORAGE_DRIVER=s3 needs S3_ENDPOINT, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY"]);
+  }
   if (production) {
     // ConsoleProvider writes the SMS text (with the code) to the log — never in production (Н3).
     if (raw.SMS_PROVIDER === "console") {

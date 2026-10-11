@@ -3,6 +3,7 @@
  * Demo numbers +7700000000X — local and preview only.
  */
 import { eq } from "drizzle-orm";
+import { presets } from "@/domain/invitations/presets";
 import { fullReseat, type SeatingState } from "@/domain/seating";
 import { buildDiff } from "@/domain/seating/undo";
 import { messagesByLocale } from "@/i18n/messages";
@@ -76,6 +77,13 @@ export async function seedSample(db: Db, now: Date = new Date()): Promise<Seeded
         startsAt: sampleEvent.time,
         tz: sampleEvent.timeZone,
         venueName: sampleEvent.venue,
+        venueAddress: "Атырау қ., Абай даңғылы, 15",
+        mapUrl: "https://2gis.kz/atyrau",
+        hostsLine: "Серік — Гүлжан",
+        templateId: "ak-shanyrak",
+        // Ф5: a ready text from content/invitation-presets.json (А6: no names inside).
+        invitationTextKk: presets("uilenu_toi", "kk")[0]!.text,
+        invitationTextRu: presets("uilenu_toi", "ru")[0]!.text,
         hallColumns: hall.columns,
         tablesCount: hall.tables,
         seatsPerTable: hall.seatsPerTable,

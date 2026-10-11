@@ -38,3 +38,4 @@ design/v2/covers/source/
 
 # local PGlite data (pnpm db:local)
 .pglite/
+.data/
