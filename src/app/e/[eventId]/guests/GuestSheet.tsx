@@ -112,7 +112,7 @@ function SheetBody({
         void revertAnswerAction({ historyId })
           .then((u) => {
             // П2: the answer changed meanwhile (e.g. the guest answered by the link) — nothing was undone.
-            if (!u.ok) showToast({ message: te("reason" in u ? "conflict" : "unknown") });
+            if (!u.ok) showToast({ message: "reason" in u ? t("answer.undoChanged") : te("unknown") });
           })
           .catch(() => showToast({ message: te("network") }));
       });

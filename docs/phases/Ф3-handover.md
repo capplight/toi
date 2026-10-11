@@ -205,3 +205,52 @@ e2e Ф3 (`events.spec.ts`, ×2 проекта):
 - [x] Тексты интерфейса — только `content/messages` (772 ключа); готовые тексты приглашений — данные (бриф).
 - [x] Доступность: axe без serious/critical, 130 %, фокус на безопасных кнопках, «Назад» в мастере и шторках.
 - [x] Серверы, запущенные для проверок, остановлены.
+
+---
+
+## 12. Правки по ревью (`docs/phases/Ф3-review.md`, вердикт «нужны правки»)
+
+Цепочка F0 → F7a → F2 → F1 → F4 → F3 перебазирована на `main` с коммитом контент-лида `51ddd7e` (`content/invitation-presets.json`, 778 ключей). Конфликтов нет.
+
+### П1 — готовые тексты без имён (А6)
+- `src/domain/invitations/presets.ts` больше не хранит тексты: он читает `content/invitation-presets.json` (форма `{ version, kk: { <kind>: [{ id, text }] }, ru: … }`, CONTENT_REVIEW §8). Тексты — обычный текст; подсветка образцов (`presetParts` / `presetPlain`) удалена.
+- **Проверка** `scripts/check-presets.ts` встроена в `pnpm check:messages`, поэтому идёт и в CI. Она требует оба языка, все шесть типов тоя минимум с одним текстом, уникальные `id`, ни одного `[ ] { } < >` и длину ≤ 600. Unit-тесты: файл контента проходит; ловятся образец, переменная, разметка, пропущенный тип и повтор `id`.
+- **Блок.** `hasPlaceholder` — любая квадратная скобка.
+  - Мастер:
+    - на шаге «Шақыру мәтіні» «Жалғастыру» не проходит: поле kk или ru открывается для правки, под ним ошибка `wizard.text.placeholderLeft`;
+    - на шаге «Тексеру» «Той ашу» возвращает на шаг текста с той же ошибкой.
+  - Сервер: `createEvent` и `updateEvent` (`validateEvent`) отвечают `{ field: "textKk" | "textRu", error: "placeholderLeft" }` и ничего не сохраняют.
+  - Тесты: integration (`createEvent` с `[…]` → ничего не создано; `updateEvent` → текст не изменился) и e2e (готовые тексты без скобок; вписанный образец не даёт пройти дальше, исправленный текст проходит).
+- Отклонение 5 снято.
+
+### П2 — ключи контент-лида
+- Степперы зала: `hall.setup.tables.decrease/increase`, `hall.setup.seats.decrease/increase` вместо склейки «{заголовок} −/+». Отклонение 7 снято.
+- Ф4: отказ «Қайтару» ответа — тост `guestSheet.answer.undoChanged` («Жауап өзгеріп кетті») вместо `errors.conflict`.
+
+### Н1
+- Неиспользуемые действия Ф2 `issueLoginLinkAction` и `revokeMemberSessionsAction` удалены: экран составителей использует `newMemberLinkAction` и `signOutMemberAction`.
+
+### Проверки — реальный вывод
+```
+$ pnpm check:messages
+check:messages: OK — 778 keys, kk/ru: ICU, variables, tags, select/other, ru plural forms
+check:presets: OK — 16 texts, 6 kinds × kk/ru, no samples, variables or markup
+$ pnpm typecheck && pnpm lint && pnpm format:check
+✓ Types generated successfully · eslint --max-warnings=0 (0) · All matched files use Prettier code style!
+$ pnpm test
+      Tests  161 passed (161)
+$ pnpm test:integration                    (PGlite)
+ Test Files  8 passed | 1 skipped (9)
+      Tests  88 passed | 2 skipped (90)
+$ E2E_CHANNEL=chrome DATABASE_URL=…PGlite… pnpm test:e2e tests/e2e/events.spec.ts --workers=1
+  18 passed (1.6m)                         (+2: блок образца [ ] на 360 и 1440)
+$ … pnpm test:e2e --workers=1              (весь набор)
+  1 failed · 13 skipped · 120 passed (8.9m)
+  failed: guests-perf (S1 interactive warm 2940–5103 ms) — прогон шёл параллельно с vitest на той же машине
+$ … pnpm test:e2e tests/e2e/guests-perf.spec.ts --project=mobile   (отдельно, без нагрузки)
+S1 interactive (CPU ×4): first uncached 1128 ms; warm runs 613, 644, 713, 724, 853 ms
+  1 passed
+$ gitleaks protect --staged
+INF no leaks found
+```
+Скриншоты Ф3 не пересняты: на них нет текстов с образцами. Готовые тексты в шаге 4 теперь без имён — на `W4-text_*` видны старые тексты, это единственное отличие.

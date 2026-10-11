@@ -18,7 +18,7 @@
     "test": "vitest run --project unit",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "check:messages": "tsx scripts/check-messages.ts",
+    "check:messages": "tsx scripts/check-messages.ts && tsx scripts/check-presets.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",

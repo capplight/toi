@@ -5,19 +5,9 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { isLocale, LOCALE_COOKIE } from "@/i18n/config";
 import { db } from "../db";
-import { consumeLink, inspectLink, issueMemberLink, LinkLimitError } from "../auth/loginLinks";
+import { consumeLink, inspectLink } from "../auth/loginLinks";
 import { otpDeliveryStatus, requestOtp, verifyOtp, type RequestOtpResult, type VerifyOtpResult } from "../auth/otp";
-import {
-  revokeMemberEventAccess,
-  revokeSessionByToken,
-  SESSION_COOKIE,
-  sessionCookieOptions,
-  validateSession,
-} from "../auth/session";
-import { authorize, ForbiddenError } from "../auth/access";
-import { requireUser } from "../authz";
-import { eventMembers } from "../schema";
-import { eq } from "drizzle-orm";
+import { revokeSessionByToken, SESSION_COOKIE, sessionCookieOptions, validateSession } from "../auth/session";
 
 async function requestContext() {
   const h = await headers();
@@ -111,43 +101,4 @@ export async function logoutAction(): Promise<void> {
   if (token) await revokeSessionByToken(db(), token, new Date());
   store.delete(SESSION_COOKIE);
   redirect("/login");
-}
-
-/** Owner: new login link for a member (plan 6.1 `issueLoginLink`). */
-export async function issueLoginLinkAction(
-  memberId: string,
-): Promise<
-  { ok: true; url: string; waUrl: string; expiresAt: string } | { ok: false; error: "forbidden" | "rateLimited" }
-> {
-  const id = z.string().uuid().parse(memberId);
-  const user = await requireUser();
-  const [m] = await db().select({ eventId: eventMembers.eventId }).from(eventMembers).where(eq(eventMembers.id, id));
-  try {
-    if (!m) throw new ForbiddenError();
-    await authorize(db(), user, m.eventId, "owner");
-    const link = await issueMemberLink(db(), { memberId: id, createdBy: user.userId, now: new Date() });
-    return { ok: true, url: link.url, waUrl: link.waUrl, expiresAt: link.expiresAt.toISOString() };
-  } catch (err) {
-    if (err instanceof ForbiddenError) return { ok: false, error: "forbidden" };
-    if (err instanceof LinkLimitError) return { ok: false, error: "rateLimited" };
-    throw err;
-  }
-}
-
-/**
- * Owner: «Шығару» (plan 6.1 `revokeMemberSessions`, v1.5): removes only access to THIS event —
- * the person's 'all' (SMS) sessions are never touched by another event's owner.
- */
-export async function revokeMemberSessionsAction(memberId: string): Promise<{ ok: boolean; revoked: number }> {
-  const id = z.string().uuid().parse(memberId);
-  const user = await requireUser();
-  const [m] = await db()
-    .select({ eventId: eventMembers.eventId, userId: eventMembers.userId })
-    .from(eventMembers)
-    .where(eq(eventMembers.id, id));
-  if (!m) return { ok: false, revoked: 0 };
-  await authorize(db(), user, m.eventId, "owner");
-  if (!m.userId) return { ok: true, revoked: 0 };
-  const r = await revokeMemberEventAccess(db(), { userId: m.userId, eventId: m.eventId, now: new Date() });
-  return { ok: true, revoked: r.revoked };
 }

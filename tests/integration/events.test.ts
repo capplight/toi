@@ -104,6 +104,33 @@ describe("createEvent (plan 6.2)", () => {
     });
     expect(await db().select().from(events)).toHaveLength(0);
   });
+
+  it("А6: a [ ] sample left in the invitation text → placeholderLeft in createEvent and updateEvent", async () => {
+    const a = await owner();
+    expect(
+      await svc.createEvent(
+        db(),
+        a.who,
+        event({ invitationTextKk: "Сіздерді ұлымыз [Айбек] пен келініміз [Дана]ның тойына" }),
+      ),
+    ).toEqual({ ok: false, field: "textKk", error: "placeholderLeft" });
+    expect(await db().select().from(events)).toHaveLength(0);
+    const r = await svc.createEvent(db(), a.who, event());
+    if (!r.ok) throw new Error("create");
+    expect(
+      await svc.updateEvent(db(), a.who, {
+        eventId: r.eventId,
+        version: 0,
+        patch: event({ invitationTextRu: "Приглашаем на свадьбу [имя]" }),
+      }),
+    ).toEqual({ ok: false, field: "textRu", error: "placeholderLeft" });
+    const [ev] = await db().select().from(events).where(eq(events.id, r.eventId));
+    expect(ev!.invitationTextRu).toBeNull();
+    expect(await svc.updateEvent(db(), a.who, { eventId: r.eventId, version: 0, patch: event() })).toEqual({
+      ok: true,
+      version: 1,
+    });
+  });
 });
 
 describe("setupHall through the adapter", () => {

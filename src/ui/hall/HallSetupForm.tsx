@@ -71,8 +71,8 @@ export function HallSetupForm({
               ? t("tables.min", { min: HALL_LIMITS.tables.min })
               : t("tables.max", { max: HALL_LIMITS.tables.max })
           }
-          decreaseLabel={`${t("tables.title")} −`}
-          increaseLabel={`${t("tables.title")} +`}
+          decreaseLabel={t("tables.decrease")}
+          increaseLabel={t("tables.increase")}
         />
       </div>
       <div className="sec">
@@ -89,8 +89,8 @@ export function HallSetupForm({
               ? t("seats.min", { min: HALL_LIMITS.seats.min })
               : t("seats.max", { max: HALL_LIMITS.seats.max })
           }
-          decreaseLabel={`${t("seats.title")} −`}
-          increaseLabel={`${t("seats.title")} +`}
+          decreaseLabel={t("seats.decrease")}
+          increaseLabel={t("seats.increase")}
         />
       </div>
       <div className="total-card" role="status">

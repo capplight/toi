@@ -253,3 +253,31 @@ test.describe("Ф3 wizard: system «Back»", () => {
     await expect(page).toHaveURL(/\/e$/);
   });
 });
+
+test.describe("Ф3 review П1 (А6)", () => {
+  test.beforeEach(async ({ context, baseURL }) => {
+    needDb();
+    await asOwner(context, baseURL!);
+  });
+
+  test("a [ ] sample left in the text blocks «Жалғастыру» on the text step", async ({ page }) => {
+    await page.goto("/e/new");
+    await next(page);
+    await page.getByLabel(kk.wizard.who.namesLabel.match(/uilenu_toi \{([^}]+)\}/)![1]).fill("Айбек пен Дана");
+    await page.getByLabel(kk.wizard.who.dateLabel).fill("2026-12-20");
+    await next(page);
+    await next(page);
+    await expect(page.getByTestId("wizard-step-text")).toBeVisible();
+    // ready texts carry no names (А6)
+    for (const t of await page.locator(".preset .ptxt").allTextContents()) expect(t).not.toMatch(/[[\]]/);
+    await page.locator(".preset").first().getByRole("button", { name: kk.wizard.text.edit }).click();
+    const area = page.getByLabel(kk.wizard.text.kkLabel, { exact: true });
+    await area.fill("Сіздерді ұлымыз [Айбек] пен келініміздің тойына шақырамыз.");
+    await next(page);
+    await expect(page.getByText(kk.wizard.text.placeholderLeft)).toBeVisible();
+    await expect(page.getByTestId("wizard-step-text")).toBeVisible();
+    await area.fill("Сіздерді ұлымыз бен келініміздің тойына шақырамыз.");
+    await next(page);
+    await expect(page.getByTestId("wizard-step-template")).toBeVisible();
+  });
+});

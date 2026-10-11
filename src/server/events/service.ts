@@ -1,5 +1,6 @@
 import { and, desc, eq, gt, inArray, isNull, or, sql } from "drizzle-orm";
 import { isKzMobile, maskPhone, normalizePhone } from "@/domain/guests/phone";
+import { hasPlaceholder } from "@/domain/invitations/presets";
 import { setupHall as engineSetupHall } from "@/domain/seating";
 import type { Locale } from "@/i18n/config";
 import { messagesByLocale } from "@/i18n/messages";
@@ -57,7 +58,9 @@ const TEXT_MAX = 600;
 const trimOrNull = (s: string | null | undefined) => (s?.trim() ? s.trim() : null);
 
 /** Validation shared by `createEvent` and `updateEvent`. */
-export function validateEvent(input: EventInput): { ok: true; value: EventInput } | { ok: false; field: EventField } {
+export type EventInvalid = { ok: false; field: EventField; error?: "placeholderLeft" };
+
+export function validateEvent(input: EventInput): { ok: true; value: EventInput } | EventInvalid {
   const title = input.title.trim();
   if (!title || title.length > 120) return { ok: false, field: "title" };
   const hostsLine = trimOrNull(input.hostsLine);
@@ -75,8 +78,11 @@ export function validateEvent(input: EventInput): { ok: true; value: EventInput 
   if (mapUrl && (!/^https:\/\/\S+$/.test(mapUrl) || mapUrl.length > 500)) return { ok: false, field: "mapUrl" };
   const kk = trimOrNull(input.invitationTextKk);
   if (kk && kk.length > TEXT_MAX) return { ok: false, field: "textKk" };
+  // А6: a sample in [ ] left in the invitation text is never saved (it goes to every guest).
+  if (hasPlaceholder(kk)) return { ok: false, field: "textKk", error: "placeholderLeft" };
   const ru = trimOrNull(input.invitationTextRu);
   if (ru && ru.length > TEXT_MAX) return { ok: false, field: "textRu" };
+  if (hasPlaceholder(ru)) return { ok: false, field: "textRu", error: "placeholderLeft" };
   return {
     ok: true,
     value: {
@@ -106,7 +112,7 @@ export async function canCreateEvents(db: Db, who: Principal): Promise<"ok" | "n
   return u?.allowed ? "ok" : "notAllowed";
 }
 
-export type CreateEventResult = { ok: true; eventId: string } | { ok: false; field: EventField };
+export type CreateEventResult = { ok: true; eventId: string } | EventInvalid;
 
 /**
  * `createEvent` (plan 6.2): one transaction — the event, `door_token`, the owner in `event_members`

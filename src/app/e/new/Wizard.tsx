@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState, useTransition } from "react";
-import { type PresetKind, presetParts, presetPlain, presets } from "@/domain/invitations/presets";
+import { hasPlaceholder, type PresetKind, presets } from "@/domain/invitations/presets";
 import { createEventAction } from "@/server/actions/events";
 import { Button } from "@/ui/components/Button";
 import { Field } from "@/ui/components/Controls";
@@ -150,12 +150,18 @@ export function Wizard({ musicUpload = false }: { musicUpload?: boolean }) {
     if (st === "text") {
       if (s.textKk.length > TEXT_MAX) e.textKk = t("text.tooLong", { max: TEXT_MAX });
       if (s.textRu.length > TEXT_MAX) e.textRu = t("text.tooLong", { max: TEXT_MAX });
+      // А6: a sample in [ ] cannot go to the guests — the text opens for editing with the error next to it.
+      if (hasPlaceholder(s.textKk)) e.textKk = t("text.placeholderLeft");
+      if (hasPlaceholder(s.textRu)) e.textRu = t("text.placeholderLeft");
+      if (e.textKk || e.textRu) setEditing((x) => ({ kk: x.kk || Boolean(e.textKk), ru: x.ru || Boolean(e.textRu) }));
     }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
   const next = () => {
+    // «Той ашу» re-checks the text (А6): back to the text step if a [ ] sample is left.
+    if (step === "review" && !check("text")) return go("text");
     if (!check(step)) return;
     if (step === "hall") set("hall", hallDraft);
     if (step === "review") return submit();
@@ -271,11 +277,7 @@ export function Wizard({ musicUpload = false }: { musicUpload?: boolean }) {
               }
             }}
           >
-            <div className="ptxt">
-              {presetParts(p.text).map((part, i) =>
-                part.mark ? <mark key={i}>{part.text}</mark> : <span key={i}>{part.text}</span>,
-              )}
-            </div>
+            <div className="ptxt">{p.text}</div>
             <div className="pfoot">
               <span className="chk">
                 <Icon name="check" size="sm" />
@@ -298,8 +300,8 @@ export function Wizard({ musicUpload = false }: { musicUpload?: boolean }) {
     );
   };
   function choose(lang: "kk" | "ru", id: string, text: string) {
-    if (lang === "kk") setS((x) => ({ ...x, presetKk: id, textKk: presetPlain(text) }));
-    else setS((x) => ({ ...x, presetRu: id, textRu: presetPlain(text) }));
+    if (lang === "kk") setS((x) => ({ ...x, presetKk: id, textKk: text }));
+    else setS((x) => ({ ...x, presetRu: id, textRu: text }));
   }
 
   const textArea = (lang: "kk" | "ru") => {
