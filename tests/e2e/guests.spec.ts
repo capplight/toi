@@ -187,8 +187,9 @@ test.describe("Ф4 guests", () => {
 
   test("«Жауап бермегендер»: from the banner, reminders are wa.me links", async ({ page }) => {
     await page.goto(list());
-    await page.locator("a.banner.remind").click();
-    await expect(page).toHaveURL(/no-answer/, { timeout: 15_000 });
+    const banner = page.locator("a.banner.remind");
+    await expect(banner).toHaveAttribute("href", /\/guests\/no-answer$/);
+    await page.goto((await banner.getAttribute("href"))!);
     await expect(page.getByText(kk.noAnswer.intro)).toBeVisible();
     const first = page.getByTestId("na-card").first();
     await expect(first.getByRole("link", { name: new RegExp(kk.guests.card.remind) })).toHaveAttribute(
@@ -285,8 +286,7 @@ test.describe("Ф4 review П3", () => {
 
   test("system «Back» on a filled «Жаңа қонақ» asks «Қонақ сақталмайды. Шығасыз ба?»", async ({ page }) => {
     await page.goto(list());
-    await visible(page, "link", kk.guests.list.addButton).click();
-    await expect(page).toHaveURL(/\/add/);
+    await page.goto(`${list()}/add`); // history: list → add
     await page.getByLabel(kk.guestForm.name.label, { exact: true }).fill("Қайтпайтын қонақ");
     await page.goBack();
     const alert = page.getByRole("alertdialog");

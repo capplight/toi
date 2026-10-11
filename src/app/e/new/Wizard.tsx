@@ -104,6 +104,36 @@ export function Wizard({ musicUpload = false }: { musicUpload?: boolean }) {
     return () => window.removeEventListener("beforeunload", onUnload);
   }, [dirty]);
 
+  // System «Back» (Android gesture, as Ф4 review П3): the wizard holds its own history entry. «Back» goes to the
+  // previous step; on the first step with input it asks `wizard.leave.*`; a sheet closing by «Back» is ignored.
+  const stepRef = useRef(0);
+  const dirtyRef = useRef(false);
+  const closingConfirm = useRef(false);
+  const leaving = useRef(false);
+  useEffect(() => {
+    stepRef.current = idx;
+    dirtyRef.current = dirty;
+  }, [idx, dirty]);
+  useEffect(() => {
+    if (done) return;
+    const push = () => window.history.pushState({ ...(window.history.state ?? {}), toiWizard: true }, "");
+    if (!window.history.state?.toiWizard) push();
+    const onPop = () => {
+      if (leaving.current || closingConfirm.current || window.history.state?.toiWizard) return;
+      if (stepRef.current > 0) {
+        push();
+        setStep(STEPS[stepRef.current - 1]!);
+        window.scrollTo({ top: 0 });
+      } else if (dirtyRef.current) setLeave(true);
+      else {
+        leaving.current = true;
+        window.history.back();
+      }
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [done]);
+
   const go = (to: Step) => {
     setStep(to);
     window.scrollTo({ top: 0 });
@@ -612,12 +642,24 @@ export function Wizard({ musicUpload = false }: { musicUpload?: boolean }) {
 
       <AlertDialog
         open={leave}
-        onOpenChange={setLeave}
+        onOpenChange={(o) => {
+          setLeave(o);
+          // «Жоқ, жалғастыру» after the system «Back»: the wizard entry goes back (the dialog closes with its own step).
+          if (!o && !leaving.current && !window.history.state?.toiWizard) {
+            closingConfirm.current = true;
+            afterSheetClosed(() => {
+              closingConfirm.current = false;
+              if (!window.history.state?.toiWizard)
+                window.history.pushState({ ...(window.history.state ?? {}), toiWizard: true }, "");
+            });
+          }
+        }}
         title={t("leave.title")}
         description=""
         confirmLabel={t("leave.yes")}
         cancelLabel={t("leave.no")}
         onConfirm={() => {
+          leaving.current = true;
           setS(initial);
           afterSheetClosed(() => router.push("/e"));
         }}

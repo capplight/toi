@@ -54,9 +54,9 @@ test.describe("login by link (plan 6.1 flow 1/4)", () => {
     await expect(page.getByRole("heading", { name: kk.auth.join.greeting })).toBeVisible();
 
     await page.getByRole("button", { name: kk.auth.join.submit }).click();
-    await expect(page).toHaveURL(/\/e$/);
-    await expect(page.getByTestId("events-page")).toBeVisible();
-    await expect(page.getByText(kk.auth.noEvents.title)).toBeVisible();
+    // Ф3: an owner (founder's link) without events goes straight to the wizard «Жаңа той».
+    await expect(page).toHaveURL(/\/e\/new$/);
+    await expect(page.getByTestId("wizard-step-kind")).toBeVisible();
 
     // The same link again → «Сілтеме жарамсыз»
     await page.goto(path);

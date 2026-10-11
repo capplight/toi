@@ -138,6 +138,7 @@ async function addMember(page: Page, context: BrowserContext, eventId: string, w
   await sheet.getByRole("radio", { name: who }).click();
   await sheet.getByTestId("add-member-submit").click();
   await expect.poll(() => waUrl).toMatch(/^https:\/\/wa\.me\/7\d{10}\?text=/);
+  await page.waitForURL(/wa\.me/); // location.assign has finished before the test navigates on
   const text = decodeURIComponent(waUrl.split("?text=")[1]!);
   const link = text.match(/https?:\/\/\S+\/join\/[0-9A-Za-z]{22}/)![0];
   return { num, path: new URL(link).pathname, waUrl };
@@ -224,5 +225,31 @@ test.describe("Ф3 members", () => {
     await expect(
       page.getByTestId("member-card").filter({ hasText: `+7 ${m.num.slice(0, 3)} *** ** ${m.num.slice(-2)}` }),
     ).toHaveCount(0);
+  });
+});
+
+test.describe("Ф3 wizard: system «Back»", () => {
+  test.beforeEach(async ({ context, baseURL }) => {
+    needDb();
+    await asOwner(context, baseURL!);
+  });
+
+  test("«Back» goes to the previous step; on the first step with input it asks before leaving", async ({ page }) => {
+    await page.goto("/e");
+    await page.getByTestId("create-event").click();
+    await expect(page.getByTestId("wizard-step-kind")).toBeVisible();
+    await page.getByRole("radio", { name: kk.events.kind.merey }).click();
+    await next(page);
+    await expect(page.getByTestId("wizard-step-who")).toBeVisible();
+    await page.goBack();
+    await expect(page.getByTestId("wizard-step-kind")).toBeVisible();
+    await page.goBack();
+    const alert = page.getByRole("alertdialog");
+    await expect(alert.getByRole("heading")).toHaveText(kk.wizard.leave.title);
+    await alert.getByRole("button", { name: kk.wizard.leave.no }).click();
+    await expect(page.getByTestId("wizard-step-kind")).toBeVisible();
+    await page.goBack();
+    await page.getByRole("alertdialog").getByRole("button", { name: kk.wizard.leave.yes }).click();
+    await expect(page).toHaveURL(/\/e$/);
   });
 });
