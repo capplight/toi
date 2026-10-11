@@ -277,7 +277,8 @@
       "kkLabel": "",
       "ruLabel": "",
       "ruMissing": "",
-      "tooLong": ""
+      "tooLong": "",
+      "placeholderLeft": ""
     },
     "template": {
       "title": "",
@@ -592,7 +593,8 @@
       "seatsLabel": "",
       "save": "",
       "toastYes": "",
-      "toastNo": ""
+      "toastNo": "",
+      "undoChanged": ""
     },
     "actions": {
       "send": "",
@@ -764,12 +766,16 @@
       "tables": {
         "title": "",
         "min": "",
-        "max": ""
+        "max": "",
+        "decrease": "",
+        "increase": ""
       },
       "seats": {
         "title": "",
         "min": "",
-        "max": ""
+        "max": "",
+        "decrease": "",
+        "increase": ""
       },
       "summary": {
         "total": "",

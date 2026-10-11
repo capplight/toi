@@ -1969,6 +1969,16 @@
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "—"
   },
+  "wizard.text.placeholderLeft": {
+    "release": "A",
+    "context": "ошибка у поля текста приглашения и на шаге «Тексеру»: в тексте остался фрагмент в [ ] (решение А6 / ревью Ф3, добавлено 2026-10-11)",
+    "audience": "Х",
+    "maxLength": "120",
+    "variables": "—",
+    "currentKk": "Мәтінде [ ] ішіндегі үлгі қалып қойды. Оны өз сөзіңізбен ауыстырыңыз.",
+    "currentRu": "В тексте остался образец в скобках [ ]. Замените его своими словами.",
+    "issues": "Страховка: готовые тексты без образцов, но хозяин мог вставить старый текст или написать скобки сам. Сервер: ошибка placeholderLeft"
+  },
   "wizard.template.title": {
     "release": "A",
     "context": "шаг 5 (D2 8.15)",
@@ -4159,6 +4169,16 @@
     "currentRu": "{name}: не придут",
     "issues": "—"
   },
+  "guestSheet.answer.undoChanged": {
+    "release": "A",
+    "context": "тост Ф4: «Қайтару» ответа отказан, ответ уже изменился (гость ответил сам или другой составитель) (решение А6 / ревью Ф3, добавлено 2026-10-11)",
+    "audience": "С",
+    "maxLength": "32",
+    "variables": "—",
+    "currentKk": "Жауап өзгеріп кетті",
+    "currentRu": "Ответ уже изменился",
+    "issues": "Без «Қайтару» в тосте"
+  },
   "guestSheet.actions.send": {
     "release": "A",
     "context": "«Жіберілмеді» (DS 4.7)",
@@ -5289,6 +5309,26 @@
     "currentRu": "Максимум {max} столов",
     "issues": "—"
   },
+  "hall.setup.tables.decrease": {
+    "release": "B",
+    "context": "aria «−» степпера «Үстел саны» (решение А6 / ревью Ф3, добавлено 2026-10-11)",
+    "audience": "С",
+    "maxLength": "—",
+    "variables": "—",
+    "currentKk": "Үстелді азайту",
+    "currentRu": "Убрать один стол",
+    "issues": "Как guestForm.seats.decrease"
+  },
+  "hall.setup.tables.increase": {
+    "release": "B",
+    "context": "aria «+» степпера «Үстел саны» (решение А6 / ревью Ф3, добавлено 2026-10-11)",
+    "audience": "С",
+    "maxLength": "—",
+    "variables": "—",
+    "currentKk": "Үстелді көбейту",
+    "currentRu": "Добавить один стол",
+    "issues": "—"
+  },
   "hall.setup.seats.title": {
     "release": "B",
     "context": "(DS 4.10)",
@@ -5317,6 +5357,26 @@
     "variables": "{max, plural}",
     "currentKk": "Ең көбі {max} орын",
     "currentRu": "Максимум {max} мест",
+    "issues": "—"
+  },
+  "hall.setup.seats.decrease": {
+    "release": "B",
+    "context": "aria «−» степпера «Бір үстелде неше орын?» (решение А6 / ревью Ф3, добавлено 2026-10-11)",
+    "audience": "С",
+    "maxLength": "—",
+    "variables": "—",
+    "currentKk": "Орынды азайту",
+    "currentRu": "Убрать одно место за столом",
+    "issues": "—"
+  },
+  "hall.setup.seats.increase": {
+    "release": "B",
+    "context": "aria «+» степпера «Бір үстелде неше орын?» (решение А6 / ревью Ф3, добавлено 2026-10-11)",
+    "audience": "С",
+    "maxLength": "—",
+    "variables": "—",
+    "currentKk": "Орынды көбейту",
+    "currentRu": "Добавить одно место за столом",
     "issues": "—"
   },
   "hall.setup.summary.total": {
