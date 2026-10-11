@@ -1,4 +1,4 @@
-import { localStorage } from "@/server/storage";
+import { localStorage, storage } from "@/server/storage";
 
 /** Local storage driver: file reads with `Range` (audio seeking on iOS) and immutable cache (content-hashed keys). */
 export const runtime = "nodejs";
@@ -14,6 +14,7 @@ const TYPES: Record<string, string> = {
 };
 
 export async function GET(req: Request, ctx: { params: Promise<{ key: string[] }> }) {
+  if (storage().driver !== "local") return new Response(null, { status: 404 }); // Ф5 review П1
   const key = (await ctx.params).key.join("/");
   let data: Buffer;
   try {

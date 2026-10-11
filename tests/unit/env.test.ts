@@ -69,4 +69,20 @@ describe("env", () => {
     const e = parseEnv({ ...base, APP_URL: "", VERCEL_URL: "toi-git-x.vercel.app" });
     expect(e.APP_URL).toBe("https://toi-git-x.vercel.app");
   });
+
+  it("Ф5 review П1: local file storage is refused on Vercel and in production; s3 needs the full config", () => {
+    const s3 = {
+      S3_ENDPOINT: "https://r2.example",
+      S3_BUCKET: "toi",
+      S3_ACCESS_KEY_ID: "id",
+      S3_SECRET_ACCESS_KEY: "key",
+    };
+    expect(parseEnv(base).STORAGE_DRIVER).toBe("local");
+    expect(() => parseEnv({ ...base, VERCEL: "1" })).toThrow(/STORAGE_DRIVER: must be s3/);
+    expect(() => parseEnv({ ...base, APP_ENV: "production" })).toThrow(/STORAGE_DRIVER: must be s3/);
+    expect(() => parseEnv({ ...base, VERCEL: "1", STORAGE_DRIVER: "s3" })).toThrow(/S3_ENDPOINT/);
+    const ok = parseEnv({ ...base, VERCEL: "1", STORAGE_DRIVER: "s3", ...s3 });
+    expect(ok.STORAGE_DRIVER).toBe("s3");
+    expect(ok.s3?.bucket).toBe("toi");
+  });
 });

@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   try {
     const user = await requireUser();
     const r = await finalizeUpload(db(), user, p.data.assetId);
-    return Response.json(r, { status: r.ok ? 200 : 422 });
+    return Response.json(r, { status: r.ok ? 200 : r.error === "rateLimited" ? 429 : 422 });
   } catch (e) {
     if (e instanceof ForbiddenError || e instanceof UnauthorizedError)
       return Response.json({ ok: false, error: "forbidden" }, { status: 403 });

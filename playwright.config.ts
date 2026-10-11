@@ -24,13 +24,18 @@ export default defineConfig({
   projects: [
     {
       name: "mobile",
+      testIgnore: /invite-small\.spec\.ts/,
       use: { ...devices["Desktop Chrome"], viewport: { width: 360, height: 740 }, isMobile: true, hasTouch: true },
     },
-    { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } },
-    // Ф1: smallest supported phone, UI checks only.
+    {
+      name: "desktop",
+      testIgnore: /invite-small\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } },
+    },
+    // Ф1: smallest supported phone, UI checks only; Ф5 review: guest page at 320 px.
     {
       name: "small",
-      testMatch: /ui.spec.ts/,
+      testMatch: /(ui|invite-small)\.spec\.ts/,
       use: { ...devices["Desktop Chrome"], viewport: { width: 320, height: 640 }, isMobile: true, hasTouch: true },
     },
   ],

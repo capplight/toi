@@ -1,6 +1,7 @@
-import { and, isNotNull, lt, or } from "drizzle-orm";
+import { and, eq, isNotNull, isNull, lt, notExists, or, sql } from "drizzle-orm";
 import type { Db } from "./db";
-import { loginLinks, otpChallenges, rateLimits, sessions } from "./schema";
+import { events, loginLinks, mediaAssets, otpChallenges, rateLimits, sessions } from "./schema";
+import { storage } from "./storage";
 
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
@@ -10,13 +11,15 @@ const DAY = 24 * HOUR;
  * - otp_challenges older than 24 h (phone and IP, also of unknown numbers);
  * - rate_limits windows older than 2 days;
  * - login_links used, revoked or expired more than 30 days ago;
- * - sessions revoked or expired more than 30 days ago (session_events go by cascade).
+ * - sessions revoked or expired more than 30 days ago (session_events go by cascade);
+ * - music (Ф5 review П3) older than 24 h that nothing uses: wizard drafts never attached to an event, failed
+ *   uploads, and tracks replaced in an event (no `events.music_asset_id` points to them) — rows and files.
  */
 export async function cleanup(db: Db, now: Date) {
   const d1 = new Date(now.getTime() - DAY);
   const d2 = new Date(now.getTime() - 2 * DAY);
   const d30 = new Date(now.getTime() - 30 * DAY);
-  return db.transaction(async (tx) => {
+  const counts = await db.transaction(async (tx) => {
     const otp = await tx
       .delete(otpChallenges)
       .where(lt(otpChallenges.createdAt, d1))
@@ -38,4 +41,33 @@ export async function cleanup(db: Db, now: Date) {
       .returning({ id: sessions.id });
     return { otpChallenges: otp.length, rateLimits: limits.length, loginLinks: links.length, sessions: sess.length };
   });
+  const music = await cleanupMusic(db, now);
+  return { ...counts, music };
+}
+
+/** Abandoned music assets older than 24 h: rows are deleted, then their files (best effort, idempotent). */
+export async function cleanupMusic(db: Db, now: Date): Promise<number> {
+  const d1 = new Date(now.getTime() - DAY);
+  const used = db
+    .select({ one: sql`1` })
+    .from(events)
+    .where(eq(events.musicAssetId, mediaAssets.id));
+  const rows = await db
+    .delete(mediaAssets)
+    .where(
+      and(
+        eq(mediaAssets.kind, "music"),
+        lt(mediaAssets.createdAt, d1),
+        or(isNull(mediaAssets.eventId), eq(mediaAssets.status, "failed"), notExists(used)),
+      ),
+    )
+    .returning({ key: mediaAssets.storageKey });
+  for (const r of rows) {
+    try {
+      await storage().remove(r.key);
+    } catch {
+      // already gone / storage unavailable: the row is removed anyway, the file cannot be referenced again
+    }
+  }
+  return rows.length;
 }

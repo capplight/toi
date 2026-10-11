@@ -244,3 +244,96 @@ INF no leaks found
 - [x] Тексты из `content/messages`; имена не склоняются (имя семьи и `events.title` как ввели).
 - [x] Серверы, запущенные для проверок, остановлены.
 - [ ] Preview / CI / реальные телефоны — ждут аккаунтов.
+
+## 11. Правки по ревью (`docs/phases/Ф5-review.md`, вердикт «нужны правки»)
+
+Цепочка перебазирована на `main` (`62b26d8`, план v1.9). Конфликтов нет.
+
+### П1 — локальное хранилище не включается на Vercel и в проде
+- `src/server/env.ts`: при `VERCEL=1` или `APP_ENV=production` нужен `STORAGE_DRIVER=s3`, иначе `EnvError` при старте. Полный набор `S3_*` для `s3` проверялся и раньше.
+- `/api/upload/[...key]` и `/api/files/[...key]` первым делом отвечают **404**, если активный драйвер не `local`.
+- Тесты:
+  - `tests/unit/env.test.ts` — Vercel без `s3` → ошибка; production без `s3` → ошибка; `s3` без ключей → ошибка; `s3` с полной конфигурацией → ок; локально `local` → ок;
+  - `tests/unit/storage-routes.test.ts` (новый) — при `STORAGE_DRIVER=s3` оба маршрута отвечают 404.
+
+### П2 — полный последовательный прогон e2e
+Два полных прогона (`--workers=1`, mobile + desktop + small) после исправления тестовых данных:
+```
+$ E2E_CHANNEL=chrome DATABASE_URL=…PGlite… pnpm exec playwright test --workers=1
+# прогон 1 (сразу после правок П1/П3 и калибровки)
+  1 failed · 16 skipped · 136 passed (10.6m)
+  failed: guests-perf (mobile) — Test timeout of 30000ms exceeded: калибровка добавила 4 загрузки при CPU ×4,
+          и тест не уложился в 30 с по умолчанию. Исправлено: test.setTimeout(180_000).
+          Тот же прогон запускал новый invite-small и в mobile/desktop — исправлено (testIgnore, см. «320 px»).
+# прогон 2 (итоговый, после всех правок, включая Н1/Н2)
+S1 interactive (CPU ×4): first uncached 4407 ms; warm runs 2860, 4287, 5427, 7960, 8727 ms; frame «Зал» 1065 ms; S1/frame 5.10 — machine overloaded, not asserted
+  16 skipped · 135 passed (10.7m)
+```
+- 16 пропусков — те же, что раньше: скриншоты без `SCREENSHOTS=1`, проверки только для одного проекта (perf и музыка только на mobile/desktop и т. п.).
+- `guests-perf` в итоговом прогоне **не падает, но и не проверяет**: каркас «Зал» 1065 мс > 0,5 с, значит, машина перегружена. Цифры только записаны.
+- Замечание: тёплые замеры S1 растут от прогона к прогону внутри теста (2,9 → 8,7 с). На «Зал» такого роста нет. Возможно, это накопление в той же вкладке под `setCPUThrottlingRate`. Проверить на CI (Linux) и на реальном Android в РА.
+
+### П3 — уборка музыки по крону
+- `src/server/cleanup.ts`, `cleanupMusic(db, now)`. Вызывается из `cleanup()`, поэтому работает в ежедневном `/api/cron/cleanup`. Ответ крона теперь содержит `deleted.music`.
+- Удаляются `media_assets` вида `music` **старше 24 ч**, если выполнено хотя бы одно условие:
+  - нет события (черновик мастера);
+  - `status = 'failed'`;
+  - ни одно событие на запись не ссылается (`events.music_asset_id`) — то есть музыка заменена или убрана.
+- Удаляются и строки, и файлы в хранилище (`storage().remove`; ошибка удаления файла не останавливает уборку).
+- Integration (`tests/integration/invite.test.ts`, локальный драйвер):
+  - удаляются: старый черновик, старый `failed`, старый заменённый трек — строки и файлы;
+  - остаются: текущий трек события и свежий черновик (< 24 ч).
+- `tests/integration/cleanup.test.ts` обновлён (`music: 0` в ответе).
+
+### Калибровка теста производительности (ревью, раздел 4.1)
+`tests/e2e/guests-perf.spec.ts`:
+- сначала прогрев «Зал», затем медиана трёх замеров каркаса «Зал» (гидратация `.tab`) при том же CPU ×4;
+- в журнал пишутся каркас и отношение S1 / каркас;
+- если каркас > 500 мс **и это не CI**, тест получает аннотацию `machine overloaded`, цифры только записываются;
+- в CI (`CI=1`) проверка `< 1000 мс` строгая, как раньше.
+
+### 320 px для страницы гостя (отклонение 8 → РА; сделано сейчас, это было дёшево)
+- `tests/e2e/invite-small.spec.ts` в проекте `small` (320×640). Сценарий: конверт → «Ашу» → приглашение → форма; затем 130 %.
+- Проверки: нет горизонтальной прокрутки; все видимые кнопки, ссылки и поля чисел ≥ 48 px (сцена конверта и форма).
+- **Отклонение от формулировки ревью:** не весь `invite.spec` в `small`, а отдельный файл, который только читает страницу. Причина: `invite.spec` отвечает за семьи из общего набора (mobile 0–9, desktop 10–19), а третий проект потребовал бы ещё 10 семей и дублировал бы сценарии ответа. В mobile и desktop этот файл исключён (`testIgnore`).
+- Итог: 1 passed в обоих полных прогонах.
+
+### Конвертация шрифтов OG — повторяемый скрипт
+- `scripts/convert-og-fonts.py`: `public/fonts/*.woff2` → `src/server/invite/fonts/*.woff`.
+- Команды:
+  - `python -m pip install --user fonttools==4.66.1 brotli`
+  - `python scripts/convert-og-fonts.py`
+- Проверено с fontTools 4.66.1 и brotli 1.2.0.
+- `recalcTimestamp=False`: два запуска подряд дают одинаковые байты. Файлы в репозитории пересобраны скриптом. От прежних они отличаются **только** полем `head.modified` (сравнение таблиц через fontTools).
+- **Записанная установка системных пакетов:** `pip install --user brotli` (1.2.0), сделано в Ф5. fontTools 4.66.1 уже был установлен. Других установок нет.
+
+### Неблокирующие
+- **Н1 — сделано.** В `answerAsGuest` срок ответа перечитывается из `events` **внутри шага `withSeating`**, то есть под блокировкой события. Если срок прошёл или его передвинули, шаг бросает внутренний сигнал, транзакция откатывается, ответ `closed`.
+  - Быстрая проверка до транзакции оставлена: без неё закрытые попытки тратили бы лимит 10/ч.
+  - Гонку отдельным тестом не воспроизводили; существующие тесты `closed` проходят.
+- **Н2 — сделано.**
+  - `finalizeUpload`: не больше **10 обработок в час на пользователя** (`rate_limits`, ключ `music:finalize:{userId}`, константа `FINALIZE_PER_HOUR`). Счёт идёт перед обработкой, повторный вызов для уже готовой записи не считается.
+  - `/api/media/finalize` при превышении отвечает **429** `{ ok:false, error:"rateLimited" }`. `MusicUpload` показывает `errors.rateLimited` — новых ключей нет.
+  - Integration: 11-я обработка → `rateLimited`, ffmpeg не запускается, запись не уходит в `processing`.
+- Н3, Н4 — без изменений (приняты ревью).
+
+### Прочее
+- `tests/e2e/global-setup.ts` — только формат Prettier (после перебазирования файл был не отформатирован).
+
+### Проверки после правок
+```
+$ pnpm check:messages
+check:messages: OK — 778 keys, kk/ru: ICU, variables, tags, select/other, ru plural forms
+check:presets: OK — 16 texts, 6 kinds × kk/ru, no samples, variables or markup
+$ pnpm typecheck && pnpm lint && pnpm format:check
+✓ Types generated successfully · eslint --max-warnings=0 (0) · All matched files use Prettier code style!
+$ pnpm test
+ Test Files  20 passed (20)
+      Tests  169 passed (169)          (+2: env П1, storage-routes П1)
+$ pnpm test:integration
+ Test Files  9 passed | 1 skipped (10)
+      Tests  99 passed | 2 skipped (101)   (+2: уборка музыки П3, лимит обработки Н2)
+$ pnpm build                           ✓
+$ pnpm exec playwright test --workers=1   → 135 passed · 16 skipped (10.7m), см. П2
+$ gitleaks protect --staged            → no leaks found
+```

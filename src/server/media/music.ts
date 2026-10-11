@@ -8,6 +8,7 @@ import { authorize, ForbiddenError, type Principal } from "../auth/access";
 import type { Db } from "../db";
 import { canCreateEvents } from "../events/service";
 import { events, mediaAssets } from "../schema";
+import { hit } from "../ratelimit";
 import { storage } from "../storage";
 
 /**
@@ -121,7 +122,10 @@ export async function transcodeMusic(input: Buffer): Promise<{ data: Buffer; sec
 
 export type FinalizeResult =
   | { ok: true; assetId: string; url: string; seconds: number; bytes: number }
-  | { ok: false; error: "missing" | "failed" };
+  | { ok: false; error: "missing" | "failed" | "rateLimited" };
+
+/** Ф5 review Н2: at most 10 ffmpeg runs per user per hour (`rate_limits`). */
+export const FINALIZE_PER_HOUR = 10;
 
 export async function finalizeUpload(db: Db, who: Principal, assetId: string): Promise<FinalizeResult> {
   if (!/^[0-9a-f-]{36}$/i.test(assetId)) throw new ForbiddenError();
@@ -131,6 +135,12 @@ export async function finalizeUpload(db: Db, who: Principal, assetId: string): P
   if (!a.storageKey.startsWith(`${o.prefix}/`)) throw new ForbiddenError();
   if (a.status === "ready")
     return { ok: true, assetId, url: await storage().getUrl(a.storageKey), seconds: a.durationS ?? 0, bytes: a.bytes };
+  const limit = await hit(
+    db,
+    { key: `music:finalize:${who.userId}`, windowSec: 3600, max: FINALIZE_PER_HOUR },
+    new Date(),
+  );
+  if (!limit.ok) return { ok: false, error: "rateLimited" };
   const size = await storage().size(a.storageKey);
   if (!size || size > MUSIC_MAX_BYTES) {
     await db.update(mediaAssets).set({ status: "failed" }).where(eq(mediaAssets.id, assetId));

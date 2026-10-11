@@ -107,7 +107,7 @@ export type GuestAnswerResult =
 /**
  * «Жіберу» (plan 6.4, brief §2): through `withSeating` — actor `guest`, action `answer`, `record: true`,
  * `summary.from / to`, engine `setRsvp`; `answered_by = 'guest'`, `responded_at`. 10 per hour per token;
- * after `rsvp_closes_at` → `closed` (409). With `requireConsent` the box must be ticked (`rsvp_consent_at`).
+ * after `rsvp_closes_at` → `closed` (409): a cheap check first, then again inside the `withSeating` step (Н1). With `requireConsent` the box must be ticked (`rsvp_consent_at`).
  */
 export async function answerAsGuest(
   db: Db,
@@ -128,42 +128,54 @@ export async function answerAsGuest(
   if (!limit.ok) return { ok: false, error: "rateLimited" };
 
   const rsvp = input.attending ? ("yes" as const) : ("no" as const);
-  await withSeating(db, page.event.id, { kind: "guest", memberId: null }, async ({ tx, state }) => {
-    const [cur] = await tx.select().from(families).where(eq(families.id, page.family.id));
-    await tx
-      .update(families)
-      .set({
-        rsvp,
-        confirmedCount: seats,
-        respondedAt: now,
-        answeredBy: "guest",
-        answeredByMemberId: null,
-        ...(opts.requireConsent ? { rsvpConsentAt: now } : {}),
-        version: sql`${families.version} + 1`,
-        updatedAt: now,
-      })
-      .where(eq(families.id, page.family.id));
-    const summary: AnswerSummary = {
-      names: [cur!.name],
-      familyId: cur!.id,
-      by: "guest",
-      from: {
-        rsvp: cur!.rsvp,
-        confirmed: cur!.confirmedCount,
-        respondedAt: cur!.respondedAt?.toISOString() ?? null,
-        answeredBy: cur!.answeredBy,
-        answeredByMemberId: cur!.answeredByMemberId,
-      },
-      to: { rsvp, confirmed: seats },
-    };
-    return {
-      result: setRsvp(state, cur!.id, rsvp, { confirmed: seats }),
-      action: "answer",
-      summary,
-      value: null,
-      record: true,
-    };
-  });
+  const closed = Symbol("closed");
+  try {
+    await withSeating(db, page.event.id, { kind: "guest", memberId: null }, async ({ tx, state }) => {
+      // Ф5 review Н1: the deadline is re-read under the event lock — the owner may have moved it after the page loaded.
+      const [ev] = await tx
+        .select({ startsOn: events.startsOn, closesAt: events.rsvpClosesAt, tz: events.tz })
+        .from(events)
+        .where(eq(events.id, page.event.id));
+      if (!ev || now >= rsvpClosesAt(ev.startsOn, ev.closesAt, ev.tz)) throw closed;
+      const [cur] = await tx.select().from(families).where(eq(families.id, page.family.id));
+      await tx
+        .update(families)
+        .set({
+          rsvp,
+          confirmedCount: seats,
+          respondedAt: now,
+          answeredBy: "guest",
+          answeredByMemberId: null,
+          ...(opts.requireConsent ? { rsvpConsentAt: now } : {}),
+          version: sql`${families.version} + 1`,
+          updatedAt: now,
+        })
+        .where(eq(families.id, page.family.id));
+      const summary: AnswerSummary = {
+        names: [cur!.name],
+        familyId: cur!.id,
+        by: "guest",
+        from: {
+          rsvp: cur!.rsvp,
+          confirmed: cur!.confirmedCount,
+          respondedAt: cur!.respondedAt?.toISOString() ?? null,
+          answeredBy: cur!.answeredBy,
+          answeredByMemberId: cur!.answeredByMemberId,
+        },
+        to: { rsvp, confirmed: seats },
+      };
+      return {
+        result: setRsvp(state, cur!.id, rsvp, { confirmed: seats }),
+        action: "answer",
+        summary,
+        value: null,
+        record: true,
+      };
+    });
+  } catch (e) {
+    if (e === closed) return { ok: false, error: "closed" };
+    throw e;
+  }
   return { ok: true, rsvp, seats };
 }
 

@@ -66,7 +66,15 @@ export default async function globalSetup() {
   await db()
     .update(families)
     .set({ rsvp: "pending", confirmedCount: null, respondedAt: null, answeredBy: null, firstOpenedAt: null })
-    .where(and(eq(families.eventId, s.eventId), inArray(families.token, guests.map((g) => g.token))));
+    .where(
+      and(
+        eq(families.eventId, s.eventId),
+        inArray(
+          families.token,
+          guests.map((g) => g.token),
+        ),
+      ),
+    );
   await closeDb();
   mkdirSync("playwright/.cache", { recursive: true });
   writeFileSync(

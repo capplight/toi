@@ -44,6 +44,7 @@ export function MusicUpload({
   actions: MusicActions;
 }) {
   const t = useTranslations("wizard.music");
+  const tErr = useTranslations("errors");
   const input = useRef<HTMLInputElement>(null);
   const audio = useRef<HTMLAudioElement>(null);
   const [stage, setStage] = useState<"idle" | "up" | "proc" | "error">("idle");
@@ -99,7 +100,7 @@ export function MusicUpload({
     if (!ok) return fail(t("failed"));
     setStage("proc");
     const r = await actions.finalize(target.assetId).catch(() => null);
-    if (!r || !r.ok) return fail(t("failed"));
+    if (!r || !r.ok) return fail(r && r.error === "rateLimited" ? tErr("rateLimited") : t("failed"));
     setStage("idle");
     onChange({ assetId: target.assetId, url: r.url, name: f.name });
   }

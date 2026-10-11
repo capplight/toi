@@ -1,4 +1,4 @@
-import { localStorage, verifyUpload } from "@/server/storage";
+import { localStorage, storage, verifyUpload } from "@/server/storage";
 
 /**
  * Local storage driver: the browser's signed PUT (Ф5, the stand-in for an S3 presigned PUT). The signature binds
@@ -7,6 +7,8 @@ import { localStorage, verifyUpload } from "@/server/storage";
 export const runtime = "nodejs";
 
 export async function PUT(req: Request, ctx: { params: Promise<{ key: string[] }> }) {
+  // Ф5 review П1: only the local driver uploads here; with s3 the browser PUTs to the bucket.
+  if (storage().driver !== "local") return new Response(null, { status: 404 });
   const key = (await ctx.params).key.join("/");
   const q = new URL(req.url).searchParams;
   const mime = q.get("mime") ?? "";

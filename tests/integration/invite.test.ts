@@ -14,7 +14,7 @@ import type { Principal } from "@/server/auth/access";
 import { db } from "@/server/db";
 import { answerAsGuest, loadGuestPage, notFoundAllowed, pingGuest, RSVP_PER_HOUR } from "@/server/invite/guest";
 import { renderInvite } from "@/server/invite/render";
-import { createUploadUrl, finalizeUpload, MUSIC_SECONDS } from "@/server/media/music";
+import { createUploadUrl, FINALIZE_PER_HOUR, finalizeUpload, MUSIC_SECONDS } from "@/server/media/music";
 import { activityLog, eventMembers, events, families, mediaAssets, seatingChanges, users } from "@/server/schema";
 import { storage } from "@/server/storage";
 import { DEMO_PHONES, seedSample } from "../../scripts/lib/seed-sample";
@@ -250,6 +250,20 @@ describe("music on the local storage driver (brief §3.3)", () => {
       finalizeUpload(db(), { userId: stranger!.id, scope: "all", sessionId: "x" }, up.assetId),
     ).rejects.toThrow();
   });
+
+  it("Ф5 review Н2: the 11th processing within an hour for one user → rateLimited (ffmpeg is not run)", async () => {
+    const { hit } = await import("@/server/ratelimit");
+    const s = await seedSample(db(), NOW);
+    const who = await owner(s);
+    for (let i = 0; i < FINALIZE_PER_HOUR; i++)
+      await hit(db(), { key: `music:finalize:${who.userId}`, windowSec: 3600, max: FINALIZE_PER_HOUR }, new Date());
+    const up = await createUploadUrl(db(), who, { eventId: s.eventId, mime: "audio/mpeg", bytes: 100 });
+    if (!up.ok) throw new Error("upload url");
+    await storage().write(up.url.split("?")[0]!.replace("/api/upload/", ""), Buffer.from("x"), "audio/mpeg");
+    expect(await finalizeUpload(db(), who, up.assetId)).toEqual({ ok: false, error: "rateLimited" });
+    const [a] = await db().select().from(mediaAssets).where(eq(mediaAssets.id, up.assetId));
+    expect(a!.status).not.toBe("processing");
+  });
 });
 
 describe("wizard draft music", () => {
@@ -282,5 +296,42 @@ describe("wizard draft music", () => {
     expect(await attachDraftMusic(db(), who, ev.eventId, up.assetId)).toBe(true);
     const [row] = await db().select().from(events).where(eq(events.id, ev.eventId));
     expect(row!.musicAssetId).toBe(up.assetId);
+  });
+});
+
+describe("Ф5 review П3: daily cleanup of abandoned music", () => {
+  it("drafts, failed uploads and replaced tracks older than 24 h go (rows and files); the current track and fresh drafts stay", async () => {
+    const { cleanupMusic } = await import("@/server/cleanup");
+    const s = await seedSample(db(), NOW);
+    const old = new Date(NOW.getTime() - 2 * 86_400_000);
+    const mk = async (key: string, opts: { eventId: string | null; status: "ready" | "failed"; at: Date }) => {
+      await storage().write(key, Buffer.from(key), "audio/mpeg");
+      const [r] = await db()
+        .insert(mediaAssets)
+        .values({
+          eventId: opts.eventId,
+          kind: "music",
+          storageKey: key,
+          mime: "audio/mpeg",
+          bytes: 10,
+          status: opts.status,
+          createdAt: opts.at,
+        })
+        .returning({ id: mediaAssets.id });
+      return r!.id;
+    };
+    await mk("music/u-x/draft-old.mp3", { eventId: null, status: "ready", at: old });
+    await mk(`music/${s.eventId}/failed-old.mp3`, { eventId: s.eventId, status: "failed", at: old });
+    await mk(`music/${s.eventId}/replaced-old.mp3`, { eventId: s.eventId, status: "ready", at: old });
+    const current = await mk(`music/${s.eventId}/current.mp3`, { eventId: s.eventId, status: "ready", at: old });
+    await mk("music/u-x/draft-fresh.mp3", { eventId: null, status: "ready", at: new Date(NOW.getTime() - 3_600_000) });
+    await db().update(events).set({ musicAssetId: current }).where(eq(events.id, s.eventId));
+
+    expect(await cleanupMusic(db(), NOW)).toBe(3);
+    const left = (await db().select({ k: mediaAssets.storageKey }).from(mediaAssets)).map((r) => r.k).sort();
+    expect(left).toEqual([`music/${s.eventId}/current.mp3`, "music/u-x/draft-fresh.mp3"]);
+    expect(await storage().size("music/u-x/draft-old.mp3")).toBeNull();
+    expect(await storage().size(`music/${s.eventId}/replaced-old.mp3`)).toBeNull();
+    expect(await storage().size(`music/${s.eventId}/current.mp3`)).not.toBeNull();
   });
 });

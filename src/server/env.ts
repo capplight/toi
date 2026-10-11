@@ -111,6 +111,11 @@ export function parseEnv(source: Record<string, string | undefined>): Env {
   ) {
     throw new EnvError(["STORAGE_DRIVER=s3 needs S3_ENDPOINT, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY"]);
   }
+  // Ф5 review П1: on Vercel (preview and prod) and in any production deployment the local driver would write to a
+  // throw-away disk and lose the music silently — refuse to start.
+  if ((source.VERCEL === "1" || source.APP_ENV === "production") && raw.STORAGE_DRIVER !== "s3") {
+    throw new EnvError(["STORAGE_DRIVER: must be s3 on Vercel and in production (VERCEL=1 or APP_ENV=production)"]);
+  }
   if (production) {
     // ConsoleProvider writes the SMS text (with the code) to the log — never in production (Н3).
     if (raw.SMS_PROVIDER === "console") {

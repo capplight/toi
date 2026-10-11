@@ -76,7 +76,7 @@ describe("Б3: /api/cron/cleanup retention (plan 6.7)", () => {
     await db().insert(sessionEvents).values({ sessionId: "revoked-old", eventId: s.eventId });
 
     const r = await cleanup(db(), NOW);
-    expect(r).toEqual({ otpChallenges: 1, rateLimits: 1, loginLinks: 3, sessions: 2 });
+    expect(r).toEqual({ otpChallenges: 1, rateLimits: 1, loginLinks: 3, sessions: 2, music: 0 });
     expect((await db().select({ h: loginLinks.tokenHash }).from(loginLinks)).map((x) => x.h).sort()).toEqual([
       "active",
       "used-recent",
@@ -100,7 +100,7 @@ describe("Б3: /api/cron/cleanup retention (plan 6.7)", () => {
     expect(ok.status).toBe(200);
     expect(await ok.json()).toEqual({
       ok: true,
-      deleted: { otpChallenges: 0, rateLimits: 0, loginLinks: 0, sessions: 0 },
+      deleted: { otpChallenges: 0, rateLimits: 0, loginLinks: 0, sessions: 0, music: 0 },
     });
   });
 });
