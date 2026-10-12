@@ -81,13 +81,13 @@ export default async function SummaryPage({ params }: PageProps<"/e/[eventId]/su
         {hero}
         <EmptyState title={t("empty")} />
         {budget}
-        <VersionPoll eventId={eventId} version={v.version} />
+        <VersionPoll eventId={eventId} version={v.version} activity={v.activity} />
       </div>
     );
   }
 
   const { people, tables } = v.restaurant;
-  const restaurant = tables === null ? tu("people", { count: people }) : t("restaurant", { people, tables });
+  const restaurant = tables === null ? t("restaurantNoHall", { people }) : t("restaurant", { people, tables });
   // Share of the seats to plan for (all categories add up to «N адам»).
   const maxCat = Math.max(1, people);
   const funnelMax = Math.max(1, v.funnel?.total ?? 1);
@@ -179,7 +179,7 @@ export default async function SummaryPage({ params }: PageProps<"/e/[eventId]/su
           {budget}
         </div>
       </div>
-      <VersionPoll eventId={eventId} version={v.version} />
+      <VersionPoll eventId={eventId} version={v.version} activity={v.activity} />
     </div>
   );
 }

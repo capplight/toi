@@ -3894,3 +3894,88 @@ html.reduce-motion .toast .timer {
     display: none;
   }
 }
+
+/* ---------- /privacy, /terms (RA Л5): drafts from content/legal ---------- */
+@layer components {
+  .legal-page {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+  }
+  .legal-doc {
+    font: 400 1.0625rem/1.65 var(--font-ui);
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  .legal-doc h1 {
+    font: 600 1.75rem/2.125rem var(--font-ui);
+    margin: 0 0 16px;
+  }
+  .legal-doc h2 {
+    font: 600 1.25rem/1.625rem var(--font-ui);
+    margin: 28px 0 8px;
+  }
+  .legal-doc h3 {
+    font: 600 1.0625rem/1.5rem var(--font-ui);
+    margin: 20px 0 6px;
+  }
+  .legal-doc p,
+  .legal-doc ul,
+  .legal-doc ol {
+    margin: 0 0 12px;
+  }
+  .legal-doc ul,
+  .legal-doc ol {
+    padding-left: 1.25rem;
+  }
+  .legal-doc li + li {
+    margin-top: 4px;
+  }
+  .legal-doc blockquote.draft {
+    margin: 0 0 20px;
+    padding: 12px 16px;
+    border-radius: var(--r-lg);
+    background: var(--gold-soft);
+    border-left: 4px solid var(--gold-ink);
+  }
+  .legal-doc blockquote.draft p {
+    margin: 0;
+  }
+  .legal-doc mark.lawyer {
+    background: var(--lapis-soft);
+    color: var(--ink);
+    padding: 0 2px;
+    border-radius: 4px;
+  }
+  .legal-doc .table-wrap {
+    overflow-x: auto;
+    margin: 0 0 16px;
+  }
+  .legal-doc table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 1rem;
+  }
+  .legal-doc th,
+  .legal-doc td {
+    text-align: left;
+    vertical-align: top;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .legal-doc a,
+  .legal-nav a {
+    color: var(--lapis);
+  }
+  .legal-nav {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .legal-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3rem;
+    font-weight: 600;
+  }
+}

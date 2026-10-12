@@ -657,8 +657,17 @@ export function Wizard({ musicUpload = true }: { musicUpload?: boolean }) {
                 {step === "kind" && (
                   <p className="legal">
                     {tl.rich("ownerTerms", {
-                      termsLink: (chunks) => <b>{chunks}</b>,
-                      privacyLink: (chunks) => <b>{chunks}</b>,
+                      // new tab: the wizard keeps its progress (RA Л5)
+                      termsLink: (chunks) => (
+                        <a href="/terms" target="_blank" rel="noopener">
+                          {chunks}
+                        </a>
+                      ),
+                      privacyLink: (chunks) => (
+                        <a href="/privacy" target="_blank" rel="noopener">
+                          {chunks}
+                        </a>
+                      ),
                     })}
                   </p>
                 )}

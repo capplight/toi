@@ -1,0 +1,89 @@
+name: Backup production database
+
+# Plan 9 / 11.3, RA Л3 — ready to switch on once the founder has the accounts (RA brief, О1).
+# Daily: pg_dump -Fc of production → encrypted with age (public key only; the private key stays with the founder,
+# outside the repository) → a separate R2 bucket used only for backups; objects older than 30 days are deleted.
+# Restore: scripts/restore.sh (docs/RUNBOOK.md, «Восстановление из бэкапа»).
+#
+# Secrets (GitHub → Settings → Secrets and variables → Actions, environment `production`):
+#   PROD_DATABASE_URL_UNPOOLED   direct (non-pooled) Neon URL of production, read-only role is enough
+#   BACKUP_AGE_RECIPIENT         age public key (age1…) — encrypt only
+#   BACKUP_R2_ENDPOINT           https://<account>.r2.cloudflarestorage.com
+#   BACKUP_R2_BUCKET             e.g. toi-backups (not the media bucket)
+#   BACKUP_R2_ACCESS_KEY_ID      R2 token limited to that bucket (Object Read & Write)
+#   BACKUP_R2_SECRET_ACCESS_KEY
+on:
+  schedule:
+    - cron: "30 21 * * *" # 02:30 Asia/Almaty
+  workflow_dispatch:
+
+concurrency:
+  group: backup-prod
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.BACKUP_R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      R2_ENDPOINT: ${{ secrets.BACKUP_R2_ENDPOINT }}
+      R2_BUCKET: ${{ secrets.BACKUP_R2_BUCKET }}
+    steps:
+      - name: Check that the secrets are set
+        env:
+          DB: ${{ secrets.PROD_DATABASE_URL_UNPOOLED }}
+          RCPT: ${{ secrets.BACKUP_AGE_RECIPIENT }}
+        run: |
+          for v in DB RCPT AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY R2_ENDPOINT R2_BUCKET; do
+            if [ -z "${!v}" ]; then echo "::error::secret for $v is not set"; exit 1; fi
+          done
+
+      # pg_dump must not be older than the server (Neon: Postgres 16 or 17) — the PGDG client 17 reads both.
+      - name: Install pg_dump 17 and age
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-17 age
+          pg_dump --version
+          age --version
+
+      - name: Dump and encrypt
+        env:
+          DB: ${{ secrets.PROD_DATABASE_URL_UNPOOLED }}
+          RCPT: ${{ secrets.BACKUP_AGE_RECIPIENT }}
+        run: |
+          set -euo pipefail
+          name="toi-$(date -u +%Y-%m-%dT%H%M%SZ).dump.age"
+          # -Fc: compressed custom format for pg_restore; no owners/privileges (restored into a new Neon branch)
+          pg_dump --format=custom --no-owner --no-privileges --dbname="$DB" | age --encrypt --recipient "$RCPT" > "$name"
+          test -s "$name"
+          ls -l "$name"
+          echo "BACKUP_FILE=$name" >> "$GITHUB_ENV"
+
+      - name: Upload to R2
+        run: |
+          set -euo pipefail
+          aws s3 cp "$BACKUP_FILE" "s3://$R2_BUCKET/daily/$BACKUP_FILE" --endpoint-url "$R2_ENDPOINT" --only-show-errors
+          aws s3 ls "s3://$R2_BUCKET/daily/$BACKUP_FILE" --endpoint-url "$R2_ENDPOINT"
+
+      # 30 days of copies. An R2 lifecycle rule on the bucket does the same — this step keeps it true without one.
+      - name: Delete copies older than 30 days
+        run: |
+          set -euo pipefail
+          cutoff=$(date -u -d '30 days ago' +%Y-%m-%dT%H%M%SZ)
+          aws s3 ls "s3://$R2_BUCKET/daily/" --endpoint-url "$R2_ENDPOINT" | awk '{print $4}' | while read -r f; do
+            stamp=${f#toi-}; stamp=${stamp%.dump.age}
+            if [[ "$f" == toi-*.dump.age && "$stamp" < "$cutoff" ]]; then
+              echo "delete $f"
+              aws s3 rm "s3://$R2_BUCKET/daily/$f" --endpoint-url "$R2_ENDPOINT" --only-show-errors
+            fi
+          done

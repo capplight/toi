@@ -2,7 +2,7 @@
  * Seeds (plan 11.5) from the shared fixture tests/fixtures/sample-event.ts (also the Ф7a golden test).
  * Demo numbers +7700000000X — local and preview only.
  */
-import { eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { presets } from "@/domain/invitations/presets";
 import { fullReseat, type SeatingState } from "@/domain/seating";
 import { buildDiff } from "@/domain/seating/undo";
@@ -268,4 +268,40 @@ export async function seedEmpty(db: Db): Promise<{ eventId: string }> {
     });
     return { eventId: ev!.id };
   });
+}
+
+/**
+ * RA Л7: demo activity on top of the seed (for showing the product to the pilot family; not used by tests):
+ * most sent invitations were opened (an hour or two after sending), and some «Келеді» answers were taken by phone
+ * (answered by a member, never opened) — so «Қорытынды» shows a believable funnel (8.19: sent 62 · opened 55 ·
+ * answered 56). Deterministic by seating order.
+ */
+export async function addDemoActivity(db: Db, eventId: string): Promise<{ opened: number; byPhone: number }> {
+  assertNotProduction();
+  const rows = await db.select().from(families).where(eq(families.eventId, eventId)).orderBy(asc(families.seatSeq));
+  const [owner] = await db
+    .select({ id: eventMembers.id })
+    .from(eventMembers)
+    .where(and(eq(eventMembers.eventId, eventId), eq(eventMembers.role, "owner")));
+  let opened = 0;
+  let byPhone = 0;
+  for (const [i, f] of rows.entries()) {
+    if (!f.sentAt) continue;
+    if (f.rsvp === "yes" && i % 9 === 4) {
+      // the guest called; Әкесі marked the answer in the guest sheet
+      await db
+        .update(families)
+        .set({ answeredBy: "member", answeredByMemberId: owner?.id ?? null, firstOpenedAt: null })
+        .where(eq(families.id, f.id));
+      byPhone++;
+      continue;
+    }
+    if (i % 8 === 7) continue; // not opened yet
+    await db
+      .update(families)
+      .set({ firstOpenedAt: new Date(f.sentAt.getTime() + (1 + (i % 3)) * 3_600_000) })
+      .where(eq(families.id, f.id));
+    opened++;
+  }
+  return { opened, byPhone };
 }

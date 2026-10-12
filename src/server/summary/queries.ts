@@ -36,6 +36,8 @@ export type SummaryView = {
   budget: boolean;
   /** For polling (plan 7.5): grows on every seating change and guest answer (Ф4 П1). */
   version: number;
+  /** Latest send / opening / answer (RA Л2), ISO or null. */
+  activity: string | null;
 };
 
 export async function summaryView(
@@ -133,12 +135,42 @@ export async function summaryView(
     }),
     budget: owner || m.canManageBudget,
     version: ev.seatingVersion,
+    activity: latest(rows.flatMap((f) => [f.sentAt, f.firstOpenedAt, f.respondedAt])),
   };
 }
 
-/** Polling (plan 7.5): the current `seating_version` for a member of the event. */
-export async function seatingVersion(db: Db, who: Principal, eventId: string): Promise<number> {
+/**
+ * Polling (plan 7.5, RA Л2): `version` = `seating_version` (seating and answers); `activity` = the latest
+ * `sent_at` / `first_opened_at` / `responded_at` of the event's families (ISO or null), so «Қорытынды» also follows
+ * sends and openings. One aggregate over `families_event_idx`.
+ */
+export async function pollState(
+  db: Db,
+  who: Principal,
+  eventId: string,
+): Promise<{ version: number; activity: string | null }> {
   await authorize(db, who, eventId, "member");
-  const [ev] = await db.select({ v: events.seatingVersion }).from(events).where(eq(events.id, eventId));
-  return ev?.v ?? 0;
+  const [[ev], [act]] = await Promise.all([
+    db.select({ v: events.seatingVersion }).from(events).where(eq(events.id, eventId)),
+    db
+      .select({
+        at: sql<
+          string | null
+        >`greatest(max(${families.sentAt}), max(${families.firstOpenedAt}), max(${families.respondedAt}))`,
+      })
+      .from(families)
+      .where(eq(families.eventId, eventId)),
+  ]);
+  return { version: ev?.v ?? 0, activity: act?.at ? new Date(act.at).toISOString() : null };
+}
+
+/** The current `seating_version` only (kept for callers that need just the number). */
+export async function seatingVersion(db: Db, who: Principal, eventId: string): Promise<number> {
+  return (await pollState(db, who, eventId)).version;
+}
+
+function latest(dates: (Date | null)[]): string | null {
+  let max: number | null = null;
+  for (const d of dates) if (d && (max === null || d.getTime() > max)) max = d.getTime();
+  return max === null ? null : new Date(max).toISOString();
 }

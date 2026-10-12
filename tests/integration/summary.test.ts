@@ -3,10 +3,10 @@ import { beforeEach, describe, expect, it } from "vitest";
 import type { Principal } from "@/server/auth/access";
 import { ForbiddenError } from "@/server/auth/access";
 import { db } from "@/server/db";
-import { answerAsGuest } from "@/server/invite/guest";
+import { answerAsGuest, pingGuest } from "@/server/invite/guest";
 import { eventMembers, events, families, users } from "@/server/schema";
-import { seatingVersion, summaryView } from "@/server/summary/queries";
-import { DEMO_PHONES, EMPTY_OWNER_PHONE, seedEmpty, seedSample } from "../../scripts/lib/seed-sample";
+import { pollState, seatingVersion, summaryView } from "@/server/summary/queries";
+import { addDemoActivity, DEMO_PHONES, EMPTY_OWNER_PHONE, seedEmpty, seedSample } from "../../scripts/lib/seed-sample";
 import { resetDb } from "./helpers";
 
 beforeEach(resetDb);
@@ -109,5 +109,32 @@ describe("summaryView (Ф6) on the seed — design_spec 5.2", () => {
     expect(v1.tiles.pending.families).toBe(v0.tiles.pending.families - 1);
     expect(v1.restaurant.people).toBe(v0.restaurant.people - pending.expectedCount);
     expect(v1.funnel!.answered).toBe(v0.funnel!.answered + 1);
+  });
+
+  it("RA Л2: the version route also reports activity — an opening changes `activity`, not `version`", async () => {
+    const s = await seedSample(db(), NOW);
+    const ake = await principal(DEMO_PHONES.ake);
+    const p0 = await pollState(db(), ake, s.eventId);
+    expect(p0.activity).not.toBeNull();
+    const [f] = await db().select().from(families).where(eq(families.eventId, s.eventId)).limit(1);
+    const later = new Date(Date.now() + 60_000);
+    await pingGuest(db(), f!.token, "opened", later);
+    const p1 = await pollState(db(), ake, s.eventId);
+    expect(p1.version).toBe(p0.version);
+    expect(p1.activity).toBe(later.toISOString());
+    expect((await summaryView(db(), ake, s.eventId, { locale: "kk" })).activity).toBe(later.toISOString());
+  });
+
+  it("RA Л7: demo activity — openings for most sent invitations, a few phone answers; the numbers of 5.2 stay", async () => {
+    const s = await seedSample(db(), NOW);
+    const d = await addDemoActivity(db(), s.eventId);
+    const v = await summaryView(db(), await principal(DEMO_PHONES.ake), s.eventId, { locale: "kk" });
+    expect(v.funnel!.opened).toBe(d.opened);
+    expect(d.opened).toBeGreaterThan(45);
+    expect(d.byPhone).toBeGreaterThan(0);
+    expect(v.funnel!.answered).toBe(56);
+    expect(v.funnel!.answered).toBeGreaterThan(v.funnel!.opened); // phone answers (summary.funnel.hint)
+    expect(v.restaurant).toEqual({ people: 173, tables: 15 });
+    expect(v.tiles.pending).toEqual({ families: 9, seats: 23, notSent: 2 });
   });
 });
