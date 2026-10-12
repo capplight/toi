@@ -66,9 +66,21 @@ export function undoChange(state: SeatingState, diff: SeatingDiff): SeatingResul
   let categories = state.categories;
   let orderSkipped = false;
   if (diff.order) {
-    if (sameOrder(orderIds(state.categories), diff.order.after)) {
-      const before = diff.order.before;
-      categories = state.categories.map((c) => ({ ...c, rank: before.indexOf(c.id) + 1 }));
+    // Categories added after the change (or by it — «Жаңа санат») are not part of the comparison; they keep
+    // their relative order after the restored ones and never get rank 0 (Ф7b brief §2, Ф4 review).
+    const recorded = new Set(diff.order.after);
+    const current = orderIds(state.categories);
+    if (
+      sameOrder(
+        current.filter((id) => recorded.has(id)),
+        diff.order.after,
+      )
+    ) {
+      const known = new Set(current);
+      const restored = diff.order.before.filter((id) => known.has(id));
+      const kept = new Set(restored);
+      const next = [...restored, ...current.filter((id) => !kept.has(id))];
+      categories = state.categories.map((c) => ({ ...c, rank: next.indexOf(c.id) + 1 }));
     } else orderSkipped = true;
   }
   let hall = state.hall;
