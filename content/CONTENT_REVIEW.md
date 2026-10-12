@@ -260,3 +260,25 @@
 | `summary.restaurantNoHall` | Мейрамханаға: {people} адам · зал әлі бапталмаған | Для ресторана: {people, plural, one {# человек} few {# человека} many {# человек} other {# человека}} · зал ещё не настроен |
 | `legal.terms.title` | Пайдалану шарттары | Условия использования |
 | `legal.terms.link` | Шарттар | Условия |
+
+**2026-10-12 · Ф7b и Ф8 (15 новых ключей)**
+
+| Ключ | kk | ru |
+|---|---|---|
+| `hall.history.categoryAdded` | Жаңа санат: {category} | Новая категория: {category} |
+| `hall.history.guestAdded` | Жаңа қонақ: {name} → {number}-үстел | Новый гость: {name} → стол {number} |
+| `hall.history.guestAddedUnplaced` | Жаңа қонақ: {name} · орын жетпеді | Новый гость: {name} · без места |
+| `hall.history.guestDeleted` | Тізімнен өшірілді: {name} | Удалено из списка: {name} |
+| `hall.history.guestRestored` | Тізімге қайта қосылды: {name} | Снова в списке: {name} |
+| `hall.history.seatsEdited` | {name}: орын саны {from} → {to} | {name}: мест было {from}, стало {to} |
+| `hall.history.suggestedMove` | Бос орынға ауыстырылды: {name}, {from} → {to}-үстел | Пересадили на свободное место: {name}, стол {from} → {to} |
+| `hall.history.answerByPhoneYes` | Телефонмен жауап: {name} — келеді, {seats} орын | Ответ по телефону: {name} — придут, {seats, plural, one {# место} few {# места} many {# мест} other {# места}} |
+| `hall.history.answerByPhoneNo` | Телефонмен жауап: {name} — келмейді | Ответ по телефону: {name} — не придут |
+| `hall.history.noUndo` | Қайтаруға болмайды | Отменить нельзя |
+| `nav.tableQueue` | Үстел нөмірлерін жіберу | Отправить номера столов |
+| `tableQueue.allSent.title` | Барлығына жіберілді | Номера отправлены всем |
+| `tableQueue.allSent.body` | Үстел нөмірі {count} отбасына жіберілді. Біреудің үстелі өзгерсе, сол отбасына қайта жіберіңіз. | Номер стола получили все семьи: {count}. Если кого-то пересадили, отправьте этой семье номер ещё раз. |
+| `tableQueue.allSent.restart` | Басынан бастау | Начать заново |
+| `door.saveHint` | Тізім телефонға сақталды. Той күні осы сілтемені қайта ашыңыз — интернетсіз де ашылады. | Список сохранён на телефоне. В день тоя откройте эту же ссылку — она откроется и без интернета. |
+
+Уже были и подходят брифам: `settings.showTableNo.label` / `.hint` (переключатель номера стола с пояснением), `wa.doorLink` и `members.door.hint` (сообщение помощнику: открыть заранее, пока есть интернет), `tableQueue.*`, `door.*`, `hall.history.guestNoUndo`. Расхождения с текстом брифа Ф8 оставлены по глоссарию: кнопка очереди — `tableQueue.open` «WhatsApp-қа жіберу / Отправить в WhatsApp» (не «WhatsApp-та ашу»), продолжение — «(№{position})» (не «N-ші»: порядковое окончание к числу запрещено), «Келесі →» — `tableQueue.next` «Жіберілді / Отправлено». `hall.history.answerByPhoneYes` / `No` отделены от `answerSeats` / `answerNo`: ответ по телефону вносит составитель, и его можно отменить.

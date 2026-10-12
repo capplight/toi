@@ -719,6 +719,16 @@
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "—"
   },
+  "nav.tableQueue": {
+    "release": "A",
+    "context": "пункт меню хозяина: очередь номеров столов (бриф Ф8 §5, добавлено 2026-10-12)",
+    "audience": "Х",
+    "maxLength": "28",
+    "variables": "—",
+    "currentKk": "Үстел нөмірлерін жіберу",
+    "currentRu": "Отправить номера столов",
+    "issues": "Как summary.tableQueueEntry"
+  },
   "nav.a11y.sections": {
     "release": "A",
     "context": "aria нижних вкладок (MK 01)",
@@ -6859,6 +6869,106 @@
     "currentRu": "Изменений пока нет",
     "issues": "—"
   },
+  "hall.history.categoryAdded": {
+    "release": "B",
+    "context": "запись истории: добавлена своя категория; без «Қайтару» (бриф Ф7b §5, добавлено 2026-10-12)",
+    "audience": "С",
+    "maxLength": "40",
+    "variables": "{category}",
+    "currentKk": "Жаңа санат: {category}",
+    "currentRu": "Новая категория: {category}",
+    "issues": "Без кавычек — как у остальных записей"
+  },
+  "hall.history.guestAdded": {
+    "release": "B",
+    "context": "запись: новая семья посажена за стол (бриф Ф7b §5, добавлено 2026-10-12)",
+    "audience": "С",
+    "maxLength": "50",
+    "variables": "{name}, {number}",
+    "currentKk": "Жаңа қонақ: {name} → {number}-үстел",
+    "currentRu": "Новый гость: {name} → стол {number}",
+    "issues": "—"
+  },
+  "hall.history.guestAddedUnplaced": {
+    "release": "B",
+    "context": "запись: новая семья, свободного места не нашлось (бриф Ф7b §5, добавлено 2026-10-12)",
+    "audience": "С",
+    "maxLength": "50",
+    "variables": "{name}",
+    "currentKk": "Жаңа қонақ: {name} · орын жетпеді",
+    "currentRu": "Новый гость: {name} · без места",
+    "issues": "Нужна, если места не нашлось (AP 7.3)"
+  },
+  "hall.history.guestDeleted": {
+    "release": "B",
+    "context": "запись: семья удалена из списка, стулья освободились (бриф Ф7b §5, добавлено 2026-10-12)",
+    "audience": "С",
+    "maxLength": "50",
+    "variables": "{name}",
+    "currentKk": "Тізімнен өшірілді: {name}",
+    "currentRu": "Удалено из списка: {name}",
+    "issues": "—"
+  },
+  "hall.history.guestRestored": {
+    "release": "B",
+    "context": "запись: удалённая семья возвращена («Қайтару» после удаления) (бриф Ф7b §5, добавлено 2026-10-12)",
+    "audience": "С",
+    "maxLength": "50",
+    "variables": "{name}",
+    "currentKk": "Тізімге қайта қосылды: {name}",
+    "currentRu": "Снова в списке: {name}",
+    "issues": "Не «Қайтарылды»: это слово уже значит «изменение отменено»"
+  },
+  "hall.history.seatsEdited": {
+    "release": "B",
+    "context": "запись: составитель изменил число мест (бриф Ф7b §5, добавлено 2026-10-12)",
+    "audience": "С",
+    "maxLength": "50",
+    "variables": "{name}, {from}, {to}",
+    "currentKk": "{name}: орын саны {from} → {to}",
+    "currentRu": "{name}: мест было {from}, стало {to}",
+    "issues": "—"
+  },
+  "hall.history.suggestedMove": {
+    "release": "B",
+    "context": "запись: пересадка по подсказке «Бос орынға ауыстыру» (Р3) (бриф Ф7b §5, добавлено 2026-10-12)",
+    "audience": "С",
+    "maxLength": "60",
+    "variables": "{name}, {from}, {to}",
+    "currentKk": "Бос орынға ауыстырылды: {name}, {from} → {to}-үстел",
+    "currentRu": "Пересадили на свободное место: {name}, стол {from} → {to}",
+    "issues": "—"
+  },
+  "hall.history.answerByPhoneYes": {
+    "release": "B",
+    "context": "запись: составитель отметил ответ по телефону «келеді»; можно отменить (бриф Ф7b §5, добавлено 2026-10-12)",
+    "audience": "С",
+    "maxLength": "60",
+    "variables": "{name}, {seats, plural}",
+    "currentKk": "Телефонмен жауап: {name} — келеді, {seats} орын",
+    "currentRu": "Ответ по телефону: {name} — придут, {seats, plural, one {# место} few {# места} many {# мест} other {# места}}",
+    "issues": "Отличается от answerSeats / answerNo: это не ответ гостя, его можно отменить"
+  },
+  "hall.history.answerByPhoneNo": {
+    "release": "B",
+    "context": "запись: составитель отметил ответ по телефону «келмейді» (бриф Ф7b §5, добавлено 2026-10-12)",
+    "audience": "С",
+    "maxLength": "60",
+    "variables": "{name}",
+    "currentKk": "Телефонмен жауап: {name} — келмейді",
+    "currentRu": "Ответ по телефону: {name} — не придут",
+    "issues": "—"
+  },
+  "hall.history.noUndo": {
+    "release": "B",
+    "context": "общая подпись у записей без отмены (своя категория и т. п.) (бриф Ф7b §5, добавлено 2026-10-12)",
+    "audience": "С",
+    "maxLength": "30",
+    "variables": "—",
+    "currentKk": "Қайтаруға болмайды",
+    "currentRu": "Отменить нельзя",
+    "issues": "Для ответов гостей — прежний hall.history.guestNoUndo"
+  },
   "hall.history.partialUndo": {
     "release": "B",
     "context": "часть семей уже изменена (AP 7.6)",
@@ -7019,6 +7129,36 @@
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "—"
   },
+  "tableQueue.allSent.title": {
+    "release": "C",
+    "context": "пустое состояние: номер отправлен всем семьям со столом (бриф Ф8 §5, добавлено 2026-10-12)",
+    "audience": "Х",
+    "maxLength": "30",
+    "variables": "—",
+    "currentKk": "Барлығына жіберілді",
+    "currentRu": "Номера отправлены всем",
+    "issues": "—"
+  },
+  "tableQueue.allSent.body": {
+    "release": "C",
+    "context": "пояснение пустого состояния (бриф Ф8 §5, добавлено 2026-10-12)",
+    "audience": "Х",
+    "maxLength": "120",
+    "variables": "{count}",
+    "currentKk": "Үстел нөмірі {count} отбасына жіберілді. Біреудің үстелі өзгерсе, сол отбасына қайта жіберіңіз.",
+    "currentRu": "Номер стола получили все семьи: {count}. Если кого-то пересадили, отправьте этой семье номер ещё раз.",
+    "issues": "—"
+  },
+  "tableQueue.allSent.restart": {
+    "release": "C",
+    "context": "кнопка: пройти очередь заново (бриф Ф8 §5, добавлено 2026-10-12)",
+    "audience": "Х",
+    "maxLength": "24",
+    "variables": "—",
+    "currentKk": "Басынан бастау",
+    "currentRu": "Начать заново",
+    "issues": "—"
+  },
   "tableQueue.notSeatedNote": {
     "release": "C",
     "context": "не рассаженные исключены",
@@ -7088,6 +7228,16 @@
     "currentKk": "[НЕТ ТЕКСТА]",
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "—"
+  },
+  "door.saveHint": {
+    "release": "C",
+    "context": "страница помощника после первой загрузки, пока есть интернет (бриф Ф8 §5, добавлено 2026-10-12)",
+    "audience": "П",
+    "maxLength": "120",
+    "variables": "—",
+    "currentKk": "Тізім телефонға сақталды. Той күні осы сілтемені қайта ашыңыз — интернетсіз де ашылады.",
+    "currentRu": "Список сохранён на телефоне. В день тоя откройте эту же ссылку — она откроется и без интернета.",
+    "issues": "Текст для сообщения помощнику уже есть: wa.doorLink и members.door.hint"
   },
   "door.search.label": {
     "release": "C",

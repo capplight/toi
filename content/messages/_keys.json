@@ -98,6 +98,7 @@
     "eventMenu": "",
     "myEvents": "",
     "logout": "",
+    "tableQueue": "",
     "a11y": {
       "sections": "",
       "sidebar": "",
@@ -963,6 +964,16 @@
       "revertEntry": "",
       "footer": "",
       "empty": "",
+      "categoryAdded": "",
+      "guestAdded": "",
+      "guestAddedUnplaced": "",
+      "guestDeleted": "",
+      "guestRestored": "",
+      "seatsEdited": "",
+      "suggestedMove": "",
+      "answerByPhoneYes": "",
+      "answerByPhoneNo": "",
+      "noUndo": "",
       "partialUndo": ""
     }
   },
@@ -984,6 +995,11 @@
     "statusSent": "",
     "statusSkipped": "",
     "done": "",
+    "allSent": {
+      "title": "",
+      "body": "",
+      "restart": ""
+    },
     "notSeatedNote": ""
   },
   "door": {
@@ -997,6 +1013,7 @@
       "firstLoadNeedsNet": "",
       "linkRevoked": ""
     },
+    "saveHint": "",
     "search": {
       "label": "",
       "placeholder": "",
