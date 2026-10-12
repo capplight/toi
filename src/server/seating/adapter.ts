@@ -90,6 +90,12 @@ export async function writeHallRows(tx: Tx, eventId: string, h: HallConfig): Pro
     .update(events)
     .set({ hallColumns: h.columns, tablesCount: h.tables, seatsPerTable: h.seatsPerTable, updatedAt: new Date() })
     .where(eq(events.id, eventId));
+  // Families at removed tables lose table and lock first: the FK only nulls `table_no`, and a locked family without
+  // a table breaks `families_lock_check` (found by the Ф7b e2e: a moved family at table 16, hall → 14 tables).
+  await tx
+    .update(families)
+    .set({ tableNo: null, seatLocked: false, lockedByMemberId: null })
+    .where(and(eq(families.eventId, eventId), gt(families.tableNo, h.tables)));
   await tx.delete(hallTables).where(and(eq(hallTables.eventId, eventId), gt(hallTables.no, h.tables)));
   await tx
     .insert(hallTables)

@@ -379,24 +379,29 @@ export function HallScreen({ v, tz }: { v: HallView; tz: string }) {
         const fams = famsAt(s);
         return (
           <Accordion.Item key={s.no} value={String(s.no)} className={cn("acc-item", over && "over")}>
-            <Accordion.Header className="acc-head">
-              <Accordion.Trigger className="acc-trigger">
-                <span>
-                  {over && <Icon name="alert" size="sm" />} {t("hall.table.title", { number: s.no })}
-                  {c && (
-                    <span className="tc">
-                      <i style={{ background: `var(--cat-${c.code})` }} aria-hidden="true" />
-                      {c.label}
+            <Accordion.Header asChild>
+              <h2 className="acc-head">
+                <Accordion.Trigger className="acc-trigger">
+                  <span className="tt">
+                    <span className="tn">
+                      {over && <Icon name="alert" size="sm" />}
+                      {t("hall.table.title", { number: s.no })}
                     </span>
-                  )}
-                </span>
-                <span className="meta num">
-                  {over
-                    ? t("hall.map.listHeaderOverflow", { taken: s.used, capacity: s.capacity, missing: s.missing })
-                    : t("hall.map.listHeader", { taken: s.used, capacity: s.capacity, free: s.free })}
-                </span>
-                <Icon name="up" className="rot-180" />
-              </Accordion.Trigger>
+                    {c && (
+                      <span className="tc">
+                        <i style={{ background: `var(--cat-${c.code})` }} aria-hidden="true" />
+                        {c.label}
+                      </span>
+                    )}
+                  </span>
+                  <span className="meta num">
+                    {over
+                      ? t("hall.map.listHeaderOverflow", { taken: s.used, capacity: s.capacity, missing: s.missing })
+                      : t("hall.map.listHeader", { taken: s.used, capacity: s.capacity, free: s.free })}
+                  </span>
+                  <Icon name="up" className="rot-180" />
+                </Accordion.Trigger>
+              </h2>
             </Accordion.Header>
             <Accordion.Content className="acc-content">
               {fams.length === 0 ? (

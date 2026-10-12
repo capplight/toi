@@ -154,7 +154,7 @@ describe("setupHall through the adapter", () => {
       eventId: r.eventId,
       hall: { columns: 4, tables: 16, seatsPerTable: 12 },
     });
-    expect(h).toEqual({ ok: true, seatingVersion: 1 });
+    expect(h).toMatchObject({ ok: true, seatingVersion: 1 }); // + historyId (Ф7b: «Қайтару» after H1)
     const [ev] = await db().select().from(events).where(eq(events.id, r.eventId));
     expect(ev).toMatchObject({ hallColumns: 4, tablesCount: 16, seatsPerTable: 12, seatingVersion: 1 });
     expect(await db().select().from(hallTables).where(eq(hallTables.eventId, r.eventId))).toHaveLength(16);

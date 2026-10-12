@@ -681,6 +681,23 @@
   .tl .acc-item {
     border-radius: var(--r-lg);
   }
+  .tl .acc-trigger .tt {
+    display: grid;
+    gap: 0.125rem;
+    text-align: left;
+    min-width: 0;
+    flex: 1;
+  }
+  .tl .acc-trigger .tn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font: 600 1.125rem/1.5rem var(--font-ui);
+    color: var(--ink);
+  }
+  .tl .acc-item.over .acc-trigger .tn .ico {
+    color: var(--danger);
+  }
   .tl .acc-trigger .tc {
     display: inline-flex;
     align-items: center;

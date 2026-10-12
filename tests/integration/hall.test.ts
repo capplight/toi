@@ -448,6 +448,24 @@ describe("undo, reverted_by, undo of undo", () => {
   });
 });
 
+describe("hall shrink with a locked family on a removed table", () => {
+  it("the family loses table and lock (no families_lock_check violation) and is re-placed", async () => {
+    const { s, owner } = await setup();
+    const m = await freeMover(s.eventId);
+    const row = await fam(m.id);
+    await hall.moveFamily(db(), owner, { familyId: row.id, toTableNo: 16, force: false, familyVersion: row.version });
+    expect(await fam(row.id)).toMatchObject({ tableNo: 16, seatLocked: true });
+    const r = await setupHall(db(), owner, { eventId: s.eventId, hall: { columns: 4, tables: 14, seatsPerTable: 12 } });
+    expect(r.ok).toBe(true);
+    const after = await fam(row.id);
+    expect(after.seatLocked).toBe(false);
+    expect(after.tableNo === null || after.tableNo <= 14).toBe(true);
+    // and the undo of the hall change brings 16 tables back without errors
+    const u = await hall.undoSeatingChange(db(), owner, { changeId: (await lastRecord(s.eventId)).id });
+    expect(u.ok).toBe(true);
+  });
+});
+
 describe("seatUnplaced", () => {
   it("seats unplaced families into free seats (auto_place record), nothing to do → no version change", async () => {
     const { s, owner } = await setup();

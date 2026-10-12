@@ -163,7 +163,7 @@ test.describe("Ф7b hall", () => {
     const w = mine(info.project.name);
     await as(context, baseURL!, w, "jas");
     await page.goto(`/e/${w.eventId}/hall`);
-    await expect(page.getByText(kk.hall.map.banners.viewOnly).first()).toBeVisible();
+    await expect(page.locator(".banner.view:visible")).toContainText(kk.hall.map.banners.viewOnly);
     await expect(page.locator(`.link-row[href$="/hall/setup"]`)).toHaveCount(0);
     await page.locator('[data-table="7"]').click();
     await expect(page.getByTestId("table-sheet")).toBeVisible();
@@ -174,7 +174,7 @@ test.describe("Ф7b hall", () => {
     await expect(page.getByRole("button", { name: kk.hall.table.move })).toHaveCount(0);
     await page.goto(`/e/${w.eventId}/hall/order`);
     await expect(page.locator(".order .arr")).toHaveCount(0);
-    await expect(page.getByText(kk.hall.order.viewOnly).first()).toBeVisible();
+    await expect(page.locator(".order .vo").first()).toHaveText(kk.hall.order.viewOnly);
     await expect(page.getByRole("button", { name: kk.hall.order.fullReseat })).toHaveCount(0);
     await page.goto(`/e/${w.eventId}/hall/history`);
     await expect(page.getByRole("button", { name: kk.common.actions.undo })).toHaveCount(0);
