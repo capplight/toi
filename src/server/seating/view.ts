@@ -67,7 +67,7 @@ export type HistoryEntry = {
 };
 
 export type HallView = {
-  event: { id: string; title: string; kind: string };
+  event: { id: string; title: string; kind: string; tz: string };
   meMemberId: string;
   canSeat: boolean;
   seatingVersion: number;
@@ -237,7 +237,7 @@ export async function hallView(
   }
 
   return {
-    event: { id: ev.id, title: ev.title, kind: ev.kind },
+    event: { id: ev.id, title: ev.title, kind: ev.kind, tz: ev.tz },
     meMemberId: m.memberId,
     canSeat: m.role === "owner" || m.canEditSeating,
     seatingVersion: ev.seatingVersion,

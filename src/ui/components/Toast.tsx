@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Toaster as SonnerToaster, toast as sonner } from "sonner";
 import { DESKTOP, useMediaQuery } from "../lib/hooks";
-import { Icon } from "./Icon";
+import { Icon, type IconName } from "./Icon";
 
 /**
  * Toast rule B1 (DESIGN_v2 7, design review):
@@ -45,10 +45,16 @@ function setHasToast(on: boolean) {
   document.body.classList.toggle("has-toast", on);
 }
 
-export type ShowToast = { message: string; undoLabel?: string; onUndo?: () => void };
+export type ShowToast = {
+  message: string;
+  undoLabel?: string;
+  onUndo?: () => void;
+  /** Icon of the action (default «Қайтару» arrow); e.g. «Тарих» for changes by others (Ф7b). */
+  icon?: IconName;
+};
 
 /** Show a toast; any previous toast is dismissed first (one at a time). */
-export function showToast({ message, undoLabel, onUndo }: ShowToast): string | number {
+export function showToast({ message, undoLabel, onUndo, icon = "undo" }: ShowToast): string | number {
   sonner.dismiss();
   setHasToast(true);
   const done = () => setHasToast(false);
@@ -68,7 +74,7 @@ export function showToast({ message, undoLabel, onUndo }: ShowToast): string | n
               done();
             }}
           >
-            <Icon name="undo" size="sm" />
+            <Icon name={icon} size="sm" />
             {undoLabel}
           </button>
         )}

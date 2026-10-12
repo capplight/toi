@@ -435,6 +435,7 @@ describe("undo, reverted_by, undo of undo", () => {
     });
 
     const a = await guests.recordAnswerByMember(db(), owner, { familyId: f("f03"), attending: false });
+    if (!a.ok) throw new Error("answer failed");
     const h1 = await historyView(db(), owner, s.eventId);
     expect(h1.entries.find((e) => e.id === a.historyId)!.undo).toBe("answer");
     const rv = await guests.revertAnswer(db(), owner, { historyId: a.historyId });

@@ -227,7 +227,11 @@ export async function setupHall(
   db: Db,
   who: Principal,
   input: { eventId: string; hall: HallInput; seatingVersion?: number },
-): Promise<{ ok: true; seatingVersion: number } | { ok: false; field: "hall" } | { ok: false; conflict: "version" }> {
+): Promise<
+  | { ok: true; seatingVersion: number; historyId: number | null }
+  | { ok: false; field: "hall" }
+  | { ok: false; conflict: "version" }
+> {
   const m = await authorize(db, who, input.eventId, "seating");
   if (!validateHallInput(input.hall)) return { ok: false, field: "hall" };
   const h = input.hall;
@@ -254,7 +258,7 @@ export async function setupHall(
         };
       },
     );
-    return { ok: true, seatingVersion: out.seatingVersion };
+    return { ok: true, seatingVersion: out.seatingVersion, historyId: out.historyId ?? null };
   } catch (e) {
     if (e instanceof Stale) return { ok: false, conflict: "version" };
     throw e;

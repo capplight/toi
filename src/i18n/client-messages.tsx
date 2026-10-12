@@ -17,6 +17,12 @@ export const SHELL_MESSAGES = [
   "guestForm.title",
   "noAnswer.title",
   "members.title",
+  // Ф7b: «Зал» sub-screen titles and the «Схема | Тізім» segment in the top bar
+  "hall.map.view",
+  "hall.setup.title",
+  "hall.order.title",
+  "hall.history.title",
+  "hall.move.title",
 ] as const;
 
 type Tree = { [k: string]: string | Tree };

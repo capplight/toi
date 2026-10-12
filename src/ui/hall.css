@@ -1,0 +1,762 @@
+/* =====================================================================
+   «Той» — Ф7b «Зал» screens (H1–H7). Separate from components.css (parallel work with RA, brief Ф7b §6).
+   Ported from design/v2/mockups/css/hall2.css (v2.4, rem) + 03-hall / 04-table-sheet layout (DESIGN_v2 8.6–8.13).
+   ===================================================================== */
+
+@layer components {
+  /* ---------- H2 frame: phone column, desktop «Зал» head + stage | aside (8.7) ---------- */
+  .hall-screen {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .hall-head {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .hall-screen {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 22.5rem;
+      grid-template-areas: "head aside" "main aside";
+      column-gap: 1.75rem;
+      row-gap: 1rem;
+      align-items: start;
+    }
+    .hall-screen > .hall-head {
+      grid-area: head;
+      display: flex;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 0.75rem 1rem;
+    }
+    .hall-screen > .hall-main {
+      grid-area: main;
+      min-width: 0;
+    }
+    .hall-screen > .hall-aside {
+      grid-area: aside;
+      position: sticky;
+      top: 1.5rem;
+      display: grid;
+      gap: 1rem;
+    }
+  }
+  @media (min-width: 1440px) {
+    .hall-screen {
+      grid-template-columns: minmax(0, 1fr) 26.25rem;
+      column-gap: 2.5rem;
+    }
+  }
+  .hall-head .ttl {
+    flex: 1;
+    min-width: 0;
+  }
+  .hall-head .ttl p {
+    margin: 0.25rem 0 0;
+    color: var(--ink-2);
+    font: 400 1.0625rem/1.5rem var(--font-ui);
+  }
+  .hall-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .hall-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* desktop summary card (SummaryLine expanded, 8.7) */
+  .sum-card-h {
+    background: var(--paper);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-card);
+    padding: 1rem 1.125rem;
+    display: grid;
+    gap: 0.375rem;
+  }
+  .sum-card-h .big {
+    font: 600 1.75rem/2.125rem var(--font-ui);
+    font-variant-numeric: tabular-nums;
+  }
+  .sum-card-h .big.over {
+    color: var(--danger);
+  }
+  .sum-card-h .sub {
+    color: var(--ink-2);
+    font: 400 1rem/1.5rem var(--font-ui);
+  }
+  .sum-card-h .resto {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--r-md);
+    background: var(--gold-soft);
+    color: var(--gold-ink);
+    font: 600 1rem/1.375rem var(--font-ui);
+  }
+
+  /* inline banner with its own action (Р3 «Бос орынға ауыстыру») */
+  .grew {
+    display: grid;
+    gap: 0.625rem;
+    padding: 0.875rem 1rem;
+    border-radius: var(--r-lg);
+    background: var(--danger-soft);
+    font: 400 1rem/1.4375rem var(--font-ui);
+  }
+  .grew p {
+    margin: 0;
+  }
+  .grew .btn {
+    justify-self: start;
+    width: auto;
+  }
+
+  /* ---------- H3 table sheet ---------- */
+  .tsheet {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .tsheet .over-box {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr;
+    gap: 0.25rem 0.625rem;
+    padding: 0.875rem 1rem;
+    border-radius: var(--r-lg);
+    background: var(--danger-soft);
+  }
+  .tsheet .over-box .ico {
+    color: var(--danger);
+  }
+  .tsheet .over-box b {
+    color: var(--danger);
+    font: 600 1.125rem/1.5rem var(--font-ui);
+  }
+  .tsheet .over-box p {
+    grid-column: 2;
+    margin: 0;
+    font: 400 1rem/1.4375rem var(--font-ui);
+  }
+  .tsheet .ok-line {
+    color: var(--success-ink);
+    font: 600 1rem/1.375rem var(--font-ui);
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+  .tsheet .stat {
+    text-align: center;
+    color: var(--ink-2);
+    font: 400 1rem/1.375rem var(--font-ui);
+  }
+  .tsheet .stat.over {
+    color: var(--danger);
+    font-weight: 600;
+  }
+  .tsheet .who {
+    margin: 0.25rem 0 0;
+    font: 600 1rem/1.375rem var(--font-ui);
+  }
+  .fams-box {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+  .fams-box .fam + .fam {
+    border-top: 1px solid var(--line);
+  }
+  .fam .no.over {
+    background: var(--danger);
+    color: var(--white);
+  }
+
+  /* duplicates (H6) */
+  .dup-card {
+    border: 2px solid var(--dup);
+    border-radius: var(--r-lg);
+    padding: 0.875rem 1rem;
+    display: grid;
+    gap: 0.625rem;
+    background: var(--paper);
+  }
+  .dup-card + .dup-card {
+    margin-top: 0.75rem;
+  }
+  .dup-who {
+    display: grid;
+    grid-template-columns: 1.75rem 1fr;
+    gap: 0 0.625rem;
+  }
+  .dup-who .mk {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--dup);
+    color: var(--white);
+    display: grid;
+    place-items: center;
+    font: 600 0.875rem/1 var(--font-ui);
+    margin-top: 0.125rem;
+  }
+  .dup-who b {
+    font: 600 1.125rem/1.5rem var(--font-ui);
+  }
+  .dup-who span {
+    grid-column: 2;
+    color: var(--ink-2);
+    font: 400 1rem/1.375rem var(--font-ui);
+  }
+  .dup-acts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .dup-pick {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .dup-pick label {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 0.75rem;
+    align-items: center;
+    min-height: 3.5rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
+    cursor: pointer;
+  }
+  .dup-pick label:has(input:checked) {
+    border-color: var(--lapis);
+    background: var(--lapis-soft);
+  }
+  .dup-pick input {
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: var(--lapis);
+  }
+  .dup-pick span {
+    grid-column: 2;
+    color: var(--ink-2);
+    font-size: 1rem;
+  }
+  .dup-panel {
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    bottom: calc(var(--h-tabbar) + 0.5rem + env(safe-area-inset-bottom));
+    z-index: 40;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.625rem 0.625rem 0.625rem 1rem;
+    background: var(--paper);
+    border: 2px solid var(--dup);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-raised);
+    font: 400 1rem/1.375rem var(--font-ui);
+  }
+  .dup-panel ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    min-width: 0;
+  }
+  .dup-panel li {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .dup-panel .btn {
+    width: auto;
+  }
+  @media (min-width: 1024px) {
+    .dup-panel {
+      left: auto;
+      right: 2rem;
+      bottom: 1.5rem;
+      width: 27.5rem;
+    }
+  }
+
+  /* unplaced list */
+  .unpl {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+  }
+  .unpl li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.25rem 0.75rem;
+    align-items: center;
+    padding: 0.75rem 1rem;
+  }
+  .unpl li + li {
+    border-top: 1px solid var(--line);
+  }
+  .unpl b {
+    font: 600 1.125rem/1.5rem var(--font-ui);
+    overflow-wrap: anywhere;
+  }
+  .unpl span {
+    color: var(--ink-2);
+    font-size: 1rem;
+  }
+  .unpl .btn {
+    width: auto;
+    grid-row: 1 / span 2;
+    grid-column: 2;
+  }
+
+  /* ---------- H4 «Ауыстыру» ---------- */
+  .mv-info {
+    margin: 0.25rem 0.125rem 0.875rem;
+  }
+  .mv-info b {
+    display: block;
+    font: 600 1.25rem/1.625rem var(--font-ui);
+    overflow-wrap: anywhere;
+  }
+  .mv-info span {
+    display: block;
+    font: 400 1rem/1.5rem var(--font-ui);
+    color: var(--ink-2);
+  }
+  .choose h3 {
+    margin: 0 0 0.5rem;
+    font: 600 1.0625rem/1.5rem var(--font-ui);
+  }
+  .choose .row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 3.5rem;
+    padding: 0 0.75rem 0 1rem;
+    border-radius: var(--r-md);
+    border: 1.5px solid var(--success);
+    background: var(--paper);
+    font: 600 1.0625rem/1.375rem var(--font-ui);
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+  }
+  .choose .row + .row {
+    margin-top: 0.5rem;
+  }
+  .choose .row .ico {
+    margin-left: auto;
+    color: var(--ink-2);
+  }
+  .choose .row .dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    border: 2px dashed var(--success);
+    flex: none;
+  }
+  .choose .row.short {
+    border-color: var(--line-strong);
+    color: var(--ink-2);
+    font-weight: 400;
+  }
+  .choose .row.short .dot {
+    border: 2px solid var(--line-strong);
+  }
+  .choose details {
+    margin-top: 0.75rem;
+  }
+  .choose summary {
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font: 600 1rem/1.375rem var(--font-ui);
+    color: var(--lapis);
+    list-style: none;
+  }
+  .choose summary::-webkit-details-marker {
+    display: none;
+  }
+  .choose details[open] summary .ico {
+    transform: rotate(180deg);
+  }
+  .route {
+    font: 600 1.25rem/1.75rem var(--font-ui);
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .okline {
+    color: var(--success-ink);
+    font: 600 1rem/1.375rem var(--font-ui);
+    margin: 0;
+  }
+  .badline {
+    color: var(--danger);
+    font: 600 1rem/1.375rem var(--font-ui);
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    margin: 0;
+  }
+  .confirm-body p {
+    margin: 0;
+  }
+
+  /* ---------- H5 «Отырғызу реті» ---------- */
+  .order-screen {
+    display: grid;
+    gap: 0.875rem;
+  }
+  @media (min-width: 1024px) {
+    .order-screen {
+      grid-template-columns: minmax(0, 35rem) minmax(0, 1fr);
+      column-gap: 2rem;
+      align-items: start;
+    }
+    .order-screen > .order-side {
+      grid-column: 2;
+      grid-row: 1 / span 6;
+      position: sticky;
+      top: 1.5rem;
+    }
+  }
+  .order {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-card);
+    overflow: hidden;
+  }
+  .order li {
+    display: grid;
+    grid-template-columns: 1.75rem 0.5rem minmax(0, 1fr) auto;
+    gap: 0.25rem 0.75rem;
+    align-items: center;
+    min-height: 4.5rem;
+    padding: 0.625rem 0.75rem 0.625rem 1rem;
+    position: relative;
+    background: var(--paper);
+  }
+  .order li + li {
+    border-top: 1px solid var(--line);
+  }
+  .order li .no {
+    font: 600 1.25rem/1 var(--font-ui);
+    color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .order li .mark {
+    width: 0.5rem;
+    height: 2rem;
+    border-radius: 0.25rem;
+    box-shadow: inset 0 0 0 1px rgba(23, 32, 44, 0.2);
+  }
+  .order li b {
+    display: block;
+    font: 600 1.125rem/1.5rem var(--font-ui);
+    overflow-wrap: anywhere;
+  }
+  .order li span.m {
+    display: block;
+    font: 400 0.9375rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .order li .arr {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .order li .arr button {
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--r-md);
+    border: 0;
+    background: var(--sand);
+    display: grid;
+    place-items: center;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .order li .arr button:focus-visible {
+    outline: 3px solid var(--lapis);
+    outline-offset: 2px;
+  }
+  .order li .arr button[aria-disabled="true"] {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .order li.moved {
+    background: var(--lapis-soft);
+  }
+  .order li .vo {
+    font: 600 0.9375rem/1 var(--font-ui);
+    color: var(--ink-2);
+  }
+  @media (max-width: 359px) {
+    .order li {
+      grid-template-columns: 1.25rem 0.5rem minmax(0, 1fr);
+    }
+    .order li .arr {
+      grid-column: 3;
+    }
+  }
+  .info-banner {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr;
+    gap: 0.625rem;
+    padding: 0.875rem 1rem;
+    border-radius: var(--r-lg);
+    background: var(--gold-soft);
+    font: 400 1rem/1.4375rem var(--font-ui);
+  }
+  .info-banner .ico {
+    color: var(--gold-ink);
+  }
+  .info-banner b {
+    display: block;
+    font-weight: 600;
+  }
+  .moves {
+    list-style: none;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    background: var(--ivory);
+    border-radius: var(--r-md);
+  }
+  .moves li {
+    padding: 0.625rem 0.875rem;
+    font: 400 1rem/1.375rem var(--font-ui);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  .moves li + li {
+    border-top: 1px solid var(--line);
+  }
+  .moves li.more {
+    color: var(--ink-2);
+  }
+  .pv-big {
+    font: 600 1.5rem/1.875rem var(--font-ui);
+    margin: 0;
+  }
+  .pv-sub {
+    margin: 0.375rem 0 0;
+    font: 400 1rem/1.5rem var(--font-ui);
+    color: var(--ink-2);
+    display: flex;
+    gap: 0.375rem;
+    align-items: flex-start;
+  }
+  .stale {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr;
+    gap: 0.5rem;
+    padding: 0.75rem 0.875rem;
+    margin-bottom: 0.875rem;
+    border-radius: var(--r-md);
+    background: var(--danger-soft);
+    color: var(--ink);
+    font: 400 1rem/1.4375rem var(--font-ui);
+  }
+  .stale .ico {
+    color: var(--danger);
+  }
+
+  /* ---------- H7 «Өзгерістер тарихы» ---------- */
+  .hist-col {
+    display: grid;
+    gap: 0;
+  }
+  @media (min-width: 1024px) {
+    .hist-col {
+      max-width: 45rem;
+      margin: 0 auto;
+      width: 100%;
+    }
+  }
+  .hist-day {
+    margin: 1.5rem 0.25rem 0.5rem;
+    font: 600 1rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .hist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-card);
+    overflow: hidden;
+  }
+  .he {
+    padding: 0.875rem 1rem;
+  }
+  .he + .he {
+    border-top: 1px solid var(--line);
+  }
+  .he .meta {
+    font: 400 0.9375rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+  .he .sum {
+    font: 600 1.0625rem/1.5rem var(--font-ui);
+    margin-top: 0.125rem;
+    overflow-wrap: anywhere;
+  }
+  .he .line2 {
+    font: 400 1rem/1.4375rem var(--font-ui);
+    overflow-wrap: anywhere;
+  }
+  .he .warn {
+    display: flex;
+    gap: 0.375rem;
+    align-items: flex-start;
+    color: var(--danger);
+    font: 600 0.9375rem/1.375rem var(--font-ui);
+    margin-top: 0.25rem;
+  }
+  .he .nou {
+    font: 400 0.9375rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+    margin-top: 0.25rem;
+  }
+  .he .btn {
+    width: auto;
+    min-height: 3rem;
+    padding: 0 1rem;
+    margin-top: 0.625rem;
+  }
+  .he.rev .sum,
+  .he.rev .line2 {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+  .he .revd {
+    font: 400 0.9375rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+    margin-top: 0.25rem;
+    display: flex;
+    gap: 0.375rem;
+    align-items: center;
+  }
+  .hist-foot {
+    margin: 1rem 0.25rem 0;
+    font: 400 0.9375rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+  }
+
+  /* ---------- H2-List: accordion by table ---------- */
+  .tl {
+    display: grid;
+    gap: 0.5rem;
+  }
+  @media (min-width: 1024px) {
+    .tl {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+  .tl .acc-item {
+    border-radius: var(--r-lg);
+  }
+  .tl .acc-trigger .tc {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--ink-2);
+    font: 400 0.9375rem/1.375rem var(--font-ui);
+  }
+  .tl .acc-trigger .tc i {
+    width: 0.5625rem;
+    height: 0.5625rem;
+    border-radius: 2px;
+    transform: rotate(45deg);
+    box-shadow: inset 0 0 0 1px rgba(23, 32, 44, 0.25);
+  }
+  .tl-empty {
+    padding: 0.75rem 1rem;
+    color: var(--ink-2);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  /* ---------- H1 «Залды баптау» ---------- */
+  .setup-screen {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 1024px) {
+    .setup-screen {
+      grid-template-columns: minmax(0, 32rem) minmax(0, 1fr);
+      column-gap: 2rem;
+      align-items: start;
+    }
+    .setup-screen > .setup-side {
+      position: sticky;
+      top: 1.5rem;
+      display: grid;
+      gap: 1rem;
+    }
+  }
+  .setup-sum {
+    background: var(--paper);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-card);
+    padding: 1rem 1.125rem;
+    display: grid;
+    gap: 0.25rem;
+    border: 2px solid transparent;
+  }
+  .setup-sum.short {
+    border-color: var(--danger);
+  }
+  .setup-sum .ok {
+    color: var(--success-ink);
+    font: 600 1.125rem/1.5rem var(--font-ui);
+  }
+  .setup-sum .bad {
+    color: var(--danger);
+    font: 600 1.125rem/1.5rem var(--font-ui);
+    display: flex;
+    gap: 0.375rem;
+    align-items: flex-start;
+  }
+  .setup-sum .muted {
+    color: var(--ink-2);
+    font-size: 1rem;
+  }
+  .setup-actions {
+    position: sticky;
+    bottom: 0;
+    padding: 0.75rem 0 calc(0.75rem + env(safe-area-inset-bottom));
+    background: linear-gradient(transparent, var(--ivory) 30%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .order li {
+    transition: none !important;
+  }
+}

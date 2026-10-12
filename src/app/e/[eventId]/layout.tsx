@@ -10,6 +10,7 @@ import { ForbiddenError, requireMember, UnauthorizedError } from "@/server/authz
 import { db } from "@/server/db";
 import { listKind } from "@/server/guests/queries";
 import { eventMembers, events } from "@/server/schema";
+import { hallAttention } from "@/server/seating/view";
 import { EventShell } from "./EventShell";
 
 export const dynamic = "force-dynamic";
@@ -49,6 +50,8 @@ export default async function EventLayout({ params, children }: LayoutProps<"/e/
   );
   // RA review П1: only the frame's messages here; each route layout adds its own (src/i18n/client-messages.tsx).
   const messages = pickMessages((await getMessages()) as never, SHELL_MESSAGES);
+  // Red dot at «Зал» (Ф1 `hallAttention`, Ф7b): overflow, unplaced families or unreviewed duplicates.
+  const attention = await hallAttention(db(), eventId);
   return (
     <NextIntlClientProvider messages={messages}>
       <EventShell
@@ -56,6 +59,7 @@ export default async function EventLayout({ params, children }: LayoutProps<"/e/
         user={{ name: m.label, roleLabel, permissionLabel, initial: (m.label[0] ?? "?").toUpperCase() }}
         isOwner={owner}
         canManageBudget={owner || m.canManageBudget}
+        hallAttention={attention}
         actions={{ setLocale, logout: logoutAction }}
         lists={lists}
         myMemberId={m.memberId}

@@ -4,6 +4,8 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { ComponentProps } from "react";
 import { AppShell } from "@/ui/components/AppShell";
+import { Segment } from "@/ui/components/Controls";
+import { setHallParams } from "./hall/hall-client";
 
 type ShellProps = Omit<ComponentProps<typeof AppShell>, "title" | "subtitle" | "back" | "hideTabs" | "hasCta">;
 
@@ -11,7 +13,9 @@ type ShellProps = Omit<ComponentProps<typeof AppShell>, "title" | "subtitle" | "
  * Picks the top-bar title, subtitle and «←» from the current route (texts from content/messages):
  * - guests: «Менің тізімім» + own list name, or another member's list name (`?list=`), sticky «Қонақ қосу»;
  * - guests/add: «Жаңа қонақ» / «Қонақты өзгерту» (`?edit=`), no tabs (S2);
- * - guests/no-answer: «Жауап бермегендер» with «←» (S5).
+ * - guests/no-answer: «Жауап бермегендер» with «←» (S5);
+ * - hall: «Зал» + «Схема | Тізім» in the phone bar (DESIGN 8.7); `?move=` «Қай үстелге?» with ✕, no tabs (H4);
+ *   hall/setup «Залды баптау» (form, no tabs), hall/order «Отырғызу реті», hall/history «Өзгерістер тарихы» with «←».
  */
 export function EventShell({
   lists,
@@ -24,6 +28,7 @@ export function EventShell({
   const tn = useTranslations("noAnswer");
   const tmem = useTranslations("members");
   const ta = useTranslations("common.actions");
+  const thall = useTranslations("hall");
   const path = usePathname();
   const query = useSearchParams();
   const parts = path.split("/");
@@ -44,6 +49,54 @@ export function EventShell({
         hideTabs={sub === "add"}
         hasCta={sub === "add"}
         section={current}
+      />
+    );
+  }
+
+  if (section === "hall") {
+    const toHall = { href: `${base}/hall`, label: ta("back"), mobileOnly: true };
+    if (sub === "setup" || sub === "order" || sub === "history") {
+      const titles = { setup: thall("setup.title"), order: thall("order.title"), history: thall("history.title") };
+      return (
+        <AppShell
+          {...props}
+          title={titles[sub]}
+          back={toHall}
+          hideTabs={sub === "setup"}
+          hasCta={sub === "setup"}
+          section="hall"
+        />
+      );
+    }
+    if (query.get("move")) {
+      return (
+        <AppShell
+          {...props}
+          title={thall("move.title")}
+          back={{ ...toHall, label: ta("close") }}
+          hideTabs
+          section="hall"
+        />
+      );
+    }
+    const view = query.get("view") === "list" ? "list" : "map";
+    return (
+      <AppShell
+        {...props}
+        title={t("hall")}
+        section="hall"
+        topRight={
+          <Segment
+            compact
+            value={view}
+            onChange={(v) => setHallParams({ view: v })}
+            label={thall("map.view.label")}
+            options={[
+              { value: "map", label: thall("map.view.map"), icon: "grid" },
+              { value: "list", label: thall("map.view.list"), icon: "list" },
+            ]}
+          />
+        }
       />
     );
   }
