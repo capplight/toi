@@ -1,8 +1,9 @@
-import { and, asc, eq, isNull, sql } from "drizzle-orm";
-import type { Family, SeatingResult, SeatingState, Warning } from "@/domain/seating";
+import { and, asc, eq, gt, isNull, sql } from "drizzle-orm";
+import type { Family, HallConfig, SeatingResult, SeatingState, Warning } from "@/domain/seating";
+import { tableStats } from "@/domain/seating/stats";
 import { buildDiff } from "@/domain/seating/undo";
 import type { Db, Tx } from "../db";
-import { categories, events, families, seatingChanges } from "../schema";
+import { categories, events, families, hallTables, seatingChanges } from "../schema";
 
 /**
  * Server adapter of the seating engine (plan 7.1, brief Ф4 2.1). The ONLY way the app changes seats:
@@ -80,6 +81,29 @@ export async function loadSeatingState(tx: Db | Tx, eventId: string): Promise<Se
   };
 }
 
+/**
+ * Hall settings + `hall_tables` rows (H1 `setupHall`, undo of a hall change). Call inside a seating step, before the
+ * adapter writes the families: rows beyond the new count are deleted (FK sets `table_no` null), the rest upserted.
+ */
+export async function writeHallRows(tx: Tx, eventId: string, h: HallConfig): Promise<void> {
+  await tx
+    .update(events)
+    .set({ hallColumns: h.columns, tablesCount: h.tables, seatsPerTable: h.seatsPerTable, updatedAt: new Date() })
+    .where(eq(events.id, eventId));
+  await tx.delete(hallTables).where(and(eq(hallTables.eventId, eventId), gt(hallTables.no, h.tables)));
+  await tx
+    .insert(hallTables)
+    .values(Array.from({ length: h.tables }, (_, i) => ({ eventId, no: i + 1, capacity: h.seatsPerTable })))
+    .onConflictDoUpdate({ target: [hallTables.eventId, hallTables.no], set: { capacity: h.seatsPerTable } });
+}
+
+/** Category ranks after an order change (the unique (event, rank) constraint is deferred to commit). */
+export async function writeCategoryRanks(tx: Tx, state: SeatingState): Promise<void> {
+  for (const c of state.categories) {
+    await tx.update(categories).set({ seatingRank: c.rank }).where(eq(categories.id, c.id));
+  }
+}
+
 const unseated = (f: Family): Family => ({ ...f, tableNo: null, locked: false, lockedBy: null });
 
 /**
@@ -111,7 +135,38 @@ export type SeatingStep<T> = (ctx: { tx: Tx; state: SeatingState }) => Promise<{
    * («Қонақтың жауабы: 3 → 4 орын»); `summary` then carries `from` / `to`.
    */
   record?: boolean;
+  /**
+   * This step undoes history record `revertOf` (plan 7.6): the new record gets `revert_of`, the original one
+   * `reverted_by` (H7 shows it struck through). Only when a record is written.
+   */
+  revertOf?: number;
 }>;
+
+/**
+ * H7 shows «N-үстелге M орын жетпейді» under a record that made a table overflow (or overflow more): the tables are
+ * added to the history summary as `warn` (engine numbers, plan 7.6).
+ */
+export function withOverflow(summary: Record<string, unknown>, before: SeatingState, after: SeatingState) {
+  const was = new Map(tableStats(before).overfull.map((t) => [t.no, t.missing]));
+  const warn = tableStats(after)
+    .overfull.filter((t) => t.missing > (was.get(t.no) ?? 0))
+    .map((t) => ({ tableNo: t.no, missing: t.missing }));
+  return warn.length ? { ...summary, warn } : summary;
+}
+
+/** Contract guard (Ф4 review, Ф7b brief §2): seats never change without a new version. */
+export class SeatingContractError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "SeatingContractError";
+  }
+}
+
+export function assertStepContract(step: { noop?: boolean; result: Pick<SeatingResult, "deltas"> }): void {
+  if (step.noop && step.result.deltas.length > 0) {
+    throw new SeatingContractError(`noop step returned ${step.result.deltas.length} seat change(s)`);
+  }
+}
 
 export type SeatingOutcome<T> = {
   seatingVersion: number;
@@ -145,7 +200,9 @@ export async function withSeating<T>(
       .for("update");
     if (!locked) throw new NotFound();
     const before = await loadSeatingState(tx, eventId);
-    const { result, action, summary, value, noop, record } = await step({ tx, state: before });
+    const out = await step({ tx, state: before });
+    assertStepContract(out);
+    const { result, action, summary, value, noop, record, revertOf } = out;
 
     const after = new Map(result.state.families.map((f) => [f.id, f]));
     for (const d of result.deltas) {
@@ -171,11 +228,18 @@ export async function withSeating<T>(
         actorKind: actor.kind,
         actorMemberId: actor.memberId,
         action,
-        summary,
+        summary: withOverflow(summary, before, result.state),
         diff,
         seatingVersionAfter: seatingVersion,
+        revertOf: revertOf ?? null,
       })
       .returning({ id: seatingChanges.id });
+    if (revertOf !== undefined) {
+      await tx
+        .update(seatingChanges)
+        .set({ revertedBy: rec!.id })
+        .where(and(eq(seatingChanges.id, revertOf), eq(seatingChanges.eventId, eventId)));
+    }
     return { seatingVersion, changes: result.deltas, warnings: result.warnings, historyId: rec!.id, value };
   });
 }

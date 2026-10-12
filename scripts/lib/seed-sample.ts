@@ -186,10 +186,11 @@ export async function seedSample(
 
     // History h1–h6 (design_spec 5.2): manual moves by Анасы and one guest answer.
     const fid = (id: string) => familyIds.get(id)!;
+    // Ф7b: `before` = the table the family came from, so «Қайтару» in H7 puts it back there (plan 7.6).
     const move = (ids: string[], from: number, to: number) => ({
       families: ids.map((id) => ({
         id: fid(id),
-        before: { tableNo: null, locked: false, lockedBy: null },
+        before: { tableNo: from, locked: false, lockedBy: null },
         after: { tableNo: to, locked: true, lockedBy: memberIds.ana },
       })),
       _from: from,

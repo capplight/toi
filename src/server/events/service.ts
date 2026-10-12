@@ -11,18 +11,8 @@ import { revokeMemberEventAccess } from "../auth/session";
 import { defaultCategories } from "../categories";
 import { randomToken } from "../crypto";
 import type { Db } from "../db";
-import {
-  allowedOwners,
-  categories,
-  eventMembers,
-  events,
-  hallTables,
-  loginLinks,
-  sessionEvents,
-  sessions,
-  users,
-} from "../schema";
-import { withSeating } from "../seating/adapter";
+import { allowedOwners, categories, eventMembers, events, loginLinks, sessionEvents, sessions, users } from "../schema";
+import { withSeating, writeHallRows } from "../seating/adapter";
 
 /**
  * Ф3: events and members (plan 6.2). Each function: authz → validation → transaction / adapter.
@@ -252,22 +242,8 @@ export async function setupHall(
           const [ev] = await tx.select({ v: events.seatingVersion }).from(events).where(eq(events.id, input.eventId));
           if (ev!.v !== input.seatingVersion) throw new Stale();
         }
-        await tx
-          .update(events)
-          .set({ hallColumns: h.columns, tablesCount: h.tables, seatsPerTable: h.seatsPerTable, updatedAt: new Date() })
-          .where(eq(events.id, input.eventId));
         // Tables beyond the new count: families there lose the table (FK on delete set null); the engine re-seats them.
-        await tx.delete(hallTables).where(and(eq(hallTables.eventId, input.eventId), gt(hallTables.no, h.tables)));
-        await tx
-          .insert(hallTables)
-          .values(
-            Array.from({ length: h.tables }, (_, i) => ({
-              eventId: input.eventId,
-              no: i + 1,
-              capacity: h.seatsPerTable,
-            })),
-          )
-          .onConflictDoUpdate({ target: [hallTables.eventId, hallTables.no], set: { capacity: h.seatsPerTable } });
+        await writeHallRows(tx, input.eventId, h);
         const result = engineSetupHall(state, { columns: h.columns, tables: h.tables, seatsPerTable: h.seatsPerTable });
         return {
           result,

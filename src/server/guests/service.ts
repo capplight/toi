@@ -90,7 +90,7 @@ async function categoryInEvent(db: Db, eventId: string, categoryId: string): Pro
 }
 
 /** The family's event (for authz of family-level actions). 403 for unknown ids (no existence oracle). */
-async function familyEvent(db: Db, familyId: string): Promise<FamilyRow> {
+export async function familyEvent(db: Db, familyId: string): Promise<FamilyRow> {
   if (!/^[0-9a-f-]{36}$/i.test(familyId)) throw new ForbiddenError();
   const [row] = await db.select().from(families).where(eq(families.id, familyId));
   if (!row) throw new ForbiddenError();
@@ -453,7 +453,7 @@ export async function revertAnswer(db: Db, who: Principal, input: { historyId: n
   }
   const current = await familyEvent(db, sum.familyId);
   const changed = { ok: false as const, eventId: h.eventId, reason: "changed" as const };
-  if (current.eventId !== h.eventId || current.deletedAt) return changed;
+  if (current.eventId !== h.eventId || current.deletedAt || h.revertedBy !== null) return changed;
   const still =
     current.rsvp === sum.to.rsvp &&
     (current.confirmedCount ?? null) === (sum.to.confirmed ?? null) &&
@@ -488,6 +488,8 @@ export async function revertAnswer(db: Db, who: Principal, input: { historyId: n
       },
       value: null,
       record: true,
+      // Ф7b brief §2: the original answer record is marked `reverted_by` (H7 shows it struck through)
+      revertOf: h.id,
     };
   });
   return { ok: true as const, eventId: current.eventId };
