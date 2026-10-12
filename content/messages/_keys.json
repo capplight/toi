@@ -1000,6 +1000,8 @@
       "body": "",
       "restart": ""
     },
+    "skippedTitle": "",
+    "backToSummary": "",
     "notSeatedNote": ""
   },
   "door": {
@@ -1041,6 +1043,7 @@
     "title": "",
     "total": "",
     "totalEdit": "",
+    "totalLabel": "",
     "totalNotSet": "",
     "bar": "",
     "overBudget": "",
@@ -1066,7 +1069,8 @@
       "auto": "",
       "formula": "",
       "hint": "",
-      "priceLabel": ""
+      "priceLabel": "",
+      "priceMissing": ""
     },
     "item": {
       "changedBy": "",
@@ -1081,6 +1085,7 @@
       "save": "",
       "delete": "",
       "deleteConfirm": "",
+      "deletedToast": "",
       "errors": {
         "amount": "",
         "titleRequired": ""

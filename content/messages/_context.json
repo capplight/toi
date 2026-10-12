@@ -7159,6 +7159,26 @@
     "currentRu": "Начать заново",
     "issues": "—"
   },
+  "tableQueue.skippedTitle": {
+    "release": "C",
+    "context": "заголовок над списком пропущенных семей на экране «Дайын» (DESIGN_v2 17.3, макеты 12/13, добавлено 2026-10-12)",
+    "audience": "Х",
+    "maxLength": "30",
+    "variables": "—",
+    "currentKk": "Өткізіп жіберілгендер",
+    "currentRu": "Пропущенные семьи",
+    "issues": "—"
+  },
+  "tableQueue.backToSummary": {
+    "release": "C",
+    "context": "кнопка после очереди: вернуться на «Қорытынды» (DESIGN_v2 17.3, макеты 12/13, добавлено 2026-10-12)",
+    "audience": "Х",
+    "maxLength": "24",
+    "variables": "—",
+    "currentKk": "Қорытындыға оралу",
+    "currentRu": "Вернуться к итогам",
+    "issues": "Вместо guestForm.success.backToList из макета"
+  },
   "tableQueue.notSeatedNote": {
     "release": "C",
     "context": "не рассаженные исключены",
@@ -7429,6 +7449,16 @@
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "—"
   },
+  "budget.totalLabel": {
+    "release": "D",
+    "context": "подпись поля общего бюджета при правке (DESIGN_v2 17.3, макеты 12/13, добавлено 2026-10-12)",
+    "audience": "Х, Р",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Жалпы бюджет",
+    "currentRu": "Общий бюджет",
+    "issues": "—"
+  },
   "budget.totalNotSet": {
     "release": "D",
     "context": "бюджет не задан",
@@ -7639,6 +7669,16 @@
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "—"
   },
+  "budget.restaurant.priceMissing": {
+    "release": "D",
+    "context": "карточка ресторана, пока цена места не задана (DESIGN_v2 17.3, макеты 12/13, добавлено 2026-10-12)",
+    "audience": "Х, Р",
+    "maxLength": "120",
+    "variables": "—",
+    "currentKk": "Бір орынның бағасын жазыңыз — мейрамхана сомасын қонақтар саны бойынша өзіміз есептейміз.",
+    "currentRu": "Укажите цену за одно место — сумму за ресторан посчитаем сами по числу гостей.",
+    "issues": "Рядом поле budget.restaurant.priceLabel"
+  },
   "budget.item.changedBy": {
     "release": "D",
     "context": "(D2 8.20)",
@@ -7738,6 +7778,16 @@
     "currentKk": "[НЕТ ТЕКСТА]",
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "—"
+  },
+  "budget.item.deletedToast": {
+    "release": "D",
+    "context": "тост после удаления статьи расходов, с «Қайтару» (DESIGN_v2 17.3, макеты 12/13, добавлено 2026-10-12)",
+    "audience": "Х, Р",
+    "maxLength": "32",
+    "variables": "{title}",
+    "currentKk": "Өшірілді: {title}",
+    "currentRu": "Удалено: {title}",
+    "issues": "По образцу guestSheet.delete.toast: название после двоеточия, без окончаний"
   },
   "budget.item.errors.amount": {
     "release": "D",
