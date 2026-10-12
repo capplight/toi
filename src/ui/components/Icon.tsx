@@ -50,6 +50,12 @@ export type IconName =
 
 const FILLED = new Set<IconName>(["wa"]);
 
+/** The same `<svg>` as `Icon`, as an HTML string (server-rendered S1 list, RA Л1). */
+export function iconHtml(name: IconName, size: "md" | "sm" | "xs" = "md"): string {
+  const cls = cn("ico", size !== "md" && size, FILLED.has(name) && "fill");
+  return `<svg class="${cls}" aria-hidden="true" focusable="false"><use href="/icons.svg#i-${name}"></use></svg>`;
+}
+
 /**
  * Icon from the sprite. Always decorative (`aria-hidden`): the visible label next to it carries the meaning
  * (DESIGN_v2 5: «всегда с подписью рядом»).

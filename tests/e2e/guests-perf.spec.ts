@@ -34,14 +34,16 @@ test.describe("Ф4 performance", () => {
     await page.goto(list());
     const cdp = await context.newCDPSession(page);
     await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 });
-    const measure = async (path = list(), selector = ".counter.no") => {
+    // Interactive (RA Л1): S1 is server HTML; taps work once the island has attached its delegated listener
+    // (`data-ready` on the page root). The «Зал» frame: React has attached its props to the tab.
+    const measure = async (path = list(), selector = ".guests-page[data-ready]") => {
       await page.goto(path, { waitUntil: "commit" });
-      // Interactive = hydrated: React has attached its props to the counter (it reacts to taps from now on).
       return page
         .waitForFunction(
           (sel) => {
             const el = document.querySelector(sel);
-            if (!el || !Object.keys(el).some((k) => k.startsWith("__reactProps"))) return false;
+            if (!el) return false;
+            if (sel === ".tab" && !Object.keys(el).some((k) => k.startsWith("__reactProps"))) return false;
             const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
             return performance.now() - nav.responseStart;
           },

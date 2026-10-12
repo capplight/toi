@@ -2309,7 +2309,7 @@
     }
   }
   /* 65+ cards: off-screen groups skip style/layout until scrolled near (perf, brief 2.4) */
-  .guest-groups > section {
+  .guest-groups section {
     content-visibility: auto;
     contain-intrinsic-size: auto 40rem;
   }
@@ -3875,5 +3875,22 @@ html.reduce-motion .toast .timer {
     .sum-side {
       grid-column: span 5;
     }
+  }
+}
+
+/* ---------- S1 without hydration (RA Л1): search / filters hide server cards ---------- */
+@layer components {
+  .guest[hidden],
+  .guest-groups section[hidden] {
+    display: none;
+  }
+  .guest-list {
+    display: contents;
+  }
+  .pending-slot:empty {
+    display: none;
+  }
+  .guest.pending > .act {
+    display: none;
   }
 }

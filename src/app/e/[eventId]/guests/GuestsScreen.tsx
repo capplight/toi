@@ -1,51 +1,18 @@
-"use client";
+import { getTranslations } from "next-intl/server";
+import { compareGuests, daysAgo, guestStatus, listTotals } from "@/domain/guests/status";
+import type { GuestsData } from "@/server/guests/queries";
+import { ButtonLink } from "@/ui/components/Button";
+import { Banner, EmptyState, EventHero, LinkRow, LinkRows } from "@/ui/components/Display";
+import { guestListHtml, StaticCounter } from "./list-html";
+import { GuestsIsland } from "./GuestsIsland";
+import { asLike, chatUrl } from "./list-shared";
 
-import { useTranslations } from "next-intl";
-import { startTransition, useEffect, useMemo, useState } from "react";
-import { compareGuests, daysAgo, type GuestLike, guestStatus, listTotals, matchesQuery } from "@/domain/guests/status";
-import type { GuestsData, GuestView } from "@/server/guests/queries";
-import { Button, ButtonLink } from "@/ui/components/Button";
-import { Search } from "@/ui/components/Controls";
-import {
-  Banner,
-  CounterTile,
-  EmptyState,
-  EventHero,
-  GroupHead,
-  GuestCard,
-  LinkRow,
-  LinkRows,
-} from "@/ui/components/Display";
-import { GuestSheet } from "./GuestSheet";
-import { SendAsk, startSend, useConfirmSent, usePending, useWaLinks } from "./send-flow";
-
-type Filter = "yes" | "noAnswer" | "no" | null;
-const FIRST_CARDS = 8;
-
-/** wa.me chat without text — the href until the full link is resolved (see GuestCard `WaHref`). */
-const chatUrl = (phone: string | null) => `https://wa.me/${phone ? phone.replace(/D/g, "") : ""}`;
-
-export const asLike = (g: GuestView): GuestLike & { id: string } => ({
-  id: g.id,
-  name: g.name,
-  rsvp: g.rsvp,
-  expected: g.expected,
-  confirmed: g.confirmed,
-  sentAt: g.sentAt ? new Date(g.sentAt) : null,
-});
-
-/** «3 күн бұрын жіберілді» / «Бүгін жіберілді» / «Кеше жіберілді» (event time zone). */
-export function useSentAgo(tz: string) {
-  const t = useTranslations("common.time");
-  return (iso: string | null) => {
-    if (!iso) return undefined;
-    const d = daysAgo(new Date(iso), new Date(), tz);
-    return d === 0 ? t("sentToday") : d === 1 ? t("sentYesterday") : t("sentDaysAgo", { days: d });
-  };
-}
-
-/** S1 «Менің тізімім» (DESIGN_v2 8.1, design_spec 4.1, mockup 01). */
-export function GuestsScreen({
+/**
+ * S1 «Менің тізімім» (DESIGN_v2 8.1, design_spec 4.1, mockup 01) — a server component (RA Л1, Ф6 review §4).
+ * The cards and groups are one server HTML string (no hydration), the counters server elements without handlers; `GuestsIsland` is the only hydrated part
+ * (search, sheet, «Жіберілді ме?», one delegated listener). Same markup and classes as before.
+ */
+export async function GuestsScreen({
   data,
   kindLabel,
   flashId,
@@ -54,83 +21,77 @@ export function GuestsScreen({
   kindLabel: string;
   flashId: string | null;
 }) {
-  const t = useTranslations("guests.list");
-  const tu = useTranslations("common.units");
-  const tc = useTranslations("guests.card");
-  const ts = useTranslations("common.status");
-  const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<Filter>(null);
-  const [openId, setOpenId] = useState<string | null>(null);
-  const pending = usePending();
-  const confirmSent = useConfirmSent();
-  const link = useWaLinks(data.wa, data.appUrl);
-  const sentAgo = useSentAgo(data.event.tz);
+  const t = await getTranslations("guests.list");
+  const tu = await getTranslations("common.units");
+  const tc = await getTranslations("guests.card");
+  const ts = await getTranslations("common.status");
+  const tn = await getTranslations("guestSheet.fields");
+  const ta = await getTranslations("common.a11y");
+  const tt = await getTranslations("common.time");
 
   const base = `/e/${data.event.id}/guests`;
   const listParam = data.list.own ? "" : `list=${data.list.memberId}`;
-  const withList = (path: string, extra = "") => {
-    const q = [listParam, extra].filter(Boolean).join("&");
-    return q ? `${path}?${q}` : path;
-  };
+  const withList = (path: string) => (listParam ? `${path}?${listParam}` : path);
   const shown = data.members.find((m) => m.id === data.list.memberId);
   const title = data.list.own ? t("title") : (shown?.listName ?? t("title"));
-
-  const totals = useMemo(() => listTotals(data.guests.map(asLike)), [data.guests]);
-  const groups = useMemo(() => {
-    const visible = data.guests.filter((g) => {
-      if (!matchesQuery(g.name, query)) return false;
-      if (!filter) return true;
-      return guestStatus(asLike(g)) === filter;
-    });
-    return data.categories
-      .map((c) => ({
-        category: c,
-        all: data.guests.filter((g) => g.categoryId === c.id),
-        guests: visible.filter((g) => g.categoryId === c.id).sort((a, b) => compareGuests(asLike(a), asLike(b))),
-      }))
-      .filter((x) => x.guests.length > 0);
-  }, [data.guests, data.categories, query, filter]);
-
-  // Perf (brief 2.4, 65 families < 1 s): the first paint and hydration cover the first cards only (what fits on
-  // a phone screen and more); the rest renders when the browser is idle right after (a low-priority transition),
-  // so the page reacts to taps first. Search and filters always see the whole list.
-  const [complete, setComplete] = useState(false);
-  useEffect(() => {
-    const go = () => startTransition(() => setComplete(true));
-    if (typeof window.requestIdleCallback === "function") {
-      const id = window.requestIdleCallback(go, { timeout: 600 });
-      return () => window.cancelIdleCallback(id);
-    }
-    const id = window.setTimeout(go, 50);
-    return () => window.clearTimeout(id);
-  }, []);
-  const cap = complete || query.trim() || filter ? Number.POSITIVE_INFINITY : FIRST_CARDS;
-  const shownGroups = useMemo(() => {
-    if (!Number.isFinite(cap)) return groups;
-    let left = cap;
-    const out: typeof groups = [];
-    for (const g of groups) {
-      if (left <= 0) break;
-      out.push({ ...g, guests: g.guests.slice(0, left) });
-      left -= g.guests.length;
-    }
-    return out;
-  }, [groups, cap]);
-
-  useEffect(() => {
-    if (!flashId) return;
-    document.getElementById(`g-${flashId}`)?.scrollIntoView({ block: "center" });
-  }, [flashId, cap]);
-
-  const open = data.guests.find((g) => g.id === openId) ?? null;
-  const toggle = (f: Exclude<Filter, null>) => setFilter((cur) => (cur === f ? null : f));
+  const totals = listTotals(data.guests.map(asLike));
   const empty = data.guests.length === 0;
   const others = data.members.filter((m) => m.id !== data.list.memberId);
+  const now = new Date();
+  const sentAgo = (iso: string | null) => {
+    if (!iso) return undefined;
+    const d = daysAgo(new Date(iso), now, data.event.tz);
+    return d === 0 ? tt("sentToday") : d === 1 ? tt("sentYesterday") : tt("sentDaysAgo", { days: d });
+  };
 
-  const statusWord: Record<Exclude<Filter, null>, string> = { yes: ts("yes"), noAnswer: ts("noAnswer"), no: ts("no") };
+  const groups = data.categories
+    .map((c) => {
+      const guests = data.guests.filter((g) => g.categoryId === c.id);
+      return { category: c, guests: [...guests].sort((a, b) => compareGuests(asLike(a), asLike(b))) };
+    })
+    .filter((x) => x.guests.length > 0);
+
+  const listHtml = guestListHtml(
+    groups.map(({ category, guests }) => ({
+      id: category.id,
+      label: category.label,
+      code: category.code,
+      count: `${tu("families", { count: guests.length })} · ${tu("seats", { count: listTotals(guests.map(asLike)).seats })}`,
+      cards: guests.map((g) => {
+        const status = guestStatus(asLike(g));
+        const seats = status === "yes" ? (g.confirmed ?? 0) : g.expected;
+        const seatsText = status === "yes" ? tc("seats", { count: seats }) : tc("seatsApprox", { count: seats });
+        const statusText = ts(status);
+        return {
+          id: g.id,
+          name: g.name,
+          status,
+          hasPhone: Boolean(g.phone),
+          flash: g.id === flashId,
+          waBase: chatUrl(g.phone),
+          text: {
+            a11y: tc("a11y", {
+              name: g.name,
+              status: statusText,
+              seats: seatsText,
+              table: g.tableNo ? tc("table", { number: g.tableNo }) : tn("notSeated"),
+            }),
+            badge: status === "yes" && seats ? ts("yesWithSeats", { seats }) : statusText,
+            seats: status !== "yes" && status !== "no" ? seatsText : undefined,
+            table: g.tableNo ? tc("table", { number: g.tableNo }) : undefined,
+            phoneIcon: tc("phoneIcon"),
+            send: tc("sendWhatsApp"),
+            remind: tc("remind"),
+            opensWhatsApp: ta("opensWhatsApp"),
+            sentAgo: status === "noAnswer" ? sentAgo(g.remindedAt ?? g.sentAt) : undefined,
+          },
+        };
+      }),
+    })),
+  );
 
   return (
-    <div className="page guests-page">
+    <div className="page guests-page" data-guests-root>
       <div className="col-main">
         <div className="page-head desk-only o1">
           <div className="ttl">
@@ -147,82 +108,21 @@ export function GuestsScreen({
           </ButtonLink>
         </div>
 
-        {!empty && (
+        {empty ? (
+          <GuestsIsland data={data} flashId={flashId} />
+        ) : (
           <div className="o5">
-            <Search label={t("search.label")} placeholder={t("search.placeholder")} value={query} onChange={setQuery} />
+            <GuestsIsland data={data} flashId={flashId} />
           </div>
         )}
 
         <div className="o6 guest-groups">
-          {filter && (
-            <div className="list-filter" role="status">
-              <span>{t("filter.active", { status: statusWord[filter] })}</span>
-              <Button variant="text" size="row" width="auto" onClick={() => setFilter(null)}>
-                {t("filter.clear")}
-              </Button>
-            </div>
-          )}
+          <div data-slot="list-status" />
           {empty ? (
             <EmptyState title={t("empty.title")} body={t("empty.body")} />
-          ) : groups.length === 0 ? (
-            query.trim() ? (
-              <EmptyState
-                title={t("search.empty", { query: query.trim() })}
-                action={
-                  <ButtonLink
-                    href={withList(`${base}/add`, `name=${encodeURIComponent(query.trim())}`)}
-                    variant="secondary"
-                    icon="plus"
-                  >
-                    {t("search.addWithName")}
-                  </ButtonLink>
-                }
-              />
-            ) : (
-              <EmptyState title={t("filter.empty")} />
-            )
           ) : (
-            shownGroups.map(({ category, all, guests }) => (
-              <section key={category.id} aria-label={category.label}>
-                <GroupHead
-                  code={category.code ?? undefined}
-                  title={category.label}
-                  count={`${tu("families", { count: all.length })} · ${tu("seats", {
-                    count: listTotals(all.map(asLike)).seats,
-                  })}`}
-                />
-                {guests.map((g) => {
-                  const like = asLike(g);
-                  const status = guestStatus(like);
-                  const fam = { name: g.name, token: g.token, phone: g.phone };
-                  const isPending = pending?.familyId === g.id && pending.stage !== "ask";
-                  return (
-                    <GuestCard
-                      key={g.id}
-                      id={`g-${g.id}`}
-                      name={g.name}
-                      status={status}
-                      seats={status === "yes" ? (g.confirmed ?? 0) : g.expected}
-                      tableNo={g.tableNo}
-                      hasPhone={Boolean(g.phone)}
-                      sentAgo={status === "noAnswer" ? sentAgo(g.remindedAt ?? g.sentAt) : undefined}
-                      flash={g.id === flashId}
-                      pendingConfirm={isPending}
-                      onOpen={() => setOpenId(g.id)}
-                      sendHref={{ base: chatUrl(g.phone), resolve: () => link("invite", fam) }}
-                      remindHref={
-                        status === "noAnswer"
-                          ? { base: chatUrl(g.phone), resolve: () => link("reminder", fam) }
-                          : undefined
-                      }
-                      onSend={() => startSend(g.id, g.name, "invite")}
-                      onRemind={() => startSend(g.id, g.name, "reminder")}
-                      onConfirmSent={() => pending && void confirmSent(pending)}
-                    />
-                  );
-                })}
-              </section>
-            ))
+            // one HTML string: no hydration, no RSC elements for the cards (RA Л1)
+            <div className="guest-list" dangerouslySetInnerHTML={{ __html: listHtml }} />
           )}
         </div>
       </div>
@@ -240,24 +140,9 @@ export function GuestsScreen({
         {!empty && (
           <div className="o3">
             <div className="counters compact-phone" role="group" aria-label={t("counters.label")}>
-              <CounterTile
-                kind="yes"
-                text={t("counters.yes", { count: totals.yesSeats })}
-                pressed={filter === "yes"}
-                onToggle={() => toggle("yes")}
-              />
-              <CounterTile
-                kind="inv"
-                text={t("counters.noAnswer", { count: totals.noAnswer })}
-                pressed={filter === "noAnswer"}
-                onToggle={() => toggle("noAnswer")}
-              />
-              <CounterTile
-                kind="no"
-                text={t("counters.no", { count: totals.no })}
-                pressed={filter === "no"}
-                onToggle={() => toggle("no")}
-              />
+              <StaticCounter kind="yes" filter="yes" text={t("counters.yes", { count: totals.yesSeats })} />
+              <StaticCounter kind="inv" filter="noAnswer" text={t("counters.noAnswer", { count: totals.noAnswer })} />
+              <StaticCounter kind="no" filter="no" text={t("counters.no", { count: totals.no })} />
             </div>
             <p className="totals-line">{t("total", { families: totals.families, seats: totals.seats })}</p>
           </div>
@@ -295,17 +180,6 @@ export function GuestsScreen({
           {t("addButton")}
         </ButtonLink>
       </div>
-
-      <SendAsk />
-      <GuestSheet
-        guest={open}
-        data={data}
-        onClose={() => setOpenId(null)}
-        link={link}
-        sentAgo={sentAgo}
-        onSend={(g, kind) => startSend(g.id, g.name, kind)}
-        editHref={(id) => withList(`${base}/add`, `edit=${id}`)}
-      />
     </div>
   );
 }

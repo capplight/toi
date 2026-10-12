@@ -7,7 +7,7 @@ import { Button, ButtonLink } from "@/ui/components/Button";
 import { EmptyState } from "@/ui/components/Display";
 import { Icon } from "@/ui/components/Icon";
 import { SendAsk, startSend, useConfirmSent, usePending, useWaLinks } from "../send-flow";
-import { useSentAgo } from "../GuestsScreen";
+import { useSentAgo } from "../sent-ago";
 
 const status = (g: GuestView) => guestStatus({ rsvp: g.rsvp, sentAt: g.sentAt ? new Date(g.sentAt) : null });
 
