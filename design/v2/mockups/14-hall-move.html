@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Қай үстелге? (H4) · Той v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/flows.css">
+<link rel="stylesheet" href="css/hall2.css">
+<!-- H4: режим выбора стола. Состояния: по умолчанию · confirm (16-үстел, хватает) · short (3-үстел, «Бәрібір ауыстыру»). Тексты — hall.move.* -->
+<style>
+  html:not([data-state="confirm"]) .s-confirm, html:not([data-state="short"]) .s-short { display: none !important; }
+  @media (min-width: 1024px) { .stage { padding: 1.375rem 1.5rem 1.125rem; } }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" aria-label="Мәзір">
+    <a class="wordmark brand" href="#"><span data-orn="mark"></span><b>Той</b></a>
+    <div class="event-mini"><span data-orn="shanyraq" class="deco"></span><div class="nm">Айбек пен Дана</div><div class="meta">Үйлену тойы · 15 қараша, 18:00</div></div>
+    <a class="nav-item" href="01-guests.html"><svg class="ico"><use href="#i-users"/></svg>Қонақтар</a>
+    <a class="nav-item" href="03-hall.html" aria-current="page"><svg class="ico"><use href="#i-grid"/></svg>Зал<span class="dot"></span></a>
+    <a class="nav-item" href="#"><svg class="ico"><use href="#i-chart"/></svg>Қорытынды</a>
+    <a class="nav-item" href="13-expenses.html"><svg class="ico"><use href="#i-wallet"/></svg>Шығындар</a>
+    <div class="side-foot">
+      <button class="nav-item menu-item" aria-haspopup="dialog"><svg class="ico"><use href="#i-more"/></svg><span>Той мәзірі</span></button>
+      <div class="who"><span class="avatar">С</span><div><b style="font-weight:600">Серік</b><div class="t-body t-muted">Әкесі · Тізім және отырғызу</div></div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <a class="icon-btn" href="04-table-sheet.html" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></a>
+      <h1 class="t-h1">Қай үстелге?</h1>
+    </header>
+    <main class="content no-tabs">
+      <div class="page wide-aside">
+        <div class="col-main">
+          <div class="mv-info o1">
+            <b>Мейрамбек нағашы отбасы · 6 орын</b>
+            <span>Қазір: 7-үстел</span>
+            <span>Белгіленген үстелдерде кемінде 6 орын бос.</span>
+          </div>
+          <div class="o2">
+            <div class="stage"><svg class="hall" id="hall" role="group" aria-label="Зал схемасы"></svg></div>
+          </div>
+        </div>
+        <div class="col-aside">
+          <section class="choose o3" aria-labelledby="ch-t">
+            <h3 id="ch-t">Бос орны жеткілікті үстелдер:</h3>
+            <a class="row" href="#confirm"><span class="dot"></span>1-үстел · 7 бос<svg class="ico"><use href="#i-right"/></svg></a>
+            <a class="row" href="#confirm"><span class="dot"></span>16-үстел · 12 бос<svg class="ico"><use href="#i-right"/></svg></a>
+            <details>
+              <summary><svg class="ico sm"><use href="#i-down"/></svg>Басқа үстелдер (орын жетпейді)</summary>
+              <a class="row short" href="#short">2-үстел · 1 бос<svg class="ico"><use href="#i-right"/></svg></a>
+              <a class="row short" href="#short" style="margin-top:.5rem">3-үстел · 0 бос<svg class="ico"><use href="#i-right"/></svg></a>
+            </details>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Подтверждение: хватает мест -->
+<div class="scrim s-confirm"></div>
+<div class="sheet center s-confirm" role="dialog" aria-modal="true" aria-labelledby="cf-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="cf-t">Ауыстыру керек пе?</h2></div>
+  <div class="sheet-body">
+    <p style="margin:0">Мейрамбек нағашы отбасы (6 орын)</p>
+    <p class="route">7-үстел<svg class="ico"><use href="#i-right"/></svg>16-үстел</p>
+    <p class="okline" style="margin:0">16-үстелде 12 орын бос.</p>
+  </div>
+  <div class="sheet-foot" style="border-top:0"><button class="btn primary">Иә, ауыстыру</button><a class="btn secondary" href="#">Жоқ</a></div>
+</div>
+<!-- Подтверждение: мест не хватает -->
+<div class="scrim s-short"></div>
+<div class="sheet center s-short" role="alertdialog" aria-modal="true" aria-labelledby="sh-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="sh-t">Ауыстыру керек пе?</h2></div>
+  <div class="sheet-body">
+    <p style="margin:0">Мейрамбек нағашы отбасы (6 орын)</p>
+    <p class="route">7-үстел<svg class="ico"><use href="#i-right"/></svg>3-үстел</p>
+    <p class="badline" style="margin:0"><svg class="ico sm"><use href="#i-alert"/></svg>3-үстелге 6 орын жетпейді</p>
+  </div>
+  <div class="sheet-foot" style="border-top:0"><a class="btn secondary" href="#" autofocus>Жоқ</a><button class="btn danger">Бәрібір ауыстыру</button></div>
+</div>
+
+<script src="js/mock.js"></script>
+<script>
+  renderHall(document.getElementById('hall'), { mode: 'move', move: { size: 6, current: 7 } });
+</script>
+</body>
+</html>

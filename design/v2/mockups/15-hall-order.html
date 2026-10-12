@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Отырғызу реті (H5) · Той v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/flows.css">
+<link rel="stylesheet" href="css/hall2.css">
+<!-- H5 (план 7.2, Р4): порядок НЕ пересаживает; полная пересадка — только кнопкой с предпросмотром.
+     Состояния: по умолчанию · saved (после ↑, баннер + тост) · preview · stale (409) · none (никто не пересаживается) · viewonly. Тексты — hall.order.* -->
+<style>
+  html:not([data-state="saved"]):not([data-state="preview"]):not([data-state="stale"]):not([data-state="none"]) .s-saved { display: none !important; }
+  html:not([data-state="preview"]):not([data-state="stale"]):not([data-state="none"]) .s-pv { display: none !important; }
+  html:not([data-state="stale"]) .s-stale { display: none !important; }
+  html:not([data-state="none"]) .s-none { display: none !important; }
+  html[data-state="none"] .s-some { display: none !important; }
+  html:not([data-state="saved"]) .toast { display: none; }
+  html:not([data-state="viewonly"]) .s-vo { display: none !important; }
+  html[data-state="viewonly"] .arr, html[data-state="viewonly"] .s-edit { display: none !important; }
+  html[data-state="saved"] .o-default, html[data-state="preview"] .o-default, html[data-state="stale"] .o-default, html[data-state="none"] .o-default { display: none; }
+  html:not([data-state="saved"]):not([data-state="preview"]):not([data-state="stale"]):not([data-state="none"]) .o-new { display: none; }
+  .mini-map { background: var(--paper); border-radius: var(--r-lg); box-shadow: var(--sh-card); padding: 0.75rem 0 0.25rem; }
+  .mini-map p { margin: 0 1rem 0.25rem; font: 600 1rem/1.375rem var(--font-ui); color: var(--ink-2); }
+  .mini-map svg { width: 100%; max-width: 22rem; height: auto; display: block; margin: 0 auto; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" aria-label="Мәзір">
+    <a class="wordmark brand" href="#"><span data-orn="mark"></span><b>Той</b></a>
+    <div class="event-mini"><span data-orn="shanyraq" class="deco"></span><div class="nm">Айбек пен Дана</div><div class="meta">Үйлену тойы · 15 қараша, 18:00</div></div>
+    <a class="nav-item" href="01-guests.html"><svg class="ico"><use href="#i-users"/></svg>Қонақтар</a>
+    <a class="nav-item" href="03-hall.html" aria-current="page"><svg class="ico"><use href="#i-grid"/></svg>Зал<span class="dot"></span></a>
+    <a class="nav-item" href="#"><svg class="ico"><use href="#i-chart"/></svg>Қорытынды</a>
+    <a class="nav-item" href="13-expenses.html"><svg class="ico"><use href="#i-wallet"/></svg>Шығындар</a>
+    <div class="side-foot">
+      <button class="nav-item menu-item" aria-haspopup="dialog"><svg class="ico"><use href="#i-more"/></svg><span>Той мәзірі</span></button>
+      <div class="who"><span class="avatar">С</span><div><b style="font-weight:600">Серік</b><div class="t-body t-muted">Әкесі · Тізім және отырғызу</div></div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar desk-hide">
+      <a class="icon-btn" href="03-hall.html" aria-label="Артқа"><svg class="ico"><use href="#i-back"/></svg></a>
+      <h1 class="t-h1">Отырғызу реті</h1>
+    </header>
+    <main class="content no-tabs">
+      <div class="page wide-aside">
+        <div class="col-main">
+          <div class="page-head o1"><div class="ttl"><h2 class="t-h1">Отырғызу реті</h2></div></div>
+          <div class="o2">
+            <a class="banner view s-vo" href="#" style="margin-bottom:.875rem"><span class="bi"><svg class="ico"><use href="#i-eye"/></svg></span><span class="bt"><b>Сіз отырғызуды тек көресіз</b></span></a>
+            <div class="info-banner s-saved" role="status"><svg class="ico"><use href="#i-alert"/></svg><span><b>Рет сақталды. Отырғызылғандар орнында қалды.</b>Жаңа рет бойынша қайта отырғызу үшін «Толық қайта отырғызу» батырмасын басыңыз.</span></div>
+            <p class="t-body t-muted" style="margin:0 .125rem .875rem">Тізімде алдыңғы санаттар төрге жақын отырады. Ретін ↑ ↓ батырмаларымен өзгертіңіз.</p>
+            <ol class="order" aria-label="Отырғызу реті">
+              <li><span class="no">1</span><i class="mark" style="background:var(--cat-kuda)"></i><span><b>Құдалар</b><span class="m">28 орын · 1–3-үстел</span></span><span class="arr"><button disabled aria-label="Құдалар: жоғары көтеру"><svg class="ico"><use href="#i-up"/></svg></button><button aria-label="Құдалар: төмен түсіру"><svg class="ico"><use href="#i-down"/></svg></button></span><span class="vo s-vo">Тек көру</span></li>
+              <li class="o-default"><span class="no">2</span><i class="mark" style="background:var(--cat-oz)"></i><span><b>Өз туыстар</b><span class="m">42 орын · 4–6, 8-үстел</span></span><span class="arr"><button aria-label="Өз туыстар: жоғары көтеру"><svg class="ico"><use href="#i-up"/></svg></button><button aria-label="Өз туыстар: төмен түсіру"><svg class="ico"><use href="#i-down"/></svg></button></span><span class="vo s-vo">Тек көру</span></li>
+              <li class="o-default"><span class="no">3</span><i class="mark" style="background:var(--cat-nagashy)"></i><span><b>Нағашылар</b><span class="m">43 орын · 7, 8, 10–11-үстел</span></span><span class="arr"><button aria-label="Нағашылар: жоғары көтеру"><svg class="ico"><use href="#i-up"/></svg></button><button aria-label="Нағашылар: төмен түсіру"><svg class="ico"><use href="#i-down"/></svg></button></span><span class="vo s-vo">Тек көру</span></li>
+              <li class="o-new moved"><span class="no">2</span><i class="mark" style="background:var(--cat-nagashy)"></i><span><b>Нағашылар</b><span class="m">43 орын · 7, 8, 10–11-үстел</span></span><span class="arr"><button aria-label="Нағашылар: жоғары көтеру"><svg class="ico"><use href="#i-up"/></svg></button><button aria-label="Нағашылар: төмен түсіру"><svg class="ico"><use href="#i-down"/></svg></button></span></li>
+              <li class="o-new"><span class="no">3</span><i class="mark" style="background:var(--cat-oz)"></i><span><b>Өз туыстар</b><span class="m">42 орын · 4–6, 8-үстел</span></span><span class="arr"><button aria-label="Өз туыстар: жоғары көтеру"><svg class="ico"><use href="#i-up"/></svg></button><button aria-label="Өз туыстар: төмен түсіру"><svg class="ico"><use href="#i-down"/></svg></button></span></li>
+              <li><span class="no">4</span><i class="mark" style="background:var(--cat-dos)"></i><span><b>Достар</b><span class="m">25 орын · 9, 12, 14-үстел</span></span><span class="arr"><button aria-label="Достар: жоғары көтеру"><svg class="ico"><use href="#i-up"/></svg></button><button aria-label="Достар: төмен түсіру"><svg class="ico"><use href="#i-down"/></svg></button></span><span class="vo s-vo">Тек көру</span></li>
+              <li><span class="no">5</span><i class="mark" style="background:var(--cat-ariptes)"></i><span><b>Әріптестер</b><span class="m">12 орын · 14–15-үстел</span></span><span class="arr"><button aria-label="Әріптестер: жоғары көтеру"><svg class="ico"><use href="#i-up"/></svg></button><button aria-label="Әріптестер: төмен түсіру"><svg class="ico"><use href="#i-down"/></svg></button></span><span class="vo s-vo">Тек көру</span></li>
+              <li><span class="no">6</span><i class="mark" style="background:var(--cat-korshi)"></i><span><b>Көршілер</b><span class="m">10 орын · 12–13-үстел</span></span><span class="arr"><button aria-label="Көршілер: жоғары көтеру"><svg class="ico"><use href="#i-up"/></svg></button><button aria-label="Көршілер: төмен түсіру"><svg class="ico"><use href="#i-down"/></svg></button></span><span class="vo s-vo">Тек көру</span></li>
+              <li><span class="no">7</span><i class="mark" style="background:var(--cat-synyp)"></i><span><b>Сыныптастар / курстастар</b><span class="m">9 орын · 13-үстел</span></span><span class="arr"><button aria-label="Сыныптастар / курстастар: жоғары көтеру"><svg class="ico"><use href="#i-up"/></svg></button><button aria-label="Сыныптастар / курстастар: төмен түсіру"><svg class="ico"><use href="#i-down"/></svg></button></span><span class="vo s-vo">Тек көру</span></li>
+              <li><span class="no">8</span><i class="mark" style="background:var(--cat-baska)"></i><span><b>Басқа</b><span class="m">2 орын · 13-үстел</span></span><span class="arr"><button aria-label="Басқа: жоғары көтеру"><svg class="ico"><use href="#i-up"/></svg></button><button disabled aria-label="Басқа: төмен түсіру"><svg class="ico"><use href="#i-down"/></svg></button></span><span class="vo s-vo">Тек көру</span></li>
+            </ol>
+            <a class="btn secondary s-edit" href="#preview" style="margin-top:1rem"><svg class="ico"><use href="#i-refresh"/></svg>Толық қайта отырғызу</a>
+          </div>
+        </div>
+        <div class="col-aside desk-only">
+          <div class="mini-map"><p>Зал</p><svg class="hall" id="hall" aria-hidden="true"></svg></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Предпросмотр полной пересадки (previewFullReseat → applyFullReseat) -->
+<div class="scrim s-pv"></div>
+<div class="sheet center s-pv" role="dialog" aria-modal="true" aria-labelledby="pv-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="pv-t">Толық қайта отырғызу керек пе?</h2><a class="icon-btn" href="#saved" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></a></div>
+  <div class="sheet-body">
+    <div class="stale s-stale" role="alert"><svg class="ico"><use href="#i-alert"/></svg><span>Залда өзгеріс болды. Тізімді жаңарттық — қайта қараңыз.</span></div>
+    <div class="s-some">
+      <p class="pv-big"><span class="s-pvn">12</span> отбасы ауысады</p>
+      <p class="pv-sub"><svg class="ico sm"><use href="#i-lock"/></svg>Қолмен қойылған 8 отбасы орнында қалады.</p>
+      <ul class="moves">
+        <li>Ерлан ағай отбасы: 10 → 8-үстел</li>
+        <li>Даурен нағашы отбасы: 10 → 8-үстел</li>
+        <li>Қанат отбасы: 10 → 9-үстел</li>
+        <li>Бибігүл апай отбасы: 11 → 9-үстел</li>
+        <li>Жомарт отбасы: 8 → 10-үстел</li>
+        <li class="more">және тағы <span class="s-pvk">7</span></li>
+      </ul>
+    </div>
+    <p class="pv-big s-none" style="font-size:1.25rem">Ешкім ауыспайды: бәрі өз ретімен отыр.</p>
+  </div>
+  <div class="sheet-foot" style="border-top:0"><button class="btn primary s-some">Иә, қайта отырғызу</button><a class="btn secondary" href="#saved" autofocus>Жоқ</a></div>
+</div>
+
+<div class="toast" role="status" aria-live="polite"><span class="msg">Нағашылар енді 2-орында</span><button class="undo"><svg class="ico sm"><use href="#i-undo"/></svg>Қайтару</button><i class="timer"></i></div>
+<script src="js/mock.js"></script>
+<script>
+  renderHall(document.getElementById('hall'), {});
+  if (TOI_STATE === 'stale') { document.querySelector('.s-pvn').textContent = '13'; document.querySelector('.s-pvk').textContent = '8'; }
+</script>
+</body>
+</html>

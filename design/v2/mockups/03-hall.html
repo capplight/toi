@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/hall2.css">
 <style>
   /* Варианты: body[data-sheet] — открыта шторка стола 7; #dup — подсветка дублей; #move — режим «Қай үстелге?» */
   .table-detail { display: none; }
@@ -25,6 +26,9 @@
   html:not([data-state="all"]) .s-unplaced-new { display: none !important; }
   html:not([data-state="seen"]) .s-unplaced-seen { display: none !important; }
   html:not([data-state="sum"]) .s-sum { display: none !important; }
+  /* H2-List: #list — зал списком (Radix Accordion по столам) */
+  html[data-state="list"] .stage, html[data-state="list"] .legend { display: none !important; }
+  html:not([data-state="list"]) #tlist { display: none !important; }
   .hall-head-row { display: flex; align-items: center; gap: 16px; }
   .hall-head-row .segment { width: 300px; }
 </style>
@@ -75,6 +79,7 @@
 
           <div class="o5" style="margin-top:12px">
             <div class="stage"><svg class="hall" id="hall" role="group" aria-label="Зал схемасы"></svg></div>
+            <div class="tl" id="tlist" aria-label="Тізім"></div>
             <div class="legend" aria-label="Белгілер">
               <span><i class="lt"></i>Бос емес</span><span><i class="lf"></i>Бос</span><span><i class="lo">!</i>Орын жетпейді</span>
             </div>
@@ -146,6 +151,18 @@
   const sel = document.body.dataset.sheet ? 7 : null;
   renderHall(document.getElementById('hall'), { mode: TOI_STATE === 'dup' ? 'dup' : 'normal', sel });
   if (TOI_STATE === 'sum') document.querySelector('.sum-line').setAttribute('aria-expanded', 'true');
+  if (TOI_STATE === 'list') {
+    document.querySelectorAll('.segment').forEach(g => { const b = g.querySelectorAll('button'); b[0].setAttribute('aria-pressed', 'false'); b[1].setAttribute('aria-pressed', 'true'); });
+    const { T, CAT } = TOI_HALL; let h = '';
+    for (let n = 1; n <= 16; n++) {
+      const [cat, fam] = T[n], o = fam.reduce((a, f) => a + f[1], 0), over = o > 12;
+      const head = over ? `${o}/12 · ${o - 12} орын жетпейді` : `${o}/12 · ${12 - o} бос`;
+      let rows = fam.map((f, i) => `<div class="fam"><span class="no${over ? ' over' : ''}">${i + 1}</span><b>${f[0]}</b><span class="meta">${f[2] === 'inv' || f[2] === 'new' ? '~' + f[1] + ' орын · Жауап жоқ' : CAT[cat] + ' · ' + f[1] + ' орын · Келеді'}</span>${f[3] ? '<span class="locked"><svg class="ico xs"><use href="#i-lock"/></svg>Қолмен қойылған (Анасы)</span>' : ''}<div class="acts"><button class="btn secondary row"><svg class="ico"><use href="#i-move"/></svg>Ауыстыру</button></div></div>`).join('');
+      if (!fam.length) rows = `<p class="t-body t-muted" style="margin:0;padding:14px 16px">Бұл үстел бос · 12 орын</p>`;
+      h += `<details class="${over ? 'over' : ''}"${n === 7 ? ' open' : ''}><summary><span class="tn">${over ? '<svg class="ico"><use href="#i-alert"/></svg>' : ''}${n}-үстел</span><span class="ts${over ? ' bad' : ''}">${head}</span><span class="tc"><i style="background:var(--cat-${fam.length ? cat : 'baska'})"></i>${fam.length ? CAT[cat] : ''}</span><svg class="ico"><use href="#i-down"/></svg></summary><div class="fams">${rows}</div></details>`;
+    }
+    document.getElementById('tlist').innerHTML = h;
+  }
   if (sel) {
     document.querySelector('.toast').remove();
     document.querySelectorAll('.tbl-body').forEach(b => { b.append(document.getElementById('tbl-tpl').content.cloneNode(true)); renderTableBig(b.querySelector('.big-table'), 7); });

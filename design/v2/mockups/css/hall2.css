@@ -1,0 +1,84 @@
+/* «Той» v2.4 — Ф7b: H2-List, H4 «Ауыстыру», H5 «Отырғызу реті», H7 «Өзгерістер тарихы». Все размеры с текстом — rem. */
+
+/* ---------- H4 ---------- */
+.mv-info { margin: 0.25rem 0.125rem 0.875rem; }
+.mv-info b { display: block; font: 600 1.25rem/1.625rem var(--font-ui); }
+.mv-info span { display: block; font: 400 1rem/1.5rem var(--font-ui); color: var(--ink-2); }
+.mv-legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin: 0.75rem 0.25rem 0; font: 400 1rem/1.375rem var(--font-ui); }
+.mv-legend span { display: inline-flex; align-items: center; gap: 0.5rem; }
+.mv-legend i { width: 1.125rem; height: 1.125rem; border-radius: 50%; display: inline-block; }
+.mv-legend .c { border: 3px dashed var(--success); } .mv-legend .k { border: 3px solid var(--lapis); } .mv-legend .d { background: var(--sand); opacity: .6; }
+.choose { margin-top: 1rem; }
+.choose h3 { margin: 0 0 0.5rem; font: 600 1.0625rem/1.5rem var(--font-ui); }
+.choose .row { display: flex; align-items: center; gap: 0.75rem; width: 100%; min-height: 3.5rem; padding: 0 0.75rem 0 1rem; border-radius: var(--r-md); border: 1.5px solid var(--success); background: var(--paper); font: 600 1.0625rem/1.375rem var(--font-ui); color: var(--ink); text-align: left; }
+.choose .row + .row { margin-top: 0.5rem; }
+.choose .row .ico { margin-left: auto; color: var(--ink-2); }
+.choose .row .dot { width: 0.75rem; height: 0.75rem; border-radius: 50%; border: 2px dashed var(--success); flex: none; }
+.choose details { margin-top: 0.75rem; }
+.choose summary { min-height: 3rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font: 600 1rem/1.375rem var(--font-ui); color: var(--lapis); list-style: none; }
+.choose summary::-webkit-details-marker { display: none; }
+.choose .row.short { border-color: var(--line-strong); color: var(--ink-2); font-weight: 400; }
+.route { font: 600 1.25rem/1.75rem var(--font-ui); margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.route .ico { color: var(--lapis); }
+.okline { color: var(--success-ink); font: 600 1rem/1.375rem var(--font-ui); }
+.badline { color: var(--danger); font: 600 1rem/1.375rem var(--font-ui); display: flex; gap: 0.5rem; align-items: flex-start; }
+.hall .ring-cand + .seat, .hall .tbl { }
+
+/* ---------- H5 ---------- */
+.order { list-style: none; margin: 0; padding: 0; background: var(--paper); border-radius: var(--r-lg); box-shadow: var(--sh-card); overflow: hidden; }
+.order li { display: grid; grid-template-columns: 1.75rem 0.5rem minmax(0, 1fr) auto; gap: 0.25rem 0.75rem; align-items: center; min-height: 4.5rem; padding: 0.625rem 0.75rem 0.625rem 1rem; }
+.order li + li { border-top: 1px solid var(--line); }
+.order li .no { font: 600 1.25rem/1 var(--font-ui); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.order li .mark { width: 0.5rem; height: 2rem; border-radius: 0.25rem; box-shadow: inset 0 0 0 1px rgba(23,32,44,.2); }
+.order li b { display: block; font: 600 1.125rem/1.5rem var(--font-ui); }
+.order li span.m { display: block; font: 400 0.9375rem/1.375rem var(--font-ui); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.order li .arr { display: flex; gap: 0.5rem; }
+.order li .arr button { width: 3rem; height: 3rem; border-radius: var(--r-md); border: 0; background: var(--sand); display: grid; place-items: center; color: var(--ink); }
+.order li .arr button[disabled] { opacity: .4; }
+.order li.moved { background: var(--lapis-soft); }
+.order li .vo { font: 600 0.9375rem/1 var(--font-ui); color: var(--ink-2); }
+.info-banner { display: grid; grid-template-columns: 1.5rem 1fr; gap: 0.625rem; padding: 0.875rem 1rem; border-radius: var(--r-lg); background: var(--gold-soft); margin-bottom: 0.875rem; font: 400 1rem/1.4375rem var(--font-ui); }
+.info-banner .ico { color: var(--gold-ink); }
+.info-banner b { display: block; font-weight: 600; }
+.moves { list-style: none; margin: 0.75rem 0 0; padding: 0; background: var(--ivory); border-radius: var(--r-md); }
+.moves li { padding: 0.625rem 0.875rem; font: 400 1rem/1.375rem var(--font-ui); font-variant-numeric: tabular-nums; }
+.moves li + li { border-top: 1px solid var(--line); }
+.moves li.more { color: var(--ink-2); }
+.pv-big { font: 600 1.5rem/1.875rem var(--font-ui); margin: 0; }
+.pv-sub { margin: 0.375rem 0 0; font: 400 1rem/1.5rem var(--font-ui); color: var(--ink-2); display: flex; gap: 0.375rem; align-items: center; }
+.stale { display: grid; grid-template-columns: 1.5rem 1fr; gap: 0.5rem; padding: 0.75rem 0.875rem; margin-bottom: 0.875rem; border-radius: var(--r-md); background: var(--danger-soft); color: var(--ink); font: 400 1rem/1.4375rem var(--font-ui); }
+.stale .ico { color: var(--danger); }
+
+/* ---------- H7 ---------- */
+.hist-day { margin: 1.5rem 0.25rem 0.5rem; font: 600 1rem/1.375rem var(--font-ui); color: var(--ink-2); letter-spacing: .04em; text-transform: uppercase; }
+.hist { background: var(--paper); border-radius: var(--r-lg); box-shadow: var(--sh-card); overflow: hidden; }
+.he { padding: 0.875rem 1rem; }
+.he + .he { border-top: 1px solid var(--line); }
+.he .meta { font: 400 0.9375rem/1.375rem var(--font-ui); color: var(--ink-2); display: flex; align-items: center; gap: 0.375rem; }
+.he .meta .ico { width: 1rem; height: 1rem; }
+.he .sum { font: 600 1.0625rem/1.5rem var(--font-ui); margin-top: 0.125rem; overflow-wrap: anywhere; }
+.he .warn { display: flex; gap: 0.375rem; align-items: flex-start; color: var(--danger); font: 600 0.9375rem/1.375rem var(--font-ui); margin-top: 0.25rem; }
+.he .warn .ico { width: 1.125rem; height: 1.125rem; flex: none; margin-top: 0.125rem; }
+.he .nou { font: 400 0.9375rem/1.375rem var(--font-ui); color: var(--ink-2); margin-top: 0.25rem; }
+.he .btn { width: auto; min-height: 3rem; padding: 0 1rem; margin-top: 0.625rem; }
+.he.rev .sum { text-decoration: line-through; opacity: .6; }
+.he.rev .revd { font: 400 0.9375rem/1.375rem var(--font-ui); color: var(--ink-2); margin-top: 0.25rem; display: flex; gap: 0.375rem; align-items: center; }
+.hist-foot { margin: 1rem 0.25rem 0; font: 400 0.9375rem/1.375rem var(--font-ui); color: var(--ink-2); }
+@media (min-width: 1024px) { .hist-col { max-width: 45rem; } }
+
+/* ---------- H2-List (аккордеон по столам) ---------- */
+.tl { display: grid; gap: 0.5rem; }
+.tl details { background: var(--paper); border-radius: var(--r-lg); box-shadow: var(--sh-card); overflow: hidden; border: 2px solid transparent; }
+.tl details.over { border-color: var(--danger); }
+.tl summary { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.125rem 0.75rem; align-items: center; min-height: 4rem; padding: 0.625rem 0.75rem 0.625rem 1rem; cursor: pointer; list-style: none; }
+.tl summary::-webkit-details-marker { display: none; }
+.tl summary .tn { font: 600 1.125rem/1.5rem var(--font-ui); display: inline-flex; align-items: center; gap: 0.375rem; white-space: nowrap; }
+.tl summary .tn .ico { color: var(--danger); width: 1.25rem; height: 1.25rem; }
+.tl summary .ts { font: 600 1rem/1.375rem var(--font-ui); color: var(--ink-2); text-align: right; font-variant-numeric: tabular-nums; }
+.tl summary .ts.bad { color: var(--danger); }
+.tl summary .tc { grid-column: 1 / 3; font: 400 0.9375rem/1.375rem var(--font-ui); color: var(--ink-2); display: inline-flex; align-items: center; gap: 0.375rem; }
+.tl summary .tc i { width: 0.5625rem; height: 0.5625rem; border-radius: 2px; transform: rotate(45deg); box-shadow: inset 0 0 0 1px rgba(23,32,44,.25); }
+.tl summary > .ico { grid-column: 3; grid-row: 1 / span 2; color: var(--ink-2); transition: transform var(--t-base) var(--ease-out); }
+.tl details[open] summary > .ico { transform: rotate(180deg); }
+.tl .fams { border-top: 1px solid var(--line); }
+@media (min-width: 1024px) { .tl { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Өзгерістер тарихы (H7) · Той v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/flows.css">
+<link rel="stylesheet" href="css/hall2.css">
+<!-- H7. Состояния: по умолчанию · partial (частичная отмена: тост + пометка) · viewonly («Тек тізім»: без «Қайтару») · empty. Тексты — hall.history.* -->
+<style>
+  html:not([data-state="partial"]) .s-partial { display: none !important; }
+  html:not([data-state="partial"]) .toast { display: none; }
+  html[data-state="viewonly"] .he .btn { display: none !important; }
+  html:not([data-state="empty"]) .s-empty { display: none !important; }
+  html[data-state="empty"] .s-data { display: none !important; }
+  html[data-state="partial"] .s-fr-normal { display: none !important; }
+  html:not([data-state="partial"]) .s-fr-rev { display: none !important; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" aria-label="Мәзір">
+    <a class="wordmark brand" href="#"><span data-orn="mark"></span><b>Той</b></a>
+    <div class="event-mini"><span data-orn="shanyraq" class="deco"></span><div class="nm">Айбек пен Дана</div><div class="meta">Үйлену тойы · 15 қараша, 18:00</div></div>
+    <a class="nav-item" href="01-guests.html"><svg class="ico"><use href="#i-users"/></svg>Қонақтар</a>
+    <a class="nav-item" href="03-hall.html" aria-current="page"><svg class="ico"><use href="#i-grid"/></svg>Зал<span class="dot"></span></a>
+    <a class="nav-item" href="#"><svg class="ico"><use href="#i-chart"/></svg>Қорытынды</a>
+    <a class="nav-item" href="13-expenses.html"><svg class="ico"><use href="#i-wallet"/></svg>Шығындар</a>
+    <div class="side-foot">
+      <button class="nav-item menu-item" aria-haspopup="dialog"><svg class="ico"><use href="#i-more"/></svg><span>Той мәзірі</span></button>
+      <div class="who"><span class="avatar">С</span><div><b style="font-weight:600">Серік</b><div class="t-body t-muted">Әкесі · Тізім және отырғызу</div></div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar desk-hide">
+      <a class="icon-btn" href="03-hall.html" aria-label="Артқа"><svg class="ico"><use href="#i-back"/></svg></a>
+      <h1 class="t-h1">Өзгерістер тарихы</h1>
+    </header>
+    <main class="content no-tabs">
+      <div class="hist-col">
+        <div class="page-head"><div class="ttl"><h2 class="t-h1">Өзгерістер тарихы</h2></div></div>
+        <p class="t-body t-muted" style="margin:0 .125rem">Кім, қашан, не өзгертті. Отырғызуды қайтаруға болады, қонақтың жауабын — жоқ.</p>
+        <div class="info-banner s-partial" role="status" style="margin-top:1rem"><svg class="ico"><use href="#i-alert"/></svg><span>2 отбасының орнын кейін біреу өзгертті, оларды қайтармадық.</span></div>
+
+        <div class="empty s-empty"><span data-orn="horn"></span><p class="t-body" style="font-size:1.125rem">Әзірге өзгеріс жоқ</p></div>
+
+        <div class="s-data">
+          <h3 class="hist-day">Бүгін</h3>
+          <div class="hist">
+            <div class="he s-partial"><div class="meta">11:05 · Әкесі</div><div class="sum">Қайтарылды: Толық қайта отырғызу: 12 отбасы</div><button class="btn secondary"><svg class="ico sm"><use href="#i-undo"/></svg>Қайтару</button></div>
+            <div class="he"><div class="meta">10:42 · Әкесі</div><div class="sum">Мейрамбек нағашы отбасы: 7 → 16-үстел</div><button class="btn secondary"><svg class="ico sm"><use href="#i-undo"/></svg>Қайтару</button></div>
+            <div class="he"><div class="meta">10:40 · Әкесі</div><div class="sum">Қайтарылды: Рет: Нағашылар 3 → 2</div><button class="btn secondary"><svg class="ico sm"><use href="#i-undo"/></svg>Қайтару</button></div>
+            <div class="he rev"><div class="meta">10:31 · Әкесі</div><div class="sum">Рет: Нағашылар 3 → 2</div><div class="revd"><svg class="ico xs"><use href="#i-undo"/></svg>Қайтарылды · 10:40 · Әкесі</div></div>
+            <div class="he"><div class="meta">09:20 · Анасы</div><div class="sum">Бос орынға ауыстырылды: Марат отбасы, 12 → 16-үстел</div><button class="btn secondary"><svg class="ico sm"><use href="#i-undo"/></svg>Қайтару</button></div>
+            <div class="he"><div class="meta"><svg class="ico"><use href="#i-users"/></svg>09:15 · Қонақтың жауабы</div><div class="sum">Марат отбасы: 3 → 4 орын</div><div class="warn"><svg class="ico"><use href="#i-alert"/></svg>12-үстелге 1 орын жетпейді</div><div class="nou">(қонақтың жауабын қайтаруға болмайды)</div></div>
+            <div class="he"><div class="meta">09:02 · Анасы</div><div class="sum">Жаңа санат: Ауылдастар</div><div class="nou">Қайтаруға болмайды</div></div>
+          </div>
+
+          <h3 class="hist-day">Кеше</h3>
+          <div class="hist">
+            <div class="he s-fr-normal"><div class="meta">16:30 · Әкесі</div><div class="sum">Толық қайта отырғызу: 12 отбасы</div><button class="btn secondary"><svg class="ico sm"><use href="#i-undo"/></svg>Қайтару</button></div>
+            <div class="he rev s-fr-rev"><div class="meta">16:30 · Әкесі</div><div class="sum">Толық қайта отырғызу: 12 отбасы</div><div class="revd"><svg class="ico xs"><use href="#i-undo"/></svg>Қайтарылды · 11:05 · Әкесі</div></div>
+            <div class="he"><div class="meta">15:40 · Анасы</div><div class="sum">Телефонмен жауап: Ермек отбасы — келеді, 3 орын</div><button class="btn secondary"><svg class="ico sm"><use href="#i-undo"/></svg>Қайтару</button></div>
+            <div class="he"><div class="meta">15:12 · Анасы</div><div class="sum">Жаңа қонақ: Асқар ағай отбасы → 16-үстел</div></div>
+            <div class="he"><div class="meta">14:35 · Анасы</div><div class="sum">Әйгерім отбасы: 11 → 7-үстел</div><button class="btn secondary"><svg class="ico sm"><use href="#i-undo"/></svg>Қайтару</button></div>
+            <div class="he"><div class="meta">12:00 · Той иесі</div><div class="sum">Зал: 16 үстел × 12 орын, 4 қатар</div><button class="btn secondary"><svg class="ico sm"><use href="#i-undo"/></svg>Қайтару</button></div>
+          </div>
+
+          <h3 class="hist-day">12 қазан</h3>
+          <div class="hist">
+            <div class="he"><div class="meta"><svg class="ico"><use href="#i-users"/></svg>20:14 · Қонақтың жауабы</div><div class="sum">Айнұр отбасы: «Келе алмаймыз»</div><div class="nou">(қонақтың жауабын қайтаруға болмайды)</div></div>
+          </div>
+          <p class="hist-foot">Қайтарылған өзгеріс сызылып көрсетіледі</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="js/mock.js"></script>
+</body>
+</html>
