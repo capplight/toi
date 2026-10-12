@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { type Page, test } from "@playwright/test";
+import { screenSizes, screensOut } from "./screens-config";
 import { world } from "./worlds";
 
 /**
@@ -10,13 +11,10 @@ import { world } from "./worlds";
  */
 test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to write handover screenshots");
 
-const OUT = "docs/phases/F4-screens";
+const OUT = screensOut("F4", "docs/phases/F4-screens");
 const msgs = (l: "kk" | "ru") => JSON.parse(readFileSync(resolve(process.cwd(), `content/messages/${l}.json`), "utf8"));
 const seed = () => world("screensF4");
-const SIZES = [
-  { name: "360", width: 360, height: 740 },
-  { name: "1440", width: 1440, height: 900 },
-];
+const SIZES = screenSizes();
 
 async function shot(page: Page, name: string, full = false) {
   await page.waitForTimeout(600);
@@ -51,7 +49,7 @@ for (const only of ["kk", "ru"] as const)
         await page.goto(base);
         await page.waitForLoadState("networkidle");
         await shot(page, `S1_${sfx}`);
-        if (size.name === "360") await shot(page, `S1_${sfx}_full`, true);
+        if (size.width < 1024) await shot(page, `S1_${sfx}_full`, true);
         await page.locator(".counter.inv").click();
         await shot(page, `S1-filter_${sfx}`);
         await page.goto(base);
@@ -113,7 +111,7 @@ for (const only of ["kk", "ru"] as const)
         // S5
         await page.goto(`${base}/no-answer`);
         await shot(page, `S5_${sfx}`);
-        if (size.name === "360") await shot(page, `S5_${sfx}_full`, true);
+        if (size.width < 1024) await shot(page, `S5_${sfx}_full`, true);
       }
       // 130 % system text at 360
       await page.setViewportSize({ width: 360, height: 740 });

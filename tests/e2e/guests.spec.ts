@@ -206,12 +206,13 @@ test.describe("Ф4 guests", () => {
       if ((await no.getAttribute("aria-pressed")) !== "true") await no.click();
       await expect(no).toHaveAttribute("aria-pressed", "true", { timeout: 500 });
     }).toPass();
-    await expect(page.locator(".guest", { hasText: "Гүлмира" })).toHaveCount(1);
-    for (const status of await page.locator(".guest .badge").allTextContents())
+    // RA Л1: filtered-out cards stay in the server HTML with `hidden`
+    await expect(page.locator(".guest:visible", { hasText: "Гүлмира" })).toHaveCount(1);
+    for (const status of await page.locator(".guest:visible .badge").allTextContents())
       expect(status).toBe(kk.common.status.no);
     await page.getByRole("button", { name: kk.guests.list.filter.clear }).click();
     await page.getByRole("searchbox").fill("тимур");
-    await expect(page.locator(".guest")).toHaveCount(1);
+    await expect(page.locator(".guest:visible")).toHaveCount(1);
     await page.getByRole("searchbox").fill("Ерл zzz");
     await expect(page.getByText(kk.guests.list.search.empty.replace("{query}", "Ерл zzz"))).toBeVisible();
     await expect(page.getByRole("link", { name: kk.guests.list.search.addWithName })).toHaveAttribute(

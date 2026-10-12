@@ -1,5 +1,6 @@
 import { mkdirSync } from "node:fs";
 import { type Browser, test } from "@playwright/test";
+import { screensOut } from "./screens-config";
 import { world } from "./worlds";
 
 /**
@@ -9,7 +10,7 @@ import { world } from "./worlds";
  */
 test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to write handover screenshots");
 
-const OUT = "docs/phases/F6-screens";
+const OUT = screensOut("F6", "docs/phases/F6-screens");
 const seed = () => world("base");
 
 async function open(

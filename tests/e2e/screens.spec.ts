@@ -1,4 +1,5 @@
 import { test } from "@playwright/test";
+import { screenSizes, screensOut } from "./screens-config";
 import { world } from "./worlds";
 
 /**
@@ -7,12 +8,9 @@ import { world } from "./worlds";
  */
 test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to write handover screenshots");
 
-const OUT = "docs/phases/F1-screens";
+const OUT = screensOut("F1", "docs/phases/F1-screens");
 const seed = () => world("base");
-const SIZES = [
-  { name: "360", width: 360, height: 740 },
-  { name: "1440", width: 1440, height: 900 },
-];
+const SIZES = screenSizes();
 
 test("handover screenshots", async ({ page, context, baseURL }) => {
   test.setTimeout(300_000);

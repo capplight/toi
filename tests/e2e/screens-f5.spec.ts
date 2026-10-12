@@ -1,5 +1,6 @@
 import { createRequire } from "node:module";
 import { type Browser, type Page, test } from "@playwright/test";
+import { screenSizes, screensOut } from "./screens-config";
 import { world } from "./worlds";
 
 /**
@@ -10,13 +11,10 @@ import { world } from "./worlds";
  */
 test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to write handover screenshots");
 
-const OUT = "docs/phases/F5-screens";
+const OUT = screensOut("F5", "docs/phases/F5-screens");
 const seed = () => world("screensF5");
 const TEMPLATES = ["ak-shanyrak", "kok-tun", "kyzgaldak"] as const;
-const SIZES = [
-  { name: "360", width: 360, height: 740 },
-  { name: "1440", width: 1440, height: 900 },
-];
+const SIZES = screenSizes();
 
 async function sql(query: string, params: unknown[]) {
   const { Client } = createRequire(import.meta.url)("pg") as typeof import("pg");
@@ -74,7 +72,7 @@ test("Ф5 handover screenshots", async ({ browser, baseURL }) => {
         await page.waitForTimeout(3200);
         await shot(page, `G3-invitation_${sfx}`);
         await showAll(page);
-        if (size.name === "360") await shot(page, `G3-invitation_${sfx}_full`, true);
+        if (size.width < 1024) await shot(page, `G3-invitation_${sfx}_full`, true);
         // 4. the answer form
         await page.locator("#rsvp").scrollIntoViewIfNeeded();
         await shot(page, `G4-form_${sfx}`);

@@ -2,6 +2,7 @@ import { randomInt } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { type Page, test } from "@playwright/test";
+import { screenSizes, screensOut } from "./screens-config";
 import { world } from "./worlds";
 
 /**
@@ -11,13 +12,10 @@ import { world } from "./worlds";
  */
 test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to write handover screenshots");
 
-const OUT = "docs/phases/F3-screens";
+const OUT = screensOut("F3", "docs/phases/F3-screens");
 const msgs = (l: "kk" | "ru") => JSON.parse(readFileSync(resolve(process.cwd(), `content/messages/${l}.json`), "utf8"));
 const seed = () => world("screensF3");
-const SIZES = [
-  { name: "360", width: 360, height: 740 },
-  { name: "1440", width: 1440, height: 900 },
-];
+const SIZES = screenSizes();
 
 async function shot(page: Page, name: string, full = false) {
   await page.waitForTimeout(500);
@@ -61,7 +59,7 @@ for (const locale of ["kk", "ru"] as const)
       await page.getByLabel(m.wizard.venue.mapLabel).fill("https://2gis.kz/atyrau/firm/7000");
       await next();
       await page.locator(".preset").first().click();
-      await shot(page, `W4-text_${sfx}`, size.name === "360");
+      await shot(page, `W4-text_${sfx}`, size.width < 1024);
       await page.locator(".preset").first().getByRole("button").click();
       await shot(page, `W4-text-edit_${sfx}`);
       await next();
@@ -69,10 +67,10 @@ for (const locale of ["kk", "ru"] as const)
       await next();
       await shot(page, `W6-music_${sfx}`);
       await next();
-      await shot(page, `W7-hall_${sfx}`, size.name === "360");
+      await shot(page, `W7-hall_${sfx}`, size.width < 1024);
       await next();
-      await shot(page, `W8-review_${sfx}`, size.name === "360");
-      if (size.name === "360") {
+      await shot(page, `W8-review_${sfx}`, size.width < 1024);
+      if (size.width < 1024) {
         await page.addStyleTag({ content: "html { font-size: 130% !important; }" });
         await page.getByRole("button", { name: m.wizard.text.edit }).last().click(); // back to the hall step
         await shot(page, `W7-hall_360_${locale}_130`, true);
@@ -89,7 +87,7 @@ for (const locale of ["kk", "ru"] as const)
 
       // members
       await page.goto(`/e/${eventId}/settings/members`);
-      await shot(page, `M-members_${sfx}`, size.name === "360");
+      await shot(page, `M-members_${sfx}`, size.width < 1024);
       await page.getByRole("button", { name: m.members.add.button }).filter({ visible: true }).first().click();
       const sheet = page.getByRole("dialog");
       await sheet.getByRole("radio", { name: m.roles.other }).first().click();
@@ -98,7 +96,7 @@ for (const locale of ["kk", "ru"] as const)
         .getByLabel(m.members.add.phoneLabel)
         .fill("701 555 12 34".replace("555", String(randomInt(100, 999))));
       await sheet.getByRole("radio", { name: m.roles.mother }).click();
-      await shot(page, `M-add_${sfx}`, size.name === "360");
+      await shot(page, `M-add_${sfx}`, size.width < 1024);
       // duplicate: the seed's Анасы
       await sheet.getByLabel(m.members.add.phoneLabel).fill("700 009 00 02");
       await sheet.getByTestId("add-member-submit").click();
