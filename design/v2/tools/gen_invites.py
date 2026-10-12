@@ -119,15 +119,15 @@ def scene_extra(t):
     return ""
 
 def minimap():
-    s = '<svg class="minimap" viewBox="0 0 220 230" aria-label="Залдағы үстеліңіз: 10-үстел" role="img">'
+    s = '<svg class="minimap" viewBox="0 0 220 236" aria-label="Залдағы үстеліңіз: 10-үстел" role="img">'
     s += '<text x="110" y="12">ТӨР</text><rect class="yt" x="75" y="22" width="70" height="14" rx="7"/>'
     for i in range(16):
         r, c = divmod(i, 4); x = 35 + c * 50; y = 66 + r * 42; n = i + 1
         if n == 10:
-            s += f'<circle class="me-ring" cx="{x}" cy="{y}" r="13"/><circle class="me" cx="{x}" cy="{y}" r="13"/><text x="{x}" y="{y+4}" style="fill:var(--on-accent);font-size:12px;letter-spacing:0;font-weight:400">10</text>'
+            s += f'<circle class="me-ring" cx="{x}" cy="{y}" r="13"/><circle class="me" cx="{x}" cy="{y}" r="13"/><text x="{x}" y="{y+4}" style="fill:var(--on-accent);font-size:12px;letter-spacing:0;font-weight:400">10</text><text x="{x}" y="{y+27}" style="fill:var(--accent);font-size:11px;letter-spacing:0;font-weight:400">Сіз осында</text>'
         else:
             s += f'<circle class="t" cx="{x}" cy="{y}" r="11"/>'
-    s += '<text x="110" y="224">КІРЕБЕРІС</text></svg>'
+    s += '<text x="110" y="231">КІРЕБЕРІС</text></svg>'
     return s
 
 NAMES = {"ak": ("05-invite-ak-shanyraq.html", "«Ақ шаңырақ»", "tpl-ak", "#F4ECDD"), "kok": ("06-invite-kok-tun.html", "«Көк түн»", "tpl-kok", "#0F2338"), "kyz": ("07-invite-kyzgaldak.html", "«Қызғалдақ»", "tpl-kyz", "#F8ECE6")}
@@ -255,6 +255,10 @@ for t, (fn, title, cls, theme) in NAMES.items():
         <a class="btn-i" href="#" style="margin-top:16px">{ic("pencil")}Жауапты өзгерту</a>
       </div>
 
+      <div class="card tableno st-notyet" style="margin-top:16px">
+        <div class="lbl">Сіздің үстеліңіз</div>
+        <p class="note" style="margin-top:12px">Үстел нөмірі әлі белгіленбеген. Той жақындағанда осы бетте көрінеді.</p>
+      </div>
       <div class="card tableno st-table" style="margin-top:16px">
         {corner("corner k1")}{corner("corner k2")}{corner("corner k3")}{corner("corner k4")}
         <div class="lbl">Сіздің үстеліңіз</div>
@@ -279,7 +283,7 @@ for t, (fn, title, cls, theme) in NAMES.items():
   (function () {{
     var h = document.documentElement, st = (location.hash || '').slice(1);
     h.dataset.state = st === 'mid' ? '' : st;
-    if (st === 'open' || st === 'answered' || st === 'table') h.classList.add('is-open');
+    if (st === 'open' || st === 'answered' || st === 'table' || st === 'notyet') h.classList.add('is-open');
     if (st === 'lite') h.classList.add('lite');
     if (st === 'mid') {{ h.classList.add('is-opening'); setTimeout(function () {{ h.dataset.state = 'mid'; }}, 1150); }}
     document.getElementById('open').addEventListener('click', function () {{

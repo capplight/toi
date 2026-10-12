@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/ops.css">
 <style>
   /* /d/{token}: одна задача — найти семью и отметить «Келді». Без вкладок, без меню. #offline — нет сети */
   body { background: var(--ivory); }
@@ -23,6 +24,17 @@
   .net.off { background: #FBF0D9; color: var(--gold-ink); }
   .net.off .ico { color: var(--gold-ink); }
   html:not([data-state="offline"]) .s-off, html[data-state="offline"] .s-on { display: none !important; }
+  /* v2.4: #first (первое открытие без сети) · #savedhint (список сохранён) · #syncing · #revoked · #notfound · #edge (отказ / без стола) */
+  html[data-state="syncing"] .s-on, html[data-state="first"] .s-on, html[data-state="revoked"] .s-on { display: none !important; }
+  html:not([data-state="syncing"]) .s-sync { display: none !important; }
+  html[data-state="first"] .s-work, html[data-state="revoked"] .s-work { display: none !important; }
+  html:not([data-state="first"]) .s-first, html:not([data-state="revoked"]) .s-revoked { display: none !important; }
+  html:not([data-state="savedhint"]) .s-hint { display: none !important; }
+  html[data-state="notfound"] .s-res, html[data-state="edge"] .s-res { display: none !important; }
+  html:not([data-state="notfound"]) .s-nf { display: none !important; }
+  html:not([data-state="edge"]) .s-edge { display: none !important; }
+  html:not([data-state=""]):not([data-state="offline"]) .toast { display: none; }
+  .net .spin { width: 1rem; height: 1rem; border-width: 2px; }
   .door-main { max-width: 1180px; margin: -60px auto 0; padding: 0 16px 40px; position: relative; }
   .search-big { height: 64px; border-radius: 18px; border: 2.5px solid var(--lapis); background: var(--paper); box-shadow: var(--sh-raised); font-size: 22px; padding: 0 14px 0 18px; }
   .search-big input { font-size: 22px; }
@@ -78,15 +90,20 @@
   <div class="net-wrap">
     <div class="net s-on" role="status"><svg class="ico"><use href="#i-check"/></svg>Тізім телефонға сақталды · 173 адам · 14:05</div>
     <div class="net off s-off" role="status"><svg class="ico"><use href="#i-offline"/></svg>Интернет жоқ · әлі жіберілмеді: 3</div>
+    <div class="net s-sync" role="status"><span class="spin" aria-hidden="true"></span>Белгілер жіберілуде…</div>
   </div>
 </header>
 
 <main class="door-main">
-  <div class="door-grid">
+  <section class="card door-block s-first" role="alert"><svg class="ico"><use href="#i-offline"/></svg><p>Тізімді бірінші рет ашу үшін интернет керек. Интернетке қосылып, бетті қайта ашыңыз.</p></section>
+  <section class="card door-block s-revoked" role="alert"><svg class="ico"><use href="#i-lock"/></svg><p>Бұл сілтеме жабылды. Той иесінен жаңа сілтеме сұраңыз.</p></section>
+  <div class="door-grid s-work">
     <div>
-      <label class="input search-big"><svg class="ico"><use href="#i-search"/></svg><span class="sr-only">Аты бойынша іздеу</span><input value="Ер" placeholder="Атының 2–3 әрпін жазыңыз" autocomplete="off"><button class="clear" aria-label="Іздеуді тазалау"><svg class="ico"><use href="#i-x"/></svg></button></label>
+      <div class="info-banner s-hint" role="status" style="display:grid;grid-template-columns:1.5rem 1fr;gap:.625rem;padding:.875rem 1rem;border-radius:var(--r-lg);background:var(--success-soft);margin-bottom:.75rem;font:400 1rem/1.4375rem var(--font-ui)"><svg class="ico" style="color:var(--success-ink)"><use href="#i-check"/></svg><span>Тізім телефонға сақталды. Той күні осы сілтемені қайта ашыңыз — интернетсіз де ашылады.</span></div>
+      <label class="input search-big"><svg class="ico"><use href="#i-search"/></svg><span class="sr-only">Аты бойынша іздеу</span><input value="Ер" id="q" placeholder="Атының 2–3 әрпін жазыңыз" autocomplete="off"><button class="clear" aria-label="Іздеуді тазалау"><svg class="ico"><use href="#i-x"/></svg></button></label>
       <div class="stat-line"><span>Келді: <b class="num">64</b> / 173 адам</span><span class="bar" aria-hidden="true"><i></i></span></div>
 
+      <div class="s-res">
       <div class="res">
         <div class="nm"><mark>Ер</mark>лан ағай отбасы</div>
         <div class="meta">4 адам · Нағашылар</div>
@@ -111,6 +128,21 @@
         <div class="tno" style="background:var(--cat-oz)"><div><b>6</b><span>үстел</span></div></div>
         <div class="acts"><button class="btn come"><svg class="ico"><use href="#i-check"/></svg>Келді</button></div>
       </div>
+      </div>
+      <div class="s-edge">
+        <div class="res">
+          <div class="nm"><mark>Жан</mark>ар апай</div>
+          <div class="meta">1 адам · Өз туыстар</div>
+          <div class="tno" style="background:var(--cat-oz)"><div><b>4</b><span>үстел</span></div></div>
+          <div class="acts"><button class="btn come"><svg class="ico"><use href="#i-check"/></svg>Келді</button></div>
+        </div>
+        <div class="res" style="background:var(--neutral-soft);box-shadow:none">
+          <div class="nm"><mark>Жан</mark>сая</div>
+          <div class="meta">Үстелі жоқ</div>
+          <div class="meta" style="grid-column:1/-1;font-weight:600;color:var(--ink)">Жауабы: «Келе алмаймыз»</div>
+          <div class="acts"><button class="btn secondary"><svg class="ico"><use href="#i-check"/></svg>Келді</button></div>
+        </div>
+      </div>
       <p class="hint-line">Таппадыңыз ба? Тек атын жазыңыз: «ағай», «апай» деп емес.</p>
     </div>
 
@@ -130,5 +162,6 @@
 
 <div class="toast top" role="status" aria-live="polite"><span class="msg">Келді: Ербол нағашы отбасы</span><button class="undo"><svg class="ico sm"><use href="#i-undo"/></svg>Қайтару</button><i class="timer"></i></div>
 <script src="js/mock.js"></script>
+<script>if (TOI_STATE === "notfound") document.getElementById("q").value = "Ерлн"; if (TOI_STATE === "edge") document.getElementById("q").value = "Жан";</script>
 </body>
 </html>

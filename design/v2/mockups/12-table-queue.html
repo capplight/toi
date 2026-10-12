@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Үстел нөмірлерін жіберу · Той v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/flows.css">
+<link rel="stylesheet" href="css/ops.css">
+<!-- Состояния (#hash): по умолчанию — вступление · current · nophone · resume · done · allsent (повторный вход, всем уже отправлено). Тексты — tableQueue.*, wa.tableNumber -->
+<style>
+  .s { display: none; }
+  html[data-state=""] .s-intro, html[data-state="resume"] .s-intro, html[data-state="current"] .s-run, html[data-state="nophone"] .s-run, html[data-state="done"] .s-done, html[data-state="allsent"] .s-allsent { display: block; }
+  html:not([data-state="resume"]) .s-resume { display: none !important; }
+  html[data-state="resume"] .s-start { display: none !important; }
+  html:not([data-state="nophone"]) .s-np { display: none !important; }
+  html[data-state="nophone"] .s-ph { display: none !important; }
+  html:not([data-state="current"]):not([data-state="nophone"]) .s-stop { display: none !important; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" aria-label="Мәзір">
+    <a class="wordmark brand" href="#"><span data-orn="mark"></span><b>Той</b></a>
+    <div class="event-mini"><span data-orn="shanyraq" class="deco"></span><div class="nm">Айбек пен Дана</div><div class="meta">Үйлену тойы · 15 қараша, 18:00</div></div>
+    <a class="nav-item" href="01-guests.html"><svg class="ico"><use href="#i-users"/></svg>Қонақтар</a>
+    <a class="nav-item" href="03-hall.html"><svg class="ico"><use href="#i-grid"/></svg>Зал</a>
+    <a class="nav-item" href="#" aria-current="page"><svg class="ico"><use href="#i-chart"/></svg>Қорытынды</a>
+    <a class="nav-item" href="13-expenses.html"><svg class="ico"><use href="#i-wallet"/></svg>Шығындар</a>
+    <div class="side-foot">
+      <button class="nav-item menu-item" aria-haspopup="dialog"><svg class="ico"><use href="#i-more"/></svg><span>Той мәзірі</span></button>
+      <div class="who"><span class="avatar">С</span><div><b style="font-weight:600">Серік</b><div class="t-body t-muted">Той иесі</div></div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="pilot" role="status"><svg class="ico"><use href="#i-alert"/></svg><p>Бұл — сынақ нұсқасы. Ақау байқасаңыз, бізге хабарлаңыз.</p><button class="icon-btn" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></button></div>
+    <header class="topbar">
+      <a class="icon-btn" href="#" aria-label="Артқа"><svg class="ico"><use href="#i-back"/></svg></a>
+      <h1 class="t-h1">Үстел нөмірлері</h1>
+      <button class="btn text s-stop" style="width:auto">Тоқтату</button>
+    </header>
+
+    <main class="content no-tabs">
+      <!-- Вступление -->
+      <section class="s s-intro">
+        <div class="q-hero">
+          <h2>Үстел нөмірлері</h2>
+          <p>Әр отбасына үстел нөмірін жібереміз. WhatsApp кезекпен ашылады, әр хабарламаны өзіңіз жібересіз. Барлығы: 62 отбасы.</p>
+          <a class="btn primary s-start" href="#current"><svg class="ico fill"><use href="#i-wa"/></svg>Үстел нөмірлерін жіберу</a>
+          <a class="btn primary s-resume" href="#current"><svg class="ico fill"><use href="#i-wa"/></svg>Тоқтаған жерден жалғастыру (№34)</a>
+          <div class="q-prog s-resume" style="margin-top:1rem"><span>33 / 62</span><span class="bar" aria-hidden="true"><i style="width:53%"></i></span></div>
+        </div>
+        <div class="q-note"><svg class="ico"><use href="#i-alert"/></svg><span>Әлі отырғызылмаған 3 отбасы бұл кезекте жоқ. Алдымен оларды үстелге отырғызыңыз.</span><a class="btn text" href="03-hall.html">Зал</a></div>
+      </section>
+
+      <!-- Кезек: бір отбасы -->
+      <section class="s s-run">
+        <div class="q-grid">
+          <div>
+            <div class="q-prog" role="progressbar" aria-valuemin="0" aria-valuemax="62" aria-valuenow="33" aria-label="Үстел нөмірлері"><span>33 / 62</span><span class="bar" aria-hidden="true"><i style="width:53%"></i></span></div>
+            <article class="q-card">
+              <div class="qwho s-ph"><b>Ерлан ағай отбасы</b><span class="ph">+7 701 *** ** 19</span><span class="tno"><span><b>10</b><span>үстел</span></span></span></div>
+              <div class="qwho s-np"><b>Болат ағай отбасы</b><span class="ph">—</span><span class="tno" style="background:var(--cat-oz)"><span><b>5</b><span>үстел</span></span></span></div>
+              <div class="q-warn s-np" role="status"><svg class="ico"><use href="#i-phone"/></svg><span>Бұл отбасының телефоны жоқ. Өткізіп жіберіңіз немесе өзіңіз хабарласыңыз.</span></div>
+              <p class="bubble-lbl">Хабарлама мәтіні</p>
+              <div class="bubble s-ph">Сәлеметсіз бе! Сіздің үстеліңіз — 10-үстел.
+Құрметті Ерлан ағай отбасы, Сізді тойымызда күтеміз:
+Айбек пен Дана
+15 қараша, 18:00
+«Шаңырақ» мейрамханасы
+
+Залдағы орныңызды осы сілтемеден көре аласыз:
+toi-pilot.vercel.app/i/a7K2pQ</div>
+              <div class="bubble s-np">Сәлеметсіз бе! Сіздің үстеліңіз — 5-үстел.
+Құрметті Болат ағай отбасы, Сізді тойымызда күтеміз:
+Айбек пен Дана
+15 қараша, 18:00
+«Шаңырақ» мейрамханасы
+
+Залдағы орныңызды осы сілтемеден көре аласыз:
+toi-pilot.vercel.app/i/K9mXq2</div>
+              <div class="q-actions s-ph">
+                <button class="btn wa"><svg class="ico fill"><use href="#i-wa"/></svg>WhatsApp-қа жіберу</button>
+                <button class="btn primary">Жіберілді<svg class="ico"><use href="#i-right"/></svg></button>
+                <button class="btn text" style="width:100%">Өткізіп жіберу</button>
+              </div>
+              <div class="q-actions s-np">
+                <button class="btn primary">Өткізіп жіберу<svg class="ico"><use href="#i-right"/></svg></button>
+              </div>
+            </article>
+          </div>
+          <aside class="q-side desk-only" aria-label="Кезек">
+            <ol class="q-list">
+              <li><span class="n">31</span><span>Ғабит ағай отбасы<span class="t">6-үстел</span></span><span class="s sent"><svg class="ico"><use href="#i-check"/></svg>Жіберілді</span></li>
+              <li><span class="n">32</span><span>Ермек отбасы<span class="t">6-үстел</span></span><span class="s skip">Өткізілді</span></li>
+              <li class="cur"><span class="n">33</span><span>Ерлан ағай отбасы<span class="t">10-үстел</span></span><span class="s"></span></li>
+              <li><span class="n">34</span><span>Даурен нағашы отбасы<span class="t">10-үстел</span></span><span class="s"></span></li>
+              <li><span class="n">35</span><span>Қанат отбасы<span class="t">10-үстел</span></span><span class="s"></span></li>
+              <li><span class="n">36</span><span>Бибігүл апай отбасы<span class="t">11-үстел</span></span><span class="s"></span></li>
+            </ol>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Повторный вход: всем уже отправлено -->
+      <section class="s s-allsent">
+        <div class="q-hero">
+          <h2>Барлығына жіберілді</h2>
+          <p>Үстел нөмірі 62 отбасына жіберілді. Біреудің үстелі өзгерсе, сол отбасына қайта жіберіңіз.</p>
+          <a class="btn secondary" href="#current"><svg class="ico"><use href="#i-refresh"/></svg>Басынан бастау</a>
+        </div>
+      </section>
+
+      <!-- Дайын -->
+      <section class="s s-done">
+        <div class="q-hero q-done">
+          <span data-orn="horn" class="success-orn draw"></span>
+          <h2 class="success-ttl" style="font-size:1.75rem;line-height:2.25rem">Дайын! 59 отбасына үстел нөмірі жіберілді.</h2>
+        </div>
+        <ol class="q-list" style="margin-top:1rem">
+          <li><span class="n">12</span><span>Болат ағай отбасы<span class="t">5-үстел</span></span><span class="s skip">Өткізілді</span></li>
+          <li><span class="n">32</span><span>Ермек отбасы<span class="t">6-үстел</span></span><span class="s skip">Өткізілді</span></li>
+          <li><span class="n">47</span><span>Нұржан отбасы<span class="t">13-үстел</span></span><span class="s skip">Өткізілді</span></li>
+        </ol>
+        <a class="btn secondary" href="#" style="margin-top:1rem">Тізімге оралу</a>
+      </section>
+    </main>
+  </div>
+</div>
+<script src="js/mock.js"></script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Шығындар · Той v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Onest:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/flows.css">
+<link rel="stylesheet" href="css/ops.css">
+<!-- Состояния (#hash): по умолчанию · over · nototal · empty · add · add-error · edit · restaurant · delete · noright. Тексты — budget.*, errors.forbidden -->
+<style>
+  .s-only { display: none; }
+  html[data-state="over"] .s-over, html[data-state="nototal"] .s-nototal, html[data-state="empty"] .s-empty, html[data-state="noright"] .s-noright { display: block; }
+  html[data-state="over"] .s-normal-total, html[data-state="nototal"] .s-normal-total, html[data-state="nototal"] .s-bar, html[data-state="empty"] .s-data, html[data-state="noright"] .s-data, html[data-state="noright"] .s-cta { display: none !important; }
+  html:not([data-state="add"]):not([data-state="add-error"]) .s-add { display: none !important; }
+  html:not([data-state="add-error"]) .s-adderr { display: none !important; }
+  html[data-state="add-error"] .s-addok { display: none !important; }
+  html:not([data-state="edit"]) .s-edit { display: none !important; }
+  html:not([data-state="restaurant"]) .s-rest { display: none !important; }
+  html:not([data-state="delete"]) .s-del { display: none !important; }
+  html[data-state="empty"] .s-empty-total { display: block !important; }
+</style>
+</head>
+<body class="has-cta">
+<div class="shell">
+  <aside class="sidebar" aria-label="Мәзір">
+    <a class="wordmark brand" href="#"><span data-orn="mark"></span><b>Той</b></a>
+    <div class="event-mini"><span data-orn="shanyraq" class="deco"></span><div class="nm">Айбек пен Дана</div><div class="meta">Үйлену тойы · 15 қараша, 18:00</div></div>
+    <a class="nav-item" href="01-guests.html"><svg class="ico"><use href="#i-users"/></svg>Қонақтар</a>
+    <a class="nav-item" href="03-hall.html"><svg class="ico"><use href="#i-grid"/></svg>Зал</a>
+    <a class="nav-item" href="#"><svg class="ico"><use href="#i-chart"/></svg>Қорытынды</a>
+    <a class="nav-item" href="#" aria-current="page"><svg class="ico"><use href="#i-wallet"/></svg>Шығындар</a>
+    <div class="side-foot">
+      <button class="nav-item menu-item" aria-haspopup="dialog"><svg class="ico"><use href="#i-more"/></svg><span>Той мәзірі</span></button>
+      <div class="who"><span class="avatar">Г</span><div><b style="font-weight:600">Гүлжан</b><div class="t-body t-muted">Анасы · Тізім және отырғызу</div></div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar desk-hide">
+      <a class="icon-btn" href="#" aria-label="Артқа"><svg class="ico"><use href="#i-back"/></svg></a>
+      <h1 class="t-h1">Шығындар</h1>
+      <button class="icon-btn" aria-label="Той мәзірі" aria-haspopup="dialog"><svg class="ico"><use href="#i-more"/></svg></button>
+    </header>
+
+    <main class="content">
+      <div class="page-head" style="margin-bottom:1rem">
+        <div class="ttl"><h2 class="t-h1">Шығындар</h2></div>
+        <a class="btn primary s-cta" href="#add"><svg class="ico"><use href="#i-plus"/></svg>Шығын қосу</a>
+      </div>
+
+      <!-- Нет права (план: 403; пункт навигации скрыт) -->
+      <section class="s-only s-noright forbid" role="alert">
+        <svg class="ico"><use href="#i-lock"/></svg>
+        <p>Мұны істеуге рұқсатыңыз жоқ. Қажет болса, той иесінен сұраңыз.</p>
+        <a class="btn secondary" href="01-guests.html">Басты бетке өту</a>
+      </section>
+
+      <div class="bud-grid">
+        <div>
+          <!-- Бюджет и одна полоса -->
+          <section class="bud-top s-data-top" aria-label="Бюджет">
+            <div class="row"><span class="total">Бюджет: 6 000 000 ₸</span><button class="btn text">Өзгерту</button></div>
+            <p class="bud-empty-total s-only s-nototal s-empty-total">Бюджет әлі жазылмаған. Жалпы соманы жазсаңыз, қанша қалғанын көрсетеміз.</p>
+            <div class="s-bar s-data">
+              <div class="bigbar s-normal-total" role="img" aria-label="Төленді: 3 450 000 ₸ · Қалды: 2 550 000 ₸"><i style="width:57.5%"></i></div>
+              <div class="bud-legend s-normal-total"><span><i class="p"></i>Төленді: 3 450 000 ₸</span><span><i class="l"></i>Қалды: 2 550 000 ₸</span></div>
+              <div class="s-only s-over">
+                <div class="bigbar over" role="img" aria-label="Бюджеттен асты: 400 000 ₸"><i style="width:93.75%"></i></div>
+                <div class="bud-legend"><span><i class="p"></i>Төленді: 6 000 000 ₸</span></div>
+                <div class="bud-over"><svg class="ico sm"><use href="#i-alert"/></svg>Бюджеттен асты: 400 000 ₸</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Пусто -->
+          <section class="s-only s-empty empty" style="padding-top:1.5rem">
+            <span data-orn="horn"></span>
+            <p class="t-body" style="font-size:1.125rem;line-height:1.625rem;max-width:24rem;margin:0 auto 1rem">Әзірге шығын жоқ. Алғашқы шығынды қосыңыз: мейрамхана, киім, асаба.</p>
+          </section>
+
+          <!-- Санаттар: горизонтальные полосы (план — серый, оплачено — зелёный) -->
+          <div class="s-data">
+            <h3 class="sec-title">Санаттар</h3>
+            <div class="cat-bars">
+              <div class="cbar"><div class="h"><b>Мейрамхана <span class="autobadge"><svg class="ico"><use href="#i-refresh"/></svg>Өзі есептеді</span></b><span>Жоспар: 1 800 000 ₸ · Төленді: 900 000 ₸</span></div><div class="track"><i class="pl" style="width:100%"></i><i class="pd" style="width:50%"></i></div></div>
+              <div class="cbar"><div class="h"><b>Сыйлықтар / киіт</b><span>Жоспар: 1 200 000 ₸ · Төленді: 800 000 ₸</span></div><div class="track"><i class="pl" style="width:66.7%"></i><i class="pd" style="width:44.4%"></i></div></div>
+              <div class="cbar"><div class="h"><b>Киім</b><span>Жоспар: 900 000 ₸ · Төленді: 900 000 ₸</span></div><div class="track"><i class="pl" style="width:50%"></i><i class="pd" style="width:50%"></i></div></div>
+              <div class="cbar"><div class="h"><b>Асаба / әнші</b><span>Жоспар: 700 000 ₸ · Төленді: 350 000 ₸</span></div><div class="track"><i class="pl" style="width:38.9%"></i><i class="pd" style="width:19.4%"></i></div></div>
+              <div class="cbar"><div class="h"><b>Фото / видео</b><span>Жоспар: 500 000 ₸ · Төленді: 250 000 ₸</span></div><div class="track"><i class="pl" style="width:27.8%"></i><i class="pd" style="width:13.9%"></i></div></div>
+              <div class="cbar"><div class="h"><b>Безендіру</b><span>Жоспар: 400 000 ₸ · Төленді: 200 000 ₸</span></div><div class="track"><i class="pl" style="width:22.2%"></i><i class="pd" style="width:11.1%"></i></div></div>
+              <div class="cbar"><div class="h"><b>Басқа</b><span>Жоспар: 300 000 ₸ · Төленді: 0 ₸</span></div><div class="track"><i class="pl" style="width:16.7%"></i></div></div>
+              <div class="cbar"><div class="h"><b>Көлік</b><span>Жоспар: 200 000 ₸ · Төленді: 50 000 ₸</span></div><div class="track"><i class="pl" style="width:11.1%"></i><i class="pd" style="width:2.8%"></i></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-data">
+          <h3 class="sec-title">Жақын төлемдер</h3>
+          <div class="pay-list">
+            <div class="pay"><span class="d overdue">10<small>қаз</small></span><span><b>Залды безендіру</b><span class="od"><svg class="ico xs"><use href="#i-alert"/></svg>Мерзімі өтті</span></span><span class="amt">Қалды: 200 000 ₸</span></div>
+            <div class="pay"><span class="d">01<small>қар</small></span><span><b>Асаба және әнші</b><span>Асаба / әнші</span></span><span class="amt">Қалды: 350 000 ₸</span></div>
+            <div class="pay"><span class="d">05<small>қар</small></span><span><b>Фотограф</b><span>Фото / видео</span></span><span class="amt">Қалды: 250 000 ₸</span></div>
+          </div>
+
+          <h3 class="sec-title">Шығындар</h3>
+          <div class="items">
+            <a class="item" href="#restaurant"><b>«Шаңырақ» мейрамханасы <span class="autobadge"><svg class="ico"><use href="#i-refresh"/></svg>Өзі есептеді</span></b><span class="m">Мейрамхана · 150 орын × 12 000 ₸ = 1 800 000 ₸</span><span class="by">Анасы өзгертті · 12.10</span><span class="a">1 800 000 ₸<small>Төленді: 900 000 ₸</small></span></a>
+            <a class="item" href="#edit"><b>Құдаларға киіт</b><span class="m">Сыйлықтар / киіт · 25.10</span><span class="by">Той иесі өзгертті · 09.10</span><span class="a">1 200 000 ₸<small>Төленді: 800 000 ₸</small></span></a>
+            <a class="item" href="#edit"><b>Келіннің көйлегі</b><span class="m">Киім</span><span class="by">Анасы өзгертті · 05.10</span><span class="a">900 000 ₸<small>Төленді: 900 000 ₸</small></span></a>
+            <a class="item" href="#edit"><b>Асаба және әнші</b><span class="m">Асаба / әнші · 01.11</span><span class="by">Әкесі өзгертті · 08.10</span><span class="a">700 000 ₸<small>Төленді: 350 000 ₸</small></span></a>
+            <a class="item" href="#edit"><b>Фотограф</b><span class="m">Фото / видео · 05.11</span><span class="by">Анасы өзгертті · 07.10</span><span class="a">500 000 ₸<small>Төленді: 250 000 ₸</small></span></a>
+            <a class="item" href="#edit"><b>Залды безендіру</b><span class="m">Безендіру · 10.10</span><span class="by">Анасы өзгертті · 01.10</span><span class="a">400 000 ₸<small>Төленді: 200 000 ₸</small></span></a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="sticky-cta s-cta"><a class="btn primary" href="#add"><svg class="ico"><use href="#i-plus"/></svg>Шығын қосу</a></div>
+<nav class="tabbar" aria-label="Бөлімдер" style="--tabs:3">
+  <a class="tab" href="01-guests.html"><span class="pill"><svg class="ico"><use href="#i-users"/></svg></span><span>Қонақтар</span></a>
+  <a class="tab" href="03-hall.html"><span class="pill"><svg class="ico"><use href="#i-grid"/></svg></span><span>Зал</span></a>
+  <a class="tab" href="#" aria-current="page"><span class="pill"><svg class="ico"><use href="#i-chart"/></svg></span><span>Қорытынды</span></a>
+</nav>
+
+<!-- Шығын қосу / статья (шторка; ≥1024 — справа 480 px) -->
+<div class="scrim s-add"></div>
+<div class="sheet s-add" role="dialog" aria-modal="true" aria-labelledby="ad-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="ad-t">Шығын қосу</h2><button class="icon-btn" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></button></div>
+  <div class="sheet-body">
+    <div class="form-sec"><label class="field-label" for="a1">Атауы</label><div class="input focus"><input id="a1" value="Шашу, кәмпит"></div></div>
+    <div class="form-sec"><span class="field-label" id="a2">Санаты</span>
+      <div class="cats" role="radiogroup" aria-labelledby="a2">
+        <button class="cat" role="radio" aria-checked="false">Мейрамхана</button><button class="cat" role="radio" aria-checked="false">Асаба / әнші</button>
+        <button class="cat" role="radio" aria-checked="false">Киім</button><button class="cat" role="radio" aria-checked="false">Сыйлықтар / киіт</button>
+        <button class="cat" role="radio" aria-checked="false">Безендіру</button><button class="cat" role="radio" aria-checked="false">Фото / видео</button>
+        <button class="cat" role="radio" aria-checked="false">Көлік</button><button class="cat" role="radio" aria-checked="true"><svg class="ico sm"><use href="#i-check"/></svg>Басқа</button>
+      </div></div>
+    <div class="form-sec"><label class="field-label" for="a3">Жоспарланған сома</label>
+      <div class="input s-addok"><input id="a3" inputmode="numeric" value="300 000"><span class="suffix">₸</span></div>
+      <div class="input error s-adderr"><input inputmode="numeric" value="300 мың" aria-invalid="true" aria-describedby="a3e"><span class="suffix">₸</span></div>
+      <div class="field-err s-adderr" id="a3e"><svg class="ico sm"><use href="#i-alert"/></svg>Соманы санмен жазыңыз, мысалы: 150 000.</div></div>
+    <div class="form-sec"><label class="field-label" for="a4">Төленді</label><div class="input"><input id="a4" inputmode="numeric" value="0"><span class="suffix">₸</span></div></div>
+    <div class="form-sec"><label class="field-label" for="a5">Төлеу мерзімі</label><div class="input"><svg class="ico"><use href="#i-cal"/></svg><input id="a5" value="14.11.2026"></div></div>
+    <div class="form-sec"><label class="field-label" for="a6">Ескертпе</label><textarea class="textarea" id="a6" rows="3" style="min-height:5.5rem">Базардан, тойдан бір күн бұрын</textarea></div>
+  </div>
+  <div class="sheet-foot"><button class="btn primary">Сақтау</button></div>
+</div>
+
+<!-- Статьяны өзгерту (заголовок = атауы) -->
+<div class="scrim s-edit"></div>
+<div class="sheet s-edit" role="dialog" aria-modal="true" aria-labelledby="ed-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="ed-t">Құдаларға киіт</h2><button class="icon-btn" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></button></div>
+  <div class="sheet-body">
+    <p class="item by" style="padding:0;margin:0 0 .75rem">Той иесі өзгертті · 09.10</p>
+    <div class="form-sec"><label class="field-label" for="e1">Атауы</label><div class="input"><input id="e1" value="Құдаларға киіт"></div></div>
+    <div class="form-sec"><label class="field-label" for="e2">Санаты</label><div class="input"><input id="e2" value="Сыйлықтар / киіт" readonly><svg class="ico"><use href="#i-down"/></svg></div></div>
+    <div class="form-sec row2"><div><label class="field-label" for="e3">Жоспарланған сома</label><div class="input"><input id="e3" inputmode="numeric" value="1 200 000"><span class="suffix">₸</span></div></div>
+      <div><label class="field-label" for="e4">Төленді</label><div class="input focus"><input id="e4" inputmode="numeric" value="800 000"><span class="suffix">₸</span></div></div></div>
+    <div class="form-sec"><label class="field-label" for="e5">Төлеу мерзімі</label><div class="input"><svg class="ico"><use href="#i-cal"/></svg><input id="e5" value="25.10.2026"></div></div>
+    <div class="form-sec"><label class="field-label" for="e6">Ескертпе</label><textarea class="textarea" id="e6" rows="2" style="min-height:4.5rem">Қалғанын тойдан кейін</textarea></div>
+  </div>
+  <div class="sheet-foot"><button class="btn primary">Сақтау</button><a class="btn danger" href="#delete">Өшіру</a></div>
+</div>
+
+<!-- Мейрамхана: сома өзі есептеледі (цена места × места по ответам) -->
+<div class="scrim s-rest"></div>
+<div class="sheet s-rest" role="dialog" aria-modal="true" aria-labelledby="rs-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="rs-t">«Шаңырақ» мейрамханасы</h2><button class="icon-btn" aria-label="Жабу"><svg class="ico"><use href="#i-x"/></svg></button></div>
+  <div class="sheet-body">
+    <span class="autobadge"><svg class="ico"><use href="#i-refresh"/></svg>Өзі есептеді</span>
+    <div class="form-sec" style="margin-top:1rem"><label class="field-label" for="r1">Бір орынның бағасы</label><div class="input focus"><input id="r1" inputmode="numeric" value="12 000"><span class="suffix">₸</span></div></div>
+    <div class="formula" role="status"><div class="f">150 орын × 12 000 ₸ = 1 800 000 ₸</div><p>Жауаптар өзгерсе, сома өзі өзгереді.</p></div>
+    <div class="form-sec row2" style="margin-top:1.25rem"><div><label class="field-label" for="r2">Төленді</label><div class="input"><input id="r2" inputmode="numeric" value="900 000"><span class="suffix">₸</span></div></div>
+      <div><label class="field-label" for="r3">Төлеу мерзімі</label><div class="input"><input id="r3" value="20.11.2026"></div></div></div>
+    <div class="form-sec"><label class="field-label" for="r4">Ескертпе</label><textarea class="textarea" id="r4" rows="2" style="min-height:4.5rem">Алдын ала төлем жасалды</textarea></div>
+  </div>
+  <div class="sheet-foot"><button class="btn primary">Сақтау</button></div>
+</div>
+
+<!-- Өшіру -->
+<div class="scrim s-del"></div>
+<div class="sheet center s-del" role="alertdialog" aria-modal="true" aria-labelledby="dl-t" style="display:flex">
+  <div class="handle"></div>
+  <div class="sheet-head"><h2 class="t-h2" id="dl-t">Бұл шығынды өшіру керек пе?</h2></div>
+  <div class="sheet-foot" style="border-top:0"><button class="btn danger-fill">Өшіру</button><button class="btn secondary" autofocus>Бас тарту</button></div>
+</div>
+
+<script src="js/mock.js"></script>
+</body>
+</html>

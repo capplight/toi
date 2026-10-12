@@ -275,6 +275,9 @@ html[data-state="answered"] .st-form, html[data-state="table"] .st-form { displa
 html[data-state="answered"] .st-answered { display: block; }
 html[data-state="table"] .st-table { display: block; }
 html[data-state="table"] .st-answered.keep { display: block; }
+.st-notyet { display: none; }
+html[data-state="notyet"] .st-form { display: none; }
+html[data-state="notyet"] .st-answered, html[data-state="notyet"] .st-notyet { display: block; }
 
 /* ===================== Десктоп: приглашение по центру, декоративные поля ===================== */
 @media (min-width: 900px) {
