@@ -268,7 +268,7 @@ export function HallScreen({ v, tz }: { v: HallView; tz: string }) {
         <h3>{t("hall.move.suitable")}</h3>
         {suitable.map((s) => (
           <button key={s.no} type="button" className="row" onClick={() => askMove(moving.id, s.no)}>
-            <span className="dot" aria-hidden="true" />
+            <span className="cand" aria-hidden="true" />
             {t("hall.move.suitableItem", { number: s.no, free: s.free })}
             <Icon name="up" className="rot-90" />
           </button>
@@ -281,7 +281,7 @@ export function HallScreen({ v, tz }: { v: HallView; tz: string }) {
             </summary>
             {others.map((s) => (
               <button key={s.no} type="button" className="row short" onClick={() => askMove(moving.id, s.no)}>
-                <span className="dot" aria-hidden="true" />
+                <span className="cand" aria-hidden="true" />
                 {t("hall.move.suitableItem", { number: s.no, free: Math.max(0, s.free) })}
                 <Icon name="up" className="rot-90" />
               </button>

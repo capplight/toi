@@ -21,6 +21,11 @@ const WORLDS: WorldName[] = [
   "screensF3",
   "screensF4",
   "screensF5",
+  // Ф7b «Зал» (separate block): one world per writing project + two-browser test + screenshots
+  "hallMobile",
+  "hallDesktop",
+  "hallConcurrency",
+  "screensF7b",
 ];
 
 export default async function globalSetup() {
@@ -50,7 +55,11 @@ export default async function globalSetup() {
   const worlds = {} as Record<WorldName, World>;
   for (const [i, name] of WORLDS.entries()) {
     const phones =
-      name === "base" ? DEMO_PHONES : { ake: `+7700${i}000001`, ana: `+7700${i}000002`, jas: `+7700${i}000003` };
+      name === "base"
+        ? DEMO_PHONES
+        : i < 10
+          ? { ake: `+7700${i}000001`, ana: `+7700${i}000002`, jas: `+7700${i}000003` }
+          : { ake: `+7701${i - 10}000001`, ana: `+7701${i - 10}000002`, jas: `+7701${i - 10}000003` }; // Ф7b worlds
     const s = await seedSample(db(), new Date(), { phones });
     const now = new Date();
     // Ready sessions (owner Әкесі; Жастар without the budget right; akeSwitch_*: other devices of the owner for the
@@ -100,6 +109,20 @@ export default async function globalSetup() {
     }
     if (name === "perf") await realisticStatuses(s.eventId);
     worlds[name] = { eventId: s.eventId, sessions, memberLinks, guests, phones };
+  }
+  // Ф7b: a ready session of Анасы (seating right) for the «Зал» worlds — the two-browser test (мама и папа).
+  for (const name of WORLDS.filter((n) => n.startsWith("hall") || n === "screensF7b")) {
+    const i = WORLDS.indexOf(name);
+    const phone = `+7701${i - 10}000002`;
+    const now = new Date();
+    const u = await upsertUser(db(), { phone, locale: "kk", now, updateLocale: false });
+    await db()
+      .update(eventMembers)
+      .set({ userId: u.id })
+      .where(and(eq(eventMembers.eventId, worlds[name].eventId), eq(eventMembers.phone, phone)));
+    worlds[name].sessions.ana = (
+      await createSession(db(), { userId: u.id, method: "sms", scope: "all", userAgent: null, now })
+    ).token;
   }
   await closeDb();
   mkdirSync("playwright/.cache", { recursive: true });

@@ -358,7 +358,7 @@
     margin-left: auto;
     color: var(--ink-2);
   }
-  .choose .row .dot {
+  .choose .row .cand {
     width: 0.75rem;
     height: 0.75rem;
     border-radius: 50%;
@@ -370,7 +370,7 @@
     color: var(--ink-2);
     font-weight: 400;
   }
-  .choose .row.short .dot {
+  .choose .row.short .cand {
     border: 2px solid var(--line-strong);
   }
   .choose details {

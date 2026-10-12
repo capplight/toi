@@ -6,12 +6,29 @@ import { resolve } from "node:path";
  * `base` is never changed by a spec (except logins in auth.spec) — read the seed numbers there.
  */
 export type WorldName =
-  "base" | "events" | "guests" | "invite" | "music" | "perf" | "summaryLive" | "screensF3" | "screensF4" | "screensF5";
+  | "base"
+  | "events"
+  | "guests"
+  | "invite"
+  | "music"
+  | "perf"
+  | "summaryLive"
+  | "screensF3"
+  | "screensF4"
+  | "screensF5"
+  // Ф7b
+  | "hallMobile"
+  | "hallDesktop"
+  | "hallConcurrency"
+  | "screensF7b";
 
 export type World = {
   eventId: string;
   /** ake, jas, akeSwitch_mobile, akeSwitch_desktop */
-  sessions: Record<"ake" | "jas" | "akeSwitch_mobile" | "akeSwitch_desktop", string>;
+  sessions: Record<"ake" | "jas" | "akeSwitch_mobile" | "akeSwitch_desktop", string> & {
+    /** Анасы (seating right) — only in the Ф7b «Зал» worlds. */
+    ana?: string;
+  };
   /** One-time member login links: Анасы (mobile), Жастар (desktop). */
   memberLinks: Record<string, string>;
   /** Guest links of Анасы's and Жастар's families (invite: all reset to «no answer»; summaryLive: sent, pending). */
