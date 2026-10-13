@@ -860,7 +860,7 @@ function TableSheet({
         )}
         {fams.length > 0 && (
           <>
-            <p className="who">{t("whoSits")}</p>
+            <p className="whosits">{t("whoSits")}</p>
             <div className="fams-box">
               {fams.map((f, i) => (
                 <FamilyRow

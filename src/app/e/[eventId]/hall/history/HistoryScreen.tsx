@@ -121,10 +121,10 @@ export function HistoryScreen({
                     {e.actorKind === "guest" && <Icon name="users" size="sm" />}
                     {t("hall.history.entryMeta", { time: time(e.at), member: who })}
                   </div>
-                  <div className="sum">{x.main}</div>
+                  <div className="hsum">{x.main}</div>
                   {x.sub && <div className="line2">{x.sub}</div>}
                   {x.warn.map((w) => (
-                    <div key={w.tableNo} className="warn">
+                    <div key={w.tableNo} className="hwarn">
                       <Icon name="alert" size="sm" />
                       {t("hall.history.warning", { number: w.tableNo, missing: w.missing })}
                     </div>

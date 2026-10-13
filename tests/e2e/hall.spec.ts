@@ -239,7 +239,7 @@ test.describe("Ф7b hall: two parents and B1", () => {
     // pages load one after the other (local PGlite serves one connection; the writes below are concurrent)
     await pa.goto(`/e/${w.eventId}/hall`);
     await pb.goto(`/e/${w.eventId}/hall`);
-    const t1 = await label(pa, 1).innerText();
+    const t1 = (await label(pa, 1).textContent()) ?? "";
     await startMove(pa, 4, kk.hall.table.move);
     await startMove(pb, 5, kk.hall.table.move);
     await pa.locator(".choose .row:visible", { hasText: "16" }).first().click();
