@@ -700,6 +700,11 @@
   .tl .acc-item.over .acc-trigger .tn .ico {
     color: var(--danger);
   }
+  .tl .acc-trigger .meta {
+    white-space: normal;
+    text-align: right;
+    max-width: 55%;
+  }
   .tl .acc-trigger .tc {
     display: inline-flex;
     align-items: center;
