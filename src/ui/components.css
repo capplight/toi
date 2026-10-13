@@ -3928,6 +3928,12 @@ html.reduce-motion .toast .timer {
   .legal-doc ol {
     padding-left: 1.25rem;
   }
+  .legal-doc ul {
+    list-style: disc;
+  }
+  .legal-doc ol {
+    list-style: decimal;
+  }
   .legal-doc li + li {
     margin-top: 4px;
   }
