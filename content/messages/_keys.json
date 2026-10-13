@@ -901,6 +901,7 @@
         "title": "",
         "family": "",
         "route": "",
+        "routeNew": "",
         "free": "",
         "short": "",
         "yes": "",
@@ -973,6 +974,8 @@
       "suggestedMove": "",
       "answerByPhoneYes": "",
       "answerByPhoneNo": "",
+      "seatUnplaced": "",
+      "guestYes": "",
       "noUndo": "",
       "partialUndo": ""
     }
