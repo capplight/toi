@@ -230,6 +230,7 @@ test.describe("Ф7b hall: two parents and B1", () => {
     browser,
     baseURL,
   }) => {
+    test.setTimeout(90_000); // two contexts + the 8 s toast wait
     const w = world("hallConcurrency");
     const [ca, cb] = await Promise.all([
       contextFor(browser, baseURL!, "ake", 1440, 900),
