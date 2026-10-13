@@ -52,6 +52,11 @@ jobs:
       - name: Check messages
         run: pnpm check:messages
 
+      # RA review П3: the lawyer's notes [ЮРИСТ …] in /privacy and /terms must not reach production users.
+      # Local and preview only warn (check:messages); production fails here until the lawyer's final text.
+      - name: Legal pages are final (no [ЮРИСТ …] notes)
+        run: pnpm check:legal:strict
+
       # Expand-only migrations (plan 11.3): old and new code both work with the new schema.
       - name: Migrate production database
         run: pnpm db:migrate

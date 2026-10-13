@@ -99,7 +99,7 @@ export default async function globalSetup() {
       guests = others.filter((g) => g.rsvp === "pending" && g.sentAt).map((g) => ({ token: g.token, name: g.name }));
     }
     if (name === "perf") await realisticStatuses(s.eventId);
-    worlds[name] = { eventId: s.eventId, sessions, memberLinks, guests };
+    worlds[name] = { eventId: s.eventId, sessions, memberLinks, guests, phones };
   }
   await closeDb();
   mkdirSync("playwright/.cache", { recursive: true });

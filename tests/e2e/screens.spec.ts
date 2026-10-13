@@ -1,5 +1,5 @@
 import { test } from "@playwright/test";
-import { screenSizes, screensOut } from "./screens-config";
+import { screenSizes, screensOut, screensTimeout } from "./screens-config";
 import { world } from "./worlds";
 
 /**
@@ -13,7 +13,7 @@ const seed = () => world("base");
 const SIZES = screenSizes();
 
 test("handover screenshots", async ({ page, context, baseURL }) => {
-  test.setTimeout(300_000);
+  test.setTimeout(screensTimeout(300_000));
   const { eventId, sessions } = seed();
   await context.addCookies([
     { name: "toi_session", value: sessions.ake!, url: baseURL!, httpOnly: true, secure: true },

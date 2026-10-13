@@ -1,6 +1,6 @@
 import { createRequire } from "node:module";
 import { type Browser, type Page, test } from "@playwright/test";
-import { screenSizes, screensOut } from "./screens-config";
+import { screenSizes, screensOut, screensTimeout } from "./screens-config";
 import { world } from "./worlds";
 
 /**
@@ -48,7 +48,7 @@ async function ctx(browser: Browser, baseURL: string, locale: "kk" | "ru", size:
 }
 
 test("Ф5 handover screenshots", async ({ browser, baseURL }) => {
-  test.setTimeout(900_000);
+  test.setTimeout(screensTimeout(900_000));
   const { eventId, guests } = seed();
   let n = 0;
   const next = () => guests[n++ % guests.length]!;

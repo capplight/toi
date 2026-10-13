@@ -10,3 +10,9 @@ export const screenSizes = () => [
   ...(process.env.SCREENS_OUT ? [{ name: "320", width: 320, height: 640 }] : []),
   { name: "1440", width: 1440, height: 900 },
 ];
+
+/**
+ * RA review П2: screenshot specs only (not in CI) get a long budget — three sizes × kk/ru on a busy machine took
+ * longer than the old 10–15 min. `base` is the old per-spec value; ×4 when collecting the release set.
+ */
+export const screensTimeout = (base: number) => (process.env.SCREENS_OUT ? base * 4 : base);

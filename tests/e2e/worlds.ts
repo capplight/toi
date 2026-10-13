@@ -16,6 +16,8 @@ export type World = {
   memberLinks: Record<string, string>;
   /** Guest links of Анасы's and Жастар's families (invite: all reset to «no answer»; summaryLive: sent, pending). */
   guests: { token: string; name: string }[];
+  /** Member phones of this world (+7…): base = the demo numbers. */
+  phones: Record<"ake" | "ana" | "jas", string>;
 };
 
 export function world(name: WorldName): World {

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { type Page, test } from "@playwright/test";
-import { screenSizes, screensOut } from "./screens-config";
+import { screenSizes, screensOut, screensTimeout } from "./screens-config";
 import { world } from "./worlds";
 
 /**
@@ -23,7 +23,7 @@ async function shot(page: Page, name: string, full = false) {
 
 for (const only of ["kk", "ru"] as const)
   test(`Ф4 handover screenshots ${only}`, async ({ page, context, baseURL }) => {
-    test.setTimeout(600_000);
+    test.setTimeout(screensTimeout(600_000));
     const { eventId, sessions } = seed();
     const base = `/e/${eventId}/guests`;
     await context.addCookies([
@@ -82,7 +82,7 @@ for (const only of ["kk", "ru"] as const)
         await shot(page, `S2-dup_${sfx}`);
         await page.goto(`${base}/add`);
         n += 1;
-        const guest = `${["Тоқтарбай", "Жылқыайдар", "Сұлтанмахмұт", "Құдайберген"][n - 1]} отбасы`;
+        const guest = `${["Тоқтарбай", "Жылқыайдар", "Сұлтанмахмұт", "Құдайберген", "Бекмұхамбет", "Жүсіпбек", "Аманжол", "Төлеген"][n - 1]} отбасы`;
         await name.fill(guest);
         await submit.click();
         await page.getByTestId("add-success").waitFor();

@@ -2,7 +2,7 @@ import { randomInt } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { type Page, test } from "@playwright/test";
-import { screenSizes, screensOut } from "./screens-config";
+import { screenSizes, screensOut, screensTimeout } from "./screens-config";
 import { world } from "./worlds";
 
 /**
@@ -24,7 +24,7 @@ async function shot(page: Page, name: string, full = false) {
 
 for (const locale of ["kk", "ru"] as const)
   test(`Ф3 handover screenshots ${locale}`, async ({ page, context, baseURL }) => {
-    test.setTimeout(600_000);
+    test.setTimeout(screensTimeout(600_000));
     const m = msgs(locale);
     const { eventId, sessions } = seed();
     await context.addCookies([
@@ -98,7 +98,7 @@ for (const locale of ["kk", "ru"] as const)
       await sheet.getByRole("radio", { name: m.roles.mother }).click();
       await shot(page, `M-add_${sfx}`, size.width < 1024);
       // duplicate: the seed's Анасы
-      await sheet.getByLabel(m.members.add.phoneLabel).fill("700 009 00 02");
+      await sheet.getByLabel(m.members.add.phoneLabel).fill(seed().phones.ana.replace(/^\+7/, ""));
       await sheet.getByTestId("add-member-submit").click();
       await shot(page, `M-add-error_${sfx}`);
       await page.keyboard.press("Escape");

@@ -1,6 +1,6 @@
 import { mkdirSync } from "node:fs";
 import { type Browser, test } from "@playwright/test";
-import { screensOut } from "./screens-config";
+import { screensOut, screensTimeout } from "./screens-config";
 import { world } from "./worlds";
 
 /**
@@ -36,7 +36,7 @@ async function open(
 }
 
 test("Ф6 handover screenshots", async ({ browser, baseURL }) => {
-  test.setTimeout(300_000);
+  test.setTimeout(screensTimeout(300_000));
   mkdirSync(OUT, { recursive: true });
   const shots: [string, "ake" | "jas", "kk" | "ru", number, number, boolean, boolean?][] = [
     ["01-owner-kk-360", "ake", "kk", 360, 740, true],

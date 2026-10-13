@@ -3,7 +3,7 @@
  * The generated file is committed (like `assets.generated.ts`); `check:messages` runs `--check`, so CI fails if it is
  * stale. Also warns (does not fail) about `[ЮРИСТ` notes left in the texts — blocking production on them is the
  * founder's decision (CONTENT_REVIEW §8).
- *   pnpm tsx scripts/build-legal.ts [--check]
+ *   pnpm tsx scripts/build-legal.ts [--check [--strict]]   (--strict: fail on [ЮРИСТ notes — deploy-prod.yml)
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -42,6 +42,11 @@ if (process.argv.includes("--check")) {
   } catch {}
   if (current !== source) {
     console.error("check:legal: src/app/(legal)/legal.generated.ts is stale — run pnpm tsx scripts/build-legal.ts");
+    process.exit(1);
+  }
+  if (notes && process.argv.includes("--strict")) {
+    // RA review П3: production deploy fails while lawyer notes remain (local / preview only warn).
+    console.error(`check:legal --strict: ${notes} × [ЮРИСТ …] left in content/legal — not for production users`);
     process.exit(1);
   }
   console.log(

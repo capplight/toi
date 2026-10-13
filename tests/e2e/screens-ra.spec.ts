@@ -1,5 +1,5 @@
 import { test } from "@playwright/test";
-import { screenSizes, screensOut } from "./screens-config";
+import { screenSizes, screensOut, screensTimeout } from "./screens-config";
 
 /**
  * RA handover screenshots of the new public pages (Л5): /privacy and /terms, kk / ru, 360 / 320 / 1440, 130 %.
@@ -9,7 +9,7 @@ test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to write handover screens
 const OUT = screensOut("RA", "docs/phases/RA-screens/RA");
 
 test("RA legal pages", async ({ browser, baseURL }) => {
-  test.setTimeout(300_000);
+  test.setTimeout(screensTimeout(300_000));
   for (const page of ["privacy", "terms"] as const)
     for (const locale of ["kk", "ru"] as const)
       for (const size of screenSizes()) {
