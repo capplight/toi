@@ -2,6 +2,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getFormatter, getMessages, getTranslations } from "next-intl/server";
+import { pickMessages, SHELL_MESSAGES } from "@/i18n/client-messages";
 import { notFound, redirect } from "next/navigation";
 import { logoutAction } from "@/server/actions/auth";
 import { setLocale } from "@/server/actions/locale";
@@ -13,28 +14,6 @@ import { EventShell } from "./EventShell";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { robots: { index: false, follow: false } };
-
-/** Namespaces the client components of working screens need (not all 757 strings). */
-const CLIENT_NAMESPACES = [
-  "common",
-  "nav",
-  "meta",
-  "legal",
-  "hall",
-  "guests",
-  "guestSheet",
-  "summary",
-  "budget",
-  "errors",
-  "roles",
-  "guestForm",
-  "send",
-  "noAnswer",
-  "category",
-  "wa",
-  "members",
-  "wizard",
-];
 
 /** Frame of every working screen of an event (Ф1): access check (Ф2) + the three navigation modes. */
 export default async function EventLayout({ params, children }: LayoutProps<"/e/[eventId]">) {
@@ -68,8 +47,8 @@ export default async function EventLayout({ params, children }: LayoutProps<"/e/
       return [r.id, kind === "custom" ? t("roles.listOf.custom", { label: r.label }) : t(`roles.listOf.${kind}`)];
     }),
   );
-  const all = await getMessages();
-  const messages = Object.fromEntries(CLIENT_NAMESPACES.map((k) => [k, all[k as keyof typeof all]]));
+  // RA review П1: only the frame's messages here; each route layout adds its own (src/i18n/client-messages.tsx).
+  const messages = pickMessages((await getMessages()) as never, SHELL_MESSAGES);
   return (
     <NextIntlClientProvider messages={messages}>
       <EventShell
