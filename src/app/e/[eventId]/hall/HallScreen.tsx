@@ -178,7 +178,7 @@ export function HallScreen({ v, tz }: { v: HallView; tz: string }) {
       const r = await seatUnplacedAction({ eventId: v.event.id });
       if ("error" in r) return void showToast({ message: t("errors.forbidden") });
       setSheet(null);
-      if (r.seated > 0) undoToast(t("hall.order.preview.doneToast", { count: r.seated }), r.historyId);
+      if (r.seated > 0) undoToast(t("hall.history.seatUnplaced", { count: r.seated }), r.historyId);
       else showToast({ message: t("hall.order.preview.unplaced", { count: r.left }) });
     });
 
@@ -947,7 +947,7 @@ function MoveConfirm({
           <p className="route">
             {f.tableNo
               ? t("hall.move.confirm.route", { from: f.tableNo, to: confirm.to })
-              : `${t("hall.move.currentNone")} → ${t("hall.table.title", { number: confirm.to })}`}
+              : t("hall.move.confirm.routeNew", { to: confirm.to })}
           </p>
           {confirm.short > 0 ? (
             <p className="badline">

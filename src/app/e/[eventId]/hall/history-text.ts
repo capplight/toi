@@ -33,7 +33,7 @@ function answerText(t: T, s: Summary, name: string): string {
   if (to.rsvp === "no") return t("hall.history.answerNo", { name });
   if (from?.rsvp === "yes" && from.confirmed != null)
     return t("hall.history.answerSeats", { name, from: from.confirmed, to: to.confirmed ?? 0 });
-  return `${name}: ${t("common.status.yesWithSeats", { seats: to.confirmed ?? 0 })}`;
+  return t("hall.history.guestYes", { name, seats: to.confirmed ?? 0 });
 }
 
 export function entryText(
@@ -79,7 +79,7 @@ export function entryText(
       return out(t("hall.history.fullReseat", { count: num(s.count) }));
     case "auto_place":
       if (s.reason === "seatUnplaced")
-        return out(t("hall.unplaced.seatFree"), t("common.units.families", { count: Number(s.count ?? 0) }));
+        return out(t("hall.history.seatUnplaced", { count: Number(s.count ?? 0) }));
       return typeof s.to === "number"
         ? out(t("hall.history.guestAdded", { name: names, number: s.to }))
         : out(t("hall.history.guestAddedUnplaced", { name: names }));
