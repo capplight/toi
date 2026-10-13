@@ -13,7 +13,7 @@
 | Что | Где |
 |---|---|
 | Ветка | `phase/F7b-hall` (локально, worktree `D:/My Project/toi-f7b`; remote нет) |
-| Основа | `phase/F6-summary` (`d0fd07f`), затем перебазирована на `phase/RA-prep` (раздел 10) |
+| Основа | от `phase/F6-summary`, перебазирована на `phase/RA-prep` (`0ce3acf`, раздел 10) |
 | Preview | нет (GitHub/Vercel ждут основателя) |
 | Демо-вход | сид `pnpm db:seed`, номер Әкесі `+7 700 *** ** 01` (console-код) или готовые сессии e2e-миров |
 | Скриншоты | `docs/phases/F7b-screens/` (32 файла + варианты H4) |
@@ -211,7 +211,24 @@ Lines        : 100% ( 486/486 )
 
 ## 10. Перебазирование на `phase/RA-prep`
 
-(результат — после перебазирования)
+`git rebase phase/RA-prep` (РА — `5cafe8a` + `0ce3acf`): **без конфликтов**. Повторно применённые коммиты (Ф5/Ф6 и два cherry-pick документов из `main`) git пропустил сам; 11 коммитов Ф7b — поверх `0ce3acf`. Точки касания: `VersionPoll` РА принимает необязательный `activity` — экраны зала передают только `version` (следят за рассадкой), совместимо; миры e2e — оба блока на месте; S1 и маршрут версии Ф7b не трогала.
+
+Проверки после перебазирования:
+```
+$ pnpm typecheck            ✓ Types generated successfully
+$ pnpm lint                 eslint --max-warnings=0 (без замечаний)
+$ pnpm format:check         All matched files use Prettier code style!
+$ pnpm check:messages       OK — 801 keys …; check:presets OK; check:legal OK (34 × [ЮРИСТ] — черновики РА)
+$ pnpm test:all             Test Files  35 passed | 1 skipped (36)
+                                 Tests  303 passed | 2 skipped (305)
+  (первый прогон: 2 таймаута в тестах загрузки музыки — ffmpeg под нагрузкой машины; повтор зелёный)
+$ pnpm build                ✓ Compiled successfully
+$ pnpm test:e2e tests/e2e/hall.spec.ts --workers=1
+  16 passed, 2 skipped (2.8m) — все 7 сценариев на mobile и desktop, «два браузера», B1 360/320
+```
+Полный e2e всех фаз после перебазирования не перезапускался (долго на этой машине); до него — раздел 5.
+
+Замечание по среде: `next build` из фонового Git Bash дважды падал с `0xc0000142` (Windows не смог запустить дочерний процесс Turbopack); из PowerShell собирается. Код ни при чём.
 
 ## 11. Что осталось
 
