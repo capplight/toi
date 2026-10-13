@@ -32,9 +32,12 @@ async function noScroll(page: Page, where: string) {
 
 /** Table sheet → first family «Ауыстыру» → move mode. Returns the family name. */
 async function startMove(page: Page, table: number, moveLabel: string) {
-  await page.locator(`[data-table="${table}"]`).click();
   const sheet = page.getByTestId("table-sheet");
-  await expect(sheet).toBeVisible();
+  // the first click may land before hydration: repeat until the sheet opens
+  await expect(async () => {
+    await page.locator(`[data-table="${table}"]`).click();
+    await expect(sheet).toBeVisible({ timeout: 1000 });
+  }).toPass();
   const name = (await sheet.locator(".fam .nm").first().innerText()).trim();
   await sheet.getByRole("button", { name: moveLabel }).first().click();
   await expect(page.locator(".mv-info")).toBeVisible();
@@ -233,7 +236,10 @@ test.describe("Ф7b hall: two parents and B1", () => {
       contextFor(browser, baseURL!, "ana", 1440, 900),
     ]);
     const [pa, pb] = await Promise.all([ca.newPage(), cb.newPage()]);
-    await Promise.all([pa.goto(`/e/${w.eventId}/hall`), pb.goto(`/e/${w.eventId}/hall`)]);
+    // pages load one after the other (local PGlite serves one connection; the writes below are concurrent)
+    await pa.goto(`/e/${w.eventId}/hall`);
+    await pb.goto(`/e/${w.eventId}/hall`);
+    const t1 = await label(pa, 1).innerText();
     await startMove(pa, 4, kk.hall.table.move);
     await startMove(pb, 5, kk.hall.table.move);
     await pa.locator(".choose .row:visible", { hasText: "16" }).first().click();
@@ -252,8 +258,16 @@ test.describe("Ф7b hall: two parents and B1", () => {
       await expect(label(p, 16)).not.toHaveText("0/12");
       await expect(label(p, 1)).not.toHaveText("5/12");
     }
-    // the father sees mother's change as a toast with «Тарих»
-    await expect(pa.locator(".toast")).toContainText(/Анасы/);
+    // then the mother undoes her move in the history; the father's screen shows it after polling as a toast
+    // «Анасы: 1 жаңа өзгеріс» with «Тарих» (DESIGN 8.7)
+    await pa.waitForTimeout(8500); // the father's own toast is gone (8 s)
+    await pb.goto(`/e/${w.eventId}/hall/history`);
+    await pb.locator(".he").first().getByRole("button", { name: kk.common.actions.undo }).click();
+    await expect(pb.locator(".toast").last()).toBeVisible();
+    await pa.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+    const others = pa.locator(".toast", { hasText: "Анасы" });
+    await expect(others).toContainText(kk.hall.map.othersChangedAction);
+    await expect(label(pa, 1)).toHaveText(t1);
     await ca.close();
     await cb.close();
   });
