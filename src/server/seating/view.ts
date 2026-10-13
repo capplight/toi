@@ -152,24 +152,31 @@ export async function hallView(
   const m = await authorize(db, who, eventId, "member");
   const [ev] = await db.select().from(events).where(eq(events.id, eventId));
   if (!ev) throw new Error("event not found");
-  const [state, rows, cats, members, reviews, history, countRows] = await Promise.all([
-    loadSeatingState(db, eventId),
-    db
-      .select()
-      .from(families)
-      .where(and(eq(families.eventId, eventId), isNull(families.deletedAt)))
-      .orderBy(asc(families.seatSeq)),
-    db.select().from(categories).where(eq(categories.eventId, eventId)).orderBy(asc(categories.seatingRank)),
-    memberLabels(db, eventId),
-    db
-      .select({ a: duplicateReviews.familyA, b: duplicateReviews.familyB })
-      .from(duplicateReviews)
-      .where(eq(duplicateReviews.eventId, eventId)),
-    historyEntries(db, eventId, m.memberId, opts.historyLimit ?? 20),
-    db.select({ n: count() }).from(seatingChanges).where(eq(seatingChanges.eventId, eventId)) as Promise<
-      { n: number }[]
-    >,
-  ]);
+  // Sequential on purpose: ~7 small indexed reads (a few ms on Postgres); in parallel they open several pool
+  // connections, which the local PGlite socket server (dev/e2e) drops under load.
+  const state = await loadSeatingState(db, eventId);
+  const rows = await db
+    .select()
+    .from(families)
+    .where(and(eq(families.eventId, eventId), isNull(families.deletedAt)))
+    .orderBy(asc(families.seatSeq));
+  const cats = await db
+    .select()
+    .from(categories)
+    .where(eq(categories.eventId, eventId))
+    .orderBy(asc(categories.seatingRank));
+  const members = await memberLabels(db, eventId);
+  const reviews = await db
+    .select({ a: duplicateReviews.familyA, b: duplicateReviews.familyB })
+    .from(duplicateReviews)
+    .where(eq(duplicateReviews.eventId, eventId));
+  const history = await historyEntries(db, eventId, m.memberId, opts.historyLimit ?? 20);
+  const countRows = (await db
+    .select({ n: count() })
+    .from(seatingChanges)
+    .where(eq(seatingChanges.eventId, eventId))) as {
+    n: number;
+  }[];
   const stats = tableStats(state);
   const engine = new Map(state.families.map((f) => [f.id, f]));
   const label = new Map(members.map((x) => [x.id, x.label]));
@@ -276,15 +283,13 @@ export async function hallAttention(db: Db, eventId: string): Promise<boolean> {
   if (!state.hall) return false;
   const stats = tableStats(state);
   if (stats.overfull.length || stats.unplaced.length) return true;
-  const [rows, reviews] = await Promise.all([
-    db
-      .select({ id: families.id, name: families.name, rsvp: families.rsvp, tableNo: families.tableNo })
-      .from(families)
-      .where(and(eq(families.eventId, eventId), isNull(families.deletedAt))),
-    db
-      .select({ a: duplicateReviews.familyA, b: duplicateReviews.familyB })
-      .from(duplicateReviews)
-      .where(eq(duplicateReviews.eventId, eventId)),
-  ]);
+  const rows = await db
+    .select({ id: families.id, name: families.name, rsvp: families.rsvp, tableNo: families.tableNo })
+    .from(families)
+    .where(and(eq(families.eventId, eventId), isNull(families.deletedAt)));
+  const reviews = await db
+    .select({ a: duplicateReviews.familyA, b: duplicateReviews.familyB })
+    .from(duplicateReviews)
+    .where(eq(duplicateReviews.eventId, eventId));
   return dupPairs(rows, new Set(reviews.map((r) => pairKey(r.a, r.b)))).length > 0;
 }
