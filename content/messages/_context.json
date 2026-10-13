@@ -6329,6 +6329,16 @@
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "aria: «{from}-үстелден {to}-үстелге» (окончания у «үстел» — OK)"
   },
+  "hall.move.confirm.routeNew": {
+    "release": "B",
+    "context": "строка маршрута в подтверждении переноса для семьи без стола (вместо {from}-үстел) (handover Ф7b, откл. 5–6, добавлено 2026-10-14)",
+    "audience": "С",
+    "maxLength": "30",
+    "variables": "{to}",
+    "currentKk": "Орынсыз → {to}-үстел",
+    "currentRu": "Без места → стол {to}",
+    "issues": "Как hall.move.confirm.route (макет 14 #confirm), слева — «без места» по глоссарию"
+  },
   "hall.move.confirm.free": {
     "release": "B",
     "context": "(DS 4.14)",
@@ -6958,6 +6968,26 @@
     "currentKk": "Телефонмен жауап: {name} — келмейді",
     "currentRu": "Ответ по телефону: {name} — не придут",
     "issues": "—"
+  },
+  "hall.history.seatUnplaced": {
+    "release": "B",
+    "context": "запись истории: «Бос орындарға отырғызу» посадил N семей без места; с «Қайтару» (handover Ф7b, откл. 5–6, добавлено 2026-10-14)",
+    "audience": "С",
+    "maxLength": "50",
+    "variables": "{count, plural}",
+    "currentKk": "Бос орындарға отырғызылды: {count} отбасы",
+    "currentRu": "Посадили на свободные места: {count, plural, one {# семья} few {# семьи} many {# семей} other {# семьи}}",
+    "issues": "—"
+  },
+  "hall.history.guestYes": {
+    "release": "B",
+    "context": "запись истории: гость сам ответил «Келеміз» по своей ссылке; без «Қайтару» (рядом hall.history.guestNoUndo) (handover Ф7b, откл. 5–6, добавлено 2026-10-14)",
+    "audience": "С",
+    "maxLength": "50",
+    "variables": "{name}, {seats, plural}",
+    "currentKk": "{name}: «Келеміз», {seats} орын",
+    "currentRu": "{name}: ответ «Придём», {seats, plural, one {# место} few {# места} many {# мест} other {# места}}",
+    "issues": "В паре с hall.history.answerNo; число мест — подтверждённое"
   },
   "hall.history.noUndo": {
     "release": "B",
