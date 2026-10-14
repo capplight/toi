@@ -2,7 +2,7 @@
 
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { useRouter } from "next/navigation";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { EXPENSE_CATEGORIES, type ExpenseCategory, formatMoney, parseAmount } from "@/domain/budget";
 import {
@@ -28,17 +28,19 @@ type SheetState = { kind: "add" } | { kind: "edit"; id: string } | { kind: "tota
  * payments (overdue in red), the list of items; item sheet (add / edit / restaurant / delete with «Қайтару»).
  * All numbers come from `budgetView` (domain `budgetSummary`); amounts with no-break spaces.
  */
-export function BudgetScreen({ v }: { v: BudgetView }) {
+/** Dates formatted on the server (Node has Kazakh locale data, browsers often do not): `YYYY-MM-DD` → texts. */
+export type BudgetDates = Record<string, { day: string; mon: string; short: string; long: string }>;
+
+export function BudgetScreen({ v, dates }: { v: BudgetView; dates: BudgetDates }) {
   const t = useTranslations("budget");
   const tc = useTranslations("common.actions");
   const te = useTranslations("errors");
-  const format = useFormatter();
   const router = useRouter();
   const [sheet, setSheet] = useState<SheetState>(null);
   const money = (n: number) => formatMoney(n);
   const s = v.summary;
   const restaurantItem = v.items.find((i) => i.linked);
-  const day = (d: string) => format.dateTime(new Date(`${d}T12:00:00Z`), { day: "2-digit", month: "2-digit" });
+  const day = (d: string) => dates[d]?.short ?? d;
   const byId = new Map(v.items.map((i) => [i.id, i]));
   const formula =
     v.pricePerSeat === null
@@ -124,12 +126,11 @@ export function BudgetScreen({ v }: { v: BudgetView }) {
       <ul className="pay-list">
         {s.upcoming.map((u) => {
           const it = byId.get(u.id)!;
-          const d = new Date(`${u.dueDate}T12:00:00Z`);
           return (
             <li key={u.id} className="pay">
               <span className={cn("d", u.overdue && "overdue")} aria-hidden="true">
-                {format.dateTime(d, { day: "2-digit" })}
-                <small>{format.dateTime(d, { month: "short" })}</small>
+                {dates[u.dueDate]?.day}
+                <small>{dates[u.dueDate]?.mon}</small>
               </span>
               <span>
                 <b>{it.title}</b>
@@ -141,7 +142,7 @@ export function BudgetScreen({ v }: { v: BudgetView }) {
                 ) : (
                   <span>{t(`categories.${it.category}`)}</span>
                 )}
-                <span className="sr-only">{format.dateTime(d, { day: "numeric", month: "long" })}</span>
+                <span className="sr-only">{dates[u.dueDate]?.long}</span>
               </span>
               <span className="amt">{t("upcoming.left", { amount: money(u.left) })}</span>
             </li>
