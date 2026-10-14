@@ -4,6 +4,7 @@ import { translator } from "@/i18n/messages";
 import { MAX_FAMILY_SEATS } from "@/domain/seating/family";
 import { INVITE_CSS, TEMPLATE_ASSETS } from "./assets.generated";
 import type { GuestPage } from "./guest";
+import { miniMapSvg } from "./minimap";
 import { escapeHtml, html, raw, type SafeHtml } from "./html";
 import { ISLAND_JS } from "./island";
 
@@ -49,6 +50,9 @@ const ICON = {
 
 /** Extra rules the mockups did not need (error line, closed card, lang links as buttons, no-music). */
 const EXTRA_CSS = `.rsvp .err{margin:.75rem 0 0;color:#B42318;font-weight:600}.inv .lang-pill a{display:inline-grid;place-items:center;min-width:3rem;height:3rem;padding:0 .5rem;border-radius:62.4375rem;text-decoration:none;font:400 1rem/1 var(--font-ui);letter-spacing:.04em;color:var(--ink-2)}.inv .lang-pill a[aria-current="true"]{background:var(--accent);color:var(--on-accent)}.rsvp .closed{margin:0}.preview .inv-bar,.preview .scene{display:none}.preview .invite{opacity:1}.noru{font-size:1rem;color:var(--ink-2)}.is-opening .side-decor{--b:1800ms}.is-opening .side-decor .draw path{animation:draw 1600ms var(--ease-draw) calc(var(--b,0ms) + var(--dd,0ms)) forwards}.is-opening .side-decor .draw .ray{animation-duration:700ms}@media (prefers-reduced-motion: reduce){.opened .reveal{animation:none!important;opacity:1!important}}`;
+
+/** Ф8 table block: the mockup's state classes are not used on the real page; mini-map labels. */
+const TABLE_CSS = `.tableno{text-align:center}.tableno .note{margin:12px 0 0}.minimap .mn{fill:var(--on-accent);font-size:12px;letter-spacing:0}.minimap .yh{fill:var(--accent);font-size:11px;letter-spacing:0}`;
 
 function corners(c: string, ks: string[]): SafeHtml {
   return raw(ks.map((k) => c.replace("{{k}}", k)).join(""));
@@ -178,6 +182,39 @@ export function renderInvite(page: GuestPage, o: RenderOptions): string {
     <p class="note closed">${t("invite.closed")}</p>
   </div>`;
 
+  // Ф8 «Сіздің үстеліңіз» (DESIGN 8.17 п. 6): only with the owner's switch on; no neighbours' names.
+  const tb = page.table;
+  const tableBlock = !tb
+    ? ""
+    : tb.tableNo === null
+      ? html`<section class="sec reveal" id="table">
+          <div class="card tableno">
+            <div class="lbl">${t("invite.table.title")}</div>
+            <p class="note">${t("invite.table.notYet")}</p>
+          </div>
+        </section>`
+      : html`<section class="sec reveal" id="table">
+          <div class="card tableno">
+            ${corners(a.corner, ["k1", "k2"])}
+            <div class="lbl">${t("invite.table.title")}</div>
+            <div class="n">${tb.tableNo}</div>
+            <div class="unit">${t("invite.table.unit")}</div>
+            ${
+              tb.hall
+                ? raw(
+                    miniMapSvg(tb.hall, tb.tableNo, {
+                      tor: t("hall.map.tor"),
+                      entrance: t("hall.map.entrance"),
+                      youAreHere: t("invite.table.youAreHere"),
+                      a11y: t("invite.table.mapA11y", { number: tb.tableNo }),
+                    }),
+                  )
+                : ""
+            }
+            ${tb.doorOpened ? html`<p class="note">${t("invite.table.hint")}</p>` : ""}
+          </div>
+        </section>`;
+
   const rsvpBlock =
     o.view === "form" ? form : o.view === "answered" ? answered : fam.rsvp === "pending" ? closedOnly : answered;
 
@@ -271,6 +308,7 @@ export function renderInvite(page: GuestPage, o: RenderOptions): string {
             : ""
         }
         <section class="sec reveal" id="rsvp">${rsvpBlock}</section>
+        ${tableBlock}
         <footer class="foot">
           <div class="wm">${raw(a.wordmark)}</div>
           <div style="margin-top:6px">${t("invite.footer.madeWith")}</div>
@@ -322,7 +360,7 @@ export function renderInvite(page: GuestPage, o: RenderOptions): string {
         }
         ${fontPreload}
         <style>
-          ${raw(INVITE_CSS)}${raw(EXTRA_CSS)}
+          ${raw(INVITE_CSS)}${raw(EXTRA_CSS)}${raw(TABLE_CSS)}
         </style>
       </head>
       <body class="inv ${a.bodyClass}">

@@ -7,6 +7,7 @@ import type { Db } from "../db";
 import type { AnswerSummary } from "../guests/service";
 import { hit } from "../ratelimit";
 import { activityLog, events, families, mediaAssets } from "../schema";
+import { doorOpened } from "../door/service";
 import { withSeating } from "../seating/adapter";
 
 /**
@@ -46,6 +47,15 @@ export type GuestPage = {
     closesAt: Date;
   };
   musicKey: string | null;
+  /**
+   * Ф8 «Сіздің үстеліңіз»: only when the owner switched `show_table_numbers` on. `tableNo` null → «әлі
+   * белгіленбеген»; `hall` for the mini-map; `doorOpened` — the helper's link was opened (invite.table.hint).
+   */
+  table: {
+    tableNo: number | null;
+    hall: { columns: 2 | 4; tables: number; seatsPerTable: number } | null;
+    doorOpened: boolean;
+  } | null;
 };
 
 export async function loadGuestPage(db: Db, token: string): Promise<GuestPage | null> {
@@ -86,6 +96,17 @@ export async function loadGuestPage(db: Db, token: string): Promise<GuestPage | 
       closesAt: rsvpClosesAt(r.e.startsOn, r.e.rsvpClosesAt, r.e.tz),
     },
     musicKey: r.music?.storageKey ?? null,
+    table:
+      r.e.showTableNumbers && r.f.rsvp !== "no"
+        ? {
+            tableNo: r.f.tableNo,
+            hall:
+              r.e.hallColumns && r.e.tablesCount
+                ? { columns: r.e.hallColumns as 2 | 4, tables: r.e.tablesCount, seatsPerTable: r.e.seatsPerTable }
+                : null,
+            doorOpened: await doorOpened(db, r.e.id),
+          }
+        : null,
   };
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { waUrl } from "@/domain/guests/wa";
 import { waTableText } from "@/domain/guests/wa-table";
 import { markTableSentAction, restartTableQueueAction } from "@/server/actions/tableQueue";
@@ -32,15 +32,16 @@ export function TableQueue({ data }: { data: TableQueueView }) {
   const tw = useTranslations("wa");
   const locale = useLocale();
   const [items, setItems] = useState(data.items);
-  const [running, setRunning] = useState(false);
+  const [running, setRunningState] = useState(false);
+  // skipped families of this device/session are read when the queue starts (not during render: no hydration gap)
+  const setRunning = (on: boolean) => {
+    if (on) setSkipped(readSkipped(data.event.id));
+    setRunningState(on);
+  };
   const [skipped, setSkipped] = useState<string[]>([]);
   const [opened, setOpened] = useState<string | null>(null);
   const [busy, start] = useTransition();
 
-  useEffect(() => setItems(data.items), [data.items]);
-  useEffect(() => {
-    setSkipped(readSkipped(data.event.id));
-  }, [data.event.id]);
   const saveSkipped = (ids: string[]) => {
     setSkipped(ids);
     try {
@@ -60,7 +61,13 @@ export function TableQueue({ data }: { data: TableQueueView }) {
   const text = useMemo(
     () =>
       current
-        ? waTableText((k, v) => tw(k, v), locale, data.wa, { name: current.name, token: current.token, tableNo: current.tableNo }, data.appUrl)
+        ? waTableText(
+            (k, v) => tw(k, v),
+            locale,
+            data.wa,
+            { name: current.name, token: current.token, tableNo: current.tableNo },
+            data.appUrl,
+          )
         : "",
     [current, tw, locale, data.wa, data.appUrl],
   );
@@ -93,7 +100,11 @@ export function TableQueue({ data }: { data: TableQueueView }) {
   const list = (
     <ol className="tq-list" aria-label={t("title")}>
       {items.map((i) => (
-        <li key={i.id} className={i.id === current?.id ? "cur" : undefined} aria-current={i.id === current?.id ? "step" : undefined}>
+        <li
+          key={i.id}
+          className={i.id === current?.id ? "cur" : undefined}
+          aria-current={i.id === current?.id ? "step" : undefined}
+        >
           <span className="tq-n">{i.tableNo}</span>
           <span className="tq-nm">{i.name}</span>
           <span className="tq-st">

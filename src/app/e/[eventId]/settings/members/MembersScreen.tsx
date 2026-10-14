@@ -41,12 +41,13 @@ export function MembersScreen({
   eventId,
   members,
   categories,
-  doorHelper,
+  door,
 }: {
   eventId: string;
   members: MemberView[];
   categories: CategoryOption[];
-  doorHelper: boolean;
+  /** Ф8: the helper's link (shown to the owner) and the ready wa.me link with `wa.doorLink`. */
+  door: { waHref: string; url: string };
 }) {
   const t = useTranslations("members");
   const tr = useTranslations("roles");
@@ -194,7 +195,7 @@ export function MembersScreen({
         </div>
       </div>
 
-      {doorHelper && (
+      {door && (
         <div className="col-aside">
           <section className="door-card" aria-labelledby="door-t">
             <h3 id="door-t">
@@ -203,6 +204,16 @@ export function MembersScreen({
             </h3>
             <p>{t("door.hint")}</p>
             <div className="inline-actions">
+              <a
+                className="btn wa row"
+                href={door.waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="door-send"
+              >
+                <Icon name="wa" />
+                {t("door.send")}
+              </a>
               <Button
                 variant="secondary"
                 size="row"

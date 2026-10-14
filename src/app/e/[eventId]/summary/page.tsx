@@ -165,6 +165,11 @@ export default async function SummaryPage({ params }: PageProps<"/e/[eventId]/su
               <p className="hint">{t("funnel.hint")}</p>
             </section>
           )}
+          {v.canSeat && v.restaurant.tables !== null && (
+            <LinkRows>
+              <LinkRow href={`${base}/table-queue`} icon="send" title={t("tableQueueEntry")} />
+            </LinkRows>
+          )}
           <LinkRows title={t("byList.title")}>
             {v.byList.map((m) => (
               <LinkRow

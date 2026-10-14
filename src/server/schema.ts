@@ -193,6 +193,8 @@ export const events = pgTable(
     budgetTotal: bigint("budget_total", { mode: "number" }),
     doorToken: text("door_token").notNull().unique(),
     rsvpClosesAt: tstz("rsvp_closes_at"),
+    /** Ф8: guests see their table number and the mini-map on the invitation (owner switch «Үстел нөмірін көрсету»). */
+    showTableNumbers: boolean("show_table_numbers").notNull().default(false),
     seatingVersion: integer("seating_version").notNull().default(0),
     version: integer("version").notNull().default(0),
     createdAt: tstz("created_at").notNull().default(now()),

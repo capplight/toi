@@ -13,16 +13,17 @@ import { TableQueue } from "./TableQueue";
 export default async function TableQueuePage({ params }: PageProps<"/e/[eventId]/table-queue">) {
   const { eventId } = await params;
   const raw = await getLocale();
+  let data;
   try {
     const user = await requireUser();
-    const data = await tableQueueView(db(), user, eventId, {
+    data = await tableQueueView(db(), user, eventId, {
       locale: isLocale(raw) ? raw : "kk",
       appUrl: env().APP_URL,
     });
-    return <TableQueue data={data} />;
   } catch (e) {
     if (e instanceof UnauthorizedError) redirect("/login");
     if (e instanceof ForbiddenError) notFound();
     throw e;
   }
+  return <TableQueue data={data} />;
 }

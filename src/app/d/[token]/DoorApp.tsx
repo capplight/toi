@@ -107,10 +107,11 @@ export function DoorApp({ token, title }: { token: string; title: string }) {
     const s = (await res.json()) as Snapshot;
     const ops = ((await (await getDb()).getAll("outbox")) as Op[]) ?? [];
     await saveSnap(s);
-    if (ops.length) await applyArrivals(
-      s.families.filter((f) => f.arrivedAt).map((f) => ({ familyId: f.id, arrivedAt: f.arrivedAt! })),
-      ops,
-    );
+    if (ops.length)
+      await applyArrivals(
+        s.families.filter((f) => f.arrivedAt).map((f) => ({ familyId: f.id, arrivedAt: f.arrivedAt! })),
+        ops,
+      );
     return true;
   }, [token, getDb, saveSnap, applyArrivals]);
 
@@ -240,10 +241,7 @@ export function DoorApp({ token, title }: { token: string; title: string }) {
 
   const families = useMemo(() => snap?.families ?? [], [snap]);
   const total = useMemo(() => families.filter((f) => f.rsvp !== "no").reduce((s, f) => s + f.seats, 0), [families]);
-  const arrivedPeople = useMemo(
-    () => families.filter((f) => f.arrivedAt).reduce((s, f) => s + f.seats, 0),
-    [families],
-  );
+  const arrivedPeople = useMemo(() => families.filter((f) => f.arrivedAt).reduce((s, f) => s + f.seats, 0), [families]);
   const results: { f: Family; m: DoorMatch }[] = useMemo(() => {
     if (q.trim().length < 2) return [];
     const out: { f: Family; m: DoorMatch }[] = [];
@@ -282,7 +280,12 @@ export function DoorApp({ token, title }: { token: string; title: string }) {
   ) : null;
 
   return (
-    <div className="door" data-state={state} data-online={online ? "1" : "0"} data-ready={state === "ready" ? "1" : undefined}>
+    <div
+      className="door"
+      data-state={state}
+      data-online={online ? "1" : "0"}
+      data-ready={state === "ready" ? "1" : undefined}
+    >
       <header className="door-top">
         <div className="row">
           <div className="ev">

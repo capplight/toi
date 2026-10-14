@@ -4,11 +4,13 @@ import { notFound, redirect } from "next/navigation";
 import { ForbiddenError, requireOwner, UnauthorizedError } from "@/server/authz";
 import { db } from "@/server/db";
 import { membersView } from "@/server/events/service";
-import { categories } from "@/server/schema";
+import { categories, events } from "@/server/schema";
+import { isLocale } from "@/i18n/config";
+import { translator } from "@/i18n/messages";
+import { env } from "@/server/env";
+import { waUrl } from "@/domain/guests/wa";
+import { doorUrl, waDoorText } from "@/domain/guests/wa-table";
 import { MembersScreen } from "./MembersScreen";
-
-/** Hidden until Ф8 (helper at the entrance): otherwise the owner would send a link to a page that does not exist yet. */
-const DOOR_HELPER = process.env.NEXT_PUBLIC_FEATURE_DOOR === "1";
 
 /** «Тізімді кім толтырады» (Ф3, mockup 11): owner only. */
 export default async function MembersPage({ params }: PageProps<"/e/[eventId]/settings/members">) {
@@ -22,10 +24,30 @@ export default async function MembersPage({ params }: PageProps<"/e/[eventId]/se
     throw err;
   }
   const locale = await getLocale();
-  const [members, cats] = await Promise.all([
+  const [members, cats, [ev]] = await Promise.all([
     membersView(db(), m.user, eventId),
     db().select().from(categories).where(eq(categories.eventId, eventId)).orderBy(asc(categories.seatingRank)),
+    db().select().from(events).where(eq(events.id, eventId)),
   ]);
+  if (!ev) notFound();
+  // Ф8: «Кіреберіс сілтемесі» — the helper's link in a wa.me text (wa.doorLink), no feature flag any more.
+  const loc = isLocale(locale) ? locale : "kk";
+  const tr = translator(loc);
+  const doorText = waDoorText(
+    (k, v) => tr(`wa.${k}`, v),
+    loc,
+    {
+      kind: ev.kind,
+      title: ev.title,
+      hostsLine: ev.hostsLine,
+      startsOn: ev.startsOn,
+      startsAt: ev.startsAt,
+      venueName: ev.venueName,
+      tz: ev.tz,
+    },
+    ev.doorToken,
+    env().APP_URL,
+  );
   return (
     <MembersScreen
       eventId={eventId}
@@ -35,7 +57,7 @@ export default async function MembersPage({ params }: PageProps<"/e/[eventId]/se
         code: c.code ?? undefined,
         label: locale === "ru" ? (c.labelRu ?? c.labelKk) : c.labelKk,
       }))}
-      doorHelper={DOOR_HELPER}
+      door={{ waHref: waUrl(doorText, null), url: doorUrl(env().APP_URL, ev.doorToken) }}
     />
   );
 }

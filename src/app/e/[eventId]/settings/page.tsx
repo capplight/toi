@@ -9,6 +9,7 @@ import { events, mediaAssets } from "@/server/schema";
 import { storage } from "@/server/storage";
 import { LinkRow, LinkRows } from "@/ui/components/Display";
 import { SettingsMusic } from "./SettingsMusic";
+import { SettingsTableNumbers } from "./SettingsTableNumbers";
 
 /** «Баптаулар» (owner only): members (Ф3), invitation — music and the real preview (Ф5). */
 export default async function SettingsPage({ params }: PageProps<"/e/[eventId]/settings">) {
@@ -65,6 +66,9 @@ export default async function SettingsPage({ params }: PageProps<"/e/[eventId]/s
             }
           />
           <p className="note">{t("wizard.music.rights")}</p>
+          <div className="mt-6">
+            <SettingsTableNumbers eventId={eventId} initial={ev.showTableNumbers} />
+          </div>
         </section>
       </div>
       <div className="col-aside">

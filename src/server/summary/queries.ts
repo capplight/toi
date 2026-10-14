@@ -34,6 +34,8 @@ export type SummaryView = {
   funnel: { total: number; sent: number; opened: number; answered: number } | null;
   byList: { memberId: string; title: string; families: number; seats: number; isMe: boolean }[];
   budget: boolean;
+  /** Ф8: owner or seating right — the entry «Үстел нөмірлерін жіберу» (table-number queue). */
+  canSeat: boolean;
   /** For polling (plan 7.5): grows on every seating change and guest answer (Ф4 П1). */
   version: number;
   /** Latest send / opening / answer (RA Л2), ISO or null. */
@@ -134,6 +136,7 @@ export async function summaryView(
       };
     }),
     budget: owner || m.canManageBudget,
+    canSeat: owner || m.canEditSeating,
     version: ev.seatingVersion,
     activity: latest(rows.flatMap((f) => [f.sentAt, f.firstOpenedAt, f.respondedAt])),
   };

@@ -89,8 +89,7 @@ export async function doorSnapshot(db: Db, token: string, opts: { locale: Locale
 
 export type DoorOp = { opId: string; familyId: string; arrived: boolean; clientAt: string };
 export type CheckinResult =
-  | { ok: true; arrivals: { familyId: string; arrivedAt: string }[] }
-  | { ok: false; error: "rateLimited" | "invalid" };
+  { ok: true; arrivals: { familyId: string; arrivedAt: string }[] } | { ok: false; error: "rateLimited" | "invalid" };
 
 /**
  * `POST /api/door/{token}/checkins`: idempotent by `opId` (a repeated op is ignored); for each family the op with
@@ -106,11 +105,7 @@ export async function recordCheckins(
   const { eventId } = await doorByToken(db, token);
   if (input.ops.length > DOOR_MAX_OPS) return { ok: false, error: "invalid" };
   if (input.ops.length) {
-    const limit = await hit(
-      db,
-      { key: `door:${sha256Hex(token)}`, windowSec: 3600, max: DOOR_OPS_PER_HOUR },
-      now,
-    );
+    const limit = await hit(db, { key: `door:${sha256Hex(token)}`, windowSec: 3600, max: DOOR_OPS_PER_HOUR }, now);
     if (!limit.ok) return { ok: false, error: "rateLimited" };
     const ids = [...new Set(input.ops.map((o) => o.familyId))];
     const own = await db

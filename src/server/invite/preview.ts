@@ -55,6 +55,7 @@ export function renderPreview(d: PreviewDraft): string {
       closesAt: rsvpClosesAt(startsOn, null),
     },
     musicKey: null,
+    table: null,
   };
   return renderInvite(page, {
     locale: d.locale,

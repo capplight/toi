@@ -1,0 +1,1 @@
+ALTER TABLE "events" ADD COLUMN "show_table_numbers" boolean DEFAULT false NOT NULL;
