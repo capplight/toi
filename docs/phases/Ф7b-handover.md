@@ -234,3 +234,16 @@ $ pnpm test:e2e tests/e2e/hall.spec.ts --workers=1
 
 - Ключи у контент-лида: `hall.history.seatUnplaced`, `hall.history.guestYes`, `hall.move.confirm.routeNew` (откл. 5–6); по желанию — свой текст предупреждения H1.
 - CI на Postgres 16 (гонка двух переносов — `concurrency.test.ts`), preview и реальный Android — после аккаунтов основателя.
+
+---
+
+## 12. Правки по ревью (`docs/phases/Ф7b-review.md`, «нужны правки»)
+
+Перед правками ветка перебазирована на `phase/RA-prep` `71936e6` (РА П1: сообщения клиента по маршрутам). Конфликт один — `src/app/e/[eventId]/layout.tsx` (набор сообщений РА + точка «Зал»); в `SHELL_MESSAGES` добавлены заголовки подэкранов зала и сегмент «Схема | Тізім» (`hall.map.view`, `hall.{setup,order,history,move}.title`) — их показывает шапка `EventShell`. Ключи контента — cherry-pick `a59098a`.
+
+| № | Что сделано | Где |
+|---|---|---|
+| **П1** | Точка внимания «Зал» больше не держит layout: серверный компонент `HallDot` в `<Suspense fallback={null}>` передаётся в `AppShell` слотом `hallDot` (догружается потоком). Семьи читаются один раз (`loadSeatingRows`: состояние + строки семей + `seating_version`). Ответ кэшируется в памяти процесса по `(eventId, seating_version)` (`attention-cache.ts`, не больше 1 000 событий); «Екеуі де қалсын» версию не меняет, поэтому сбрасывает кэш сам. Integration-тест: кэш держится до смены версии, `keepBothDuplicates` его сбрасывает | `HallDot.tsx`, `layout.tsx`, `AppShell.tsx`, `view.ts`, `adapter.ts`, `attention-cache.ts`, `guests/service.ts` |
+| **П2** | Полный последовательный e2e на итоговом коммите и пересъёмка скриншотов (в том числе 10) — ниже. Сборка — из PowerShell | — |
+| **П3** | Составные тексты заменены ключами: `hall.history.seatUnplaced` (история и тост «Бос орындарға отырғызу»), `hall.history.guestYes`, `hall.move.confirm.routeNew` | `history-text.ts`, `HallScreen.tsx` |
+| Откл. 13 | Integration-тест на исправление Ф3 есть: «hall shrink with a locked family on a removed table» — семья закреплена за столом 16, зал → 14 столов: закрепление снято, ошибки `families_lock_check` нет, отмена смены зала проходит | `tests/integration/hall.test.ts` |
