@@ -20,7 +20,11 @@ export type WorldName =
   | "hallMobile"
   | "hallDesktop"
   | "hallConcurrency"
-  | "screensF7b";
+  | "screensF7b"
+  // Ф9
+  | "budgetMobile"
+  | "budgetDesktop"
+  | "screensF9";
 
 export type World = {
   eventId: string;

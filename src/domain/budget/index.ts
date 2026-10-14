@@ -37,10 +37,16 @@ export function parseAmount(raw: string): number | null {
 export const isAmount = (n: unknown): n is number =>
   typeof n === "number" && Number.isInteger(n) && n >= 0 && n <= MAX_AMOUNT;
 
-/** «6 000 000 ₸» — grouping by the locale (no-break spaces), no fractions, a no-break space before ₸. */
-export function formatMoney(n: number, locale: "kk" | "ru"): string {
-  const s = new Intl.NumberFormat(locale === "ru" ? "ru-RU" : "kk-KZ", { maximumFractionDigits: 0 }).format(n);
-  return `${s.replace(/\s/g, " ")} ₸`;
+/**
+ * «6 000 000 ₸» — groups of three digits joined by no-break spaces, a no-break space before ₸ (kk and ru write money
+ * the same way). Not `Intl.NumberFormat("kk-KZ")`: browsers without Kazakh locale data fall back to «6,000,000»
+ * (found by e2e in Chrome), and the server and the client must print the same text.
+ */
+export function formatMoney(n: number): string {
+  const sign = n < 0 ? "−" : "";
+  const digits = String(Math.abs(Math.round(n)));
+  const grouped = digits.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return `${sign}${grouped} ₸`;
 }
 
 /** Restaurant plan = price per seat × confirmed seats of «Келеді»; null while there is no price (`priceMissing`). */

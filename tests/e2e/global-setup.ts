@@ -26,6 +26,10 @@ const WORLDS: WorldName[] = [
   "hallDesktop",
   "hallConcurrency",
   "screensF7b",
+  // Ф9 «Шығындар» (separate block): one world per writing project + screenshots
+  "budgetMobile",
+  "budgetDesktop",
+  "screensF9",
 ];
 
 export default async function globalSetup() {
@@ -113,7 +117,9 @@ export default async function globalSetup() {
     worlds[name] = { eventId: s.eventId, sessions, memberLinks, guests, phones };
   }
   // Ф7b: a ready session of Анасы (seating right) for the «Зал» worlds — the two-browser test (мама и папа).
-  for (const name of WORLDS.filter((n) => n.startsWith("hall") || n === "screensF7b")) {
+  for (const name of WORLDS.filter(
+    (n) => n.startsWith("hall") || n === "screensF7b" || n.startsWith("budget") || n === "screensF9",
+  )) {
     const i = WORLDS.indexOf(name);
     const phone = `+7701${i - 10}000002`;
     const now = new Date();
@@ -125,6 +131,16 @@ export default async function globalSetup() {
     worlds[name].sessions.ana = (
       await createSession(db(), { userId: u.id, method: "sms", scope: "all", userAgent: null, now })
     ).token;
+  }
+  // Ф9: guest links of families still without an answer (the restaurant sum grows when one answers «Келеміз»).
+  for (const name of WORLDS.filter((n) => n.startsWith("budget") || n === "screensF9")) {
+    worlds[name].guests = (
+      await db()
+        .select({ token: families.token, name: families.name })
+        .from(families)
+        .where(and(eq(families.eventId, worlds[name].eventId), eq(families.rsvp, "pending")))
+        .orderBy(asc(families.seatSeq))
+    ).map((g) => ({ token: g.token, name: g.name }));
   }
   await closeDb();
   mkdirSync("playwright/.cache", { recursive: true });

@@ -2,7 +2,7 @@
 
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { useRouter } from "next/navigation";
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { EXPENSE_CATEGORIES, type ExpenseCategory, formatMoney, parseAmount } from "@/domain/budget";
 import {
@@ -32,12 +32,10 @@ export function BudgetScreen({ v }: { v: BudgetView }) {
   const t = useTranslations("budget");
   const tc = useTranslations("common.actions");
   const te = useTranslations("errors");
-  const raw = useLocale();
-  const locale = raw === "ru" ? "ru" : "kk";
   const format = useFormatter();
   const router = useRouter();
   const [sheet, setSheet] = useState<SheetState>(null);
-  const money = (n: number) => formatMoney(n, locale);
+  const money = (n: number) => formatMoney(n);
   const s = v.summary;
   const restaurantItem = v.items.find((i) => i.linked);
   const day = (d: string) => format.dateTime(new Date(`${d}T12:00:00Z`), { day: "2-digit", month: "2-digit" });
@@ -354,7 +352,6 @@ function ItemSheet({
 }) {
   const t = useTranslations("budget");
   const te = useTranslations("errors");
-  const locale = useLocale() === "ru" ? "ru" : "kk";
   const router = useRouter();
   const [title, setTitle] = useState(item?.title ?? "");
   const [category, setCategory] = useState<ExpenseCategory>(item?.category ?? "other");
@@ -506,8 +503,8 @@ function ItemSheet({
                     ? t("restaurant.priceMissing")
                     : t("restaurant.formula", {
                         seats: v.confirmedSeats,
-                        price: formatMoney(pr, locale),
-                        total: formatMoney(pr * v.confirmedSeats, locale),
+                        price: formatMoney(pr),
+                        total: formatMoney(pr * v.confirmedSeats),
                       });
                 })()}
               </div>

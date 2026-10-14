@@ -70,7 +70,7 @@ export default async function SummaryPage({ params }: PageProps<"/e/[eventId]/su
   );
   // Ф9: the card shows «Төленді: {paid} / {total}» (total = budget or Σ planned), only with the budget right
   const sums = v.budget ? await budgetTotals(db(), user, eventId) : null;
-  const money = (n: number) => formatMoney(n, locale);
+  const money = (n: number) => formatMoney(n);
   const budget = v.budget && (
     <div className="mob-only">
       <LinkRows>

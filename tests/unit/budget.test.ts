@@ -27,8 +27,8 @@ describe("budget money (Ф9)", () => {
   });
 
   it("formats with no-break spaces and ₸ (kk and ru)", () => {
-    const kk = formatMoney(6000000, "kk");
-    const ru = formatMoney(1800000, "ru");
+    const kk = formatMoney(6000000);
+    const ru = formatMoney(1800000);
     expect(kk.replace(/[  ]/g, " ")).toBe("6 000 000 ₸");
     expect(ru.replace(/[  ]/g, " ")).toBe("1 800 000 ₸");
     expect(kk).not.toMatch(/ /); // no ordinary spaces: «1 / 800 000» must not wrap
