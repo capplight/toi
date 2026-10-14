@@ -247,3 +247,37 @@ $ pnpm test:e2e tests/e2e/hall.spec.ts --workers=1
 | **П2** | Полный последовательный e2e на итоговом коммите и пересъёмка скриншотов (в том числе 10) — ниже. Сборка — из PowerShell | — |
 | **П3** | Составные тексты заменены ключами: `hall.history.seatUnplaced` (история и тост «Бос орындарға отырғызу»), `hall.history.guestYes`, `hall.move.confirm.routeNew` | `history-text.ts`, `HallScreen.tsx` |
 | Откл. 13 | Integration-тест на исправление Ф3 есть: «hall shrink with a locked family on a removed table» — семья закреплена за столом 16, зал → 14 столов: закрепление снято, ошибки `families_lock_check` нет, отмена смены зала проходит | `tests/integration/hall.test.ts` |
+
+**Замер S1 до и после П1** (тот же `s1-metrics` РА, копия с портом 3300 + TTFB и конец документа: событие `perf`, 360 px, CPU ×4, тёплые загрузки, медиана из 9, standalone + PGlite в памяти, Chrome). «До» — коммит `2ff84dc` (точка в layout через `await`), «после» — `f4a64f6`.
+
+| Метрика (медиана) | До | После |
+|---|---|---|
+| TTFB документа S1, мс (`ready` / `ready-all`) | 70 / 61 | **34 / 27** |
+| Конец документа S1, мс | 80 / 68 | **41 / 36** |
+| Список работает (`data-ready`), мс | 1103 / 1006 | 780 / 734 |
+| Каркас «Зал» (калибровка машины), мс | 578 / 514 | 381 / 421 |
+
+```
+before: guests mode=ready TTFB median 70 ms; document end median 80 ms; interactive median 1103 ms; frame «Зал» median 578 ms
+before: guests mode=ready-all TTFB median 61 ms; document end median 68 ms; interactive median 1006 ms; frame «Зал» median 514 ms
+after:  guests mode=ready TTFB median 34 ms; document end median 41 ms; interactive median 780 ms; frame «Зал» median 381 ms
+after:  guests mode=ready-all TTFB median 27 ms; document end median 36 ms; interactive median 734 ms; frame «Зал» median 421 ms
+```
+Серверная часть S1 (TTFB и конец документа) стала примерно вдвое короче — точку больше не ждут. «Список работает» тоже быстрее, но машина во втором замере была быстрее (калибровка «Зал» 514–578 → 381–421 мс), поэтому этот выигрыш честно не приписываю П1.
+
+**П2 — итоговые проверки** на `54300f0` (поверх `phase/RA-prep` `7f4ef7d`; сборка из PowerShell):
+```
+$ pnpm typecheck            ✓ Types generated successfully
+$ pnpm lint                 eslint --max-warnings=0
+$ pnpm format:check         All matched files use Prettier code style!
+$ pnpm check:messages       check:messages: OK — 804 keys …
+$ pnpm test:all             Test Files  36 passed | 1 skipped (37)
+                                 Tests  306 passed | 2 skipped (308)
+$ pnpm build                ✓ Compiled successfully
+$ pnpm test:e2e --workers=1   (все спеки всех фаз; проекты mobile, desktop, small)
+  24 skipped
+  168 passed (7.6m)
+```
+Пропущенные — скриншотные спеки (без `SCREENSHOTS=1`) и тесты, которые идут только в одном проекте. Скриншоты `docs/phases/F7b-screens/` пересняты после П1–П3 (в том числе 10 — заголовок списка переносится).
+
+Промежуточный полный прогон на `phase/RA-prep` `71936e6` дал 2 падения «Жіберілді ме?» в `guests.spec` (ленивый диалог S1). Это было в коде РА, и РА исправил его в `7f4ef7d`; после перебазирования на `7f4ef7d` — 0 падений.
