@@ -20,7 +20,10 @@ export type WorldName =
   | "hallMobile"
   | "hallDesktop"
   | "hallConcurrency"
-  | "screensF7b";
+  | "screensF7b"
+  // Ф8
+  | "door"
+  | "queue";
 
 export type World = {
   eventId: string;
@@ -35,6 +38,8 @@ export type World = {
   guests: { token: string; name: string }[];
   /** Member phones of this world (+7…): base = the demo numbers. */
   phones: Record<"ake" | "ana" | "jas", string>;
+  /** Ф8: the event's door-helper token (/d/{token}). */
+  doorToken: string;
 };
 
 export function world(name: WorldName): World {

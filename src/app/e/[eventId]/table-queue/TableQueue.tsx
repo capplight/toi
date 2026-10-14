@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useSyncExternalStore, useTransition } from "react";
 import { waUrl } from "@/domain/guests/wa";
 import { waTableText } from "@/domain/guests/wa-table";
 import { markTableSentAction, restartTableQueueAction } from "@/server/actions/tableQueue";
@@ -27,19 +27,52 @@ function readSkipped(eventId: string): string[] {
   }
 }
 
+// «WhatsApp-қа жіберу» leaves the page (location.assign); which family was opened survives the return in
+// sessionStorage, read through an external store (hydration-safe: null on the server and during hydration).
+const OPEN_KEY = (eventId: string) => `toi.tableQueue.opened.${eventId}`;
+const openListeners = new Set<() => void>();
+const subscribeOpen = (l: () => void) => {
+  openListeners.add(l);
+  return () => openListeners.delete(l);
+};
+function readOpen(eventId: string): string | null {
+  try {
+    return sessionStorage.getItem(OPEN_KEY(eventId));
+  } catch {
+    return null;
+  }
+}
+function writeOpen(eventId: string, id: string | null) {
+  try {
+    if (id) sessionStorage.setItem(OPEN_KEY(eventId), id);
+    else sessionStorage.removeItem(OPEN_KEY(eventId));
+  } catch {
+    // private mode: the «Жіберілді» step needs one more tap on «WhatsApp-қа жіберу»
+  }
+  openListeners.forEach((l) => l());
+}
+
 export function TableQueue({ data }: { data: TableQueueView }) {
   const t = useTranslations("tableQueue");
   const tw = useTranslations("wa");
   const locale = useLocale();
   const [items, setItems] = useState(data.items);
-  const [running, setRunningState] = useState(false);
+  const opened = useSyncExternalStore(
+    subscribeOpen,
+    () => readOpen(data.event.id),
+    () => null,
+  );
+  const setOpened = (id: string | null) => writeOpen(data.event.id, id);
+  const [runningState, setRunningState] = useState(false);
+  // back from WhatsApp with a family «opened» → straight to its card
+  const running = runningState || opened !== null;
   // skipped families of this device/session are read when the queue starts (not during render: no hydration gap)
   const setRunning = (on: boolean) => {
     if (on) setSkipped(readSkipped(data.event.id));
+    else setOpened(null);
     setRunningState(on);
   };
   const [skipped, setSkipped] = useState<string[]>([]);
-  const [opened, setOpened] = useState<string | null>(null);
   const [busy, start] = useTransition();
 
   const saveSkipped = (ids: string[]) => {

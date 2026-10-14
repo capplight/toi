@@ -9,7 +9,7 @@ import type { World, WorldName } from "./worlds";
  * Without DATABASE_URL: nothing (DB tests skip locally; in CI they fail — Ф0 review Н5).
  */
 
-/** base = the demo phones (auth logs in with them); every other world: +7700{n}00000{1|2|3}. */
+/** base = the demo phones (auth logs in with them); every other world: +770{nn}00000{1|2|3}. */
 const WORLDS: WorldName[] = [
   "base",
   "events",
@@ -26,7 +26,13 @@ const WORLDS: WorldName[] = [
   "hallDesktop",
   "hallConcurrency",
   "screensF7b",
+  // Ф8: door helper and table-number queue
+  "door",
+  "queue",
 ];
+
+/** two-digit world index → +770{nn}00000{1|2|3}: always +7 and 10 digits */
+const pad = (i: number) => String(i).padStart(2, "0");
 
 export default async function globalSetup() {
   if (!process.env.DATABASE_URL) {
@@ -47,7 +53,7 @@ export default async function globalSetup() {
   const { db, closeDb } = await import("../../src/server/db");
   const { issueMemberLink } = await import("../../src/server/auth/loginLinks");
   const { upsertUser, createSession } = await import("../../src/server/auth/session");
-  const { eventMembers, families, rateLimits, otpChallenges } = await import("../../src/server/schema");
+  const { eventMembers, events, families, rateLimits, otpChallenges } = await import("../../src/server/schema");
   const { and, asc, eq, inArray, ne } = await import("drizzle-orm");
   await migrateUrl(process.env.DATABASE_URL);
   // Fresh limits for each run (a test database; repeated local runs would hit the 60 s per-number limit).
@@ -59,9 +65,7 @@ export default async function globalSetup() {
     const phones =
       name === "base"
         ? DEMO_PHONES
-        : i < 10
-          ? { ake: `+7700${i}000001`, ana: `+7700${i}000002`, jas: `+7700${i}000003` }
-          : { ake: `+7701${i - 10}000001`, ana: `+7701${i - 10}000002`, jas: `+7701${i - 10}000003` }; // Ф7b worlds
+        : { ake: `+770${pad(i)}000001`, ana: `+770${pad(i)}000002`, jas: `+770${pad(i)}000003` };
     const s = await seedSample(db(), new Date(), { phones });
     const now = new Date();
     // Ready sessions (owner Әкесі; Жастар without the budget right; akeSwitch_*: other devices of the owner for the
@@ -110,7 +114,8 @@ export default async function globalSetup() {
       guests = others.filter((g) => g.rsvp === "pending" && g.sentAt).map((g) => ({ token: g.token, name: g.name }));
     }
     if (name === "perf") await realisticStatuses(s.eventId);
-    worlds[name] = { eventId: s.eventId, sessions, memberLinks, guests, phones };
+    const [door] = await db().select({ t: events.doorToken }).from(events).where(eq(events.id, s.eventId));
+    worlds[name] = { eventId: s.eventId, sessions, memberLinks, guests, phones, doorToken: door!.t };
   }
   // Ф7b: a ready session of Анасы (seating right) for the «Зал» worlds — the two-browser test (мама и папа).
   for (const name of WORLDS.filter((n) => n.startsWith("hall") || n === "screensF7b")) {
