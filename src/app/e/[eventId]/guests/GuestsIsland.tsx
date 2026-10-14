@@ -11,7 +11,7 @@ import { Search } from "@/ui/components/Controls";
 import { EmptyState } from "@/ui/components/Display";
 import { Icon } from "@/ui/components/Icon";
 import { asLike, type Filter } from "./list-shared";
-import { startSend, useConfirmSent, usePending, useWaLinks } from "./send-flow";
+import { SendAsk, startSend, useConfirmSent, usePending, useWaLinks } from "./send-flow";
 import { useSentAgo } from "./sent-ago";
 
 /**
@@ -30,9 +30,7 @@ const noSubscribe = () => () => {};
 
 // Not needed for the first tap: loaded when the browser is idle after the list works (or on first use).
 const loadSheet = () => import("./GuestSheet").then((m) => m.GuestSheet);
-const loadAsk = () => import("./send-flow").then((m) => m.SendAsk);
 const GuestSheet = dynamic(loadSheet, { ssr: false });
-const SendAsk = dynamic(loadAsk, { ssr: false });
 
 export function GuestsIsland({ data, flashId }: { data: GuestsData; flashId: string | null }) {
   const t = useTranslations("guests.list");
@@ -218,7 +216,8 @@ export function GuestsIsland({ data, flashId }: { data: GuestsData; flashId: str
           </div>,
           pendingCard.querySelector<HTMLElement>("[data-slot='pending']") ?? pendingCard,
         )}
-      {pending && <SendAsk />}
+      {/* always mounted: it listens for the return from WhatsApp (a lazy mount missed a quick return) */}
+      <SendAsk />
       <GuestSheet
         guest={open}
         data={data}
