@@ -38,7 +38,7 @@ for (const only of ["kk", "ru"] as const)
     });
     let n = 0;
     for (const locale of [only]) {
-      if (locale === "ru") n = 2;
+      if (locale === "ru") n = SIZES.length; // ru takes the names after kk (one per size)
       const m = msgs(locale);
       await context.addCookies([{ name: "locale", value: locale, url: baseURL! }]);
       for (const size of SIZES) {

@@ -79,7 +79,7 @@ export default async function globalSetup() {
       .where(and(eq(families.eventId, s.eventId), ne(families.addedByMemberId, s.memberIds.ake)))
       .orderBy(asc(families.seatSeq));
     let guests = others.map((g) => ({ token: g.token, name: g.name }));
-    if (name === "invite") {
+    if (name === "invite" || name === "screensF5") {
       // Ф5: every family of the pool has not answered yet, so each test starts from the envelope.
       await db()
         .update(families)
