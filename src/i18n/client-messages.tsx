@@ -55,3 +55,9 @@ export async function RouteMessages({ extra, children }: { extra: readonly strin
     </NextIntlClientProvider>
   );
 }
+
+/** A provider with exactly `paths` (pages outside the event frame, e.g. the door helper). */
+export async function RouteMessagesOnly({ paths, children }: { paths: readonly string[]; children: ReactNode }) {
+  const all = (await getMessages()) as unknown as Tree;
+  return <NextIntlClientProvider messages={pickMessages(all, paths)}>{children}</NextIntlClientProvider>;
+}
