@@ -16,7 +16,8 @@ import type { Db, DbOrTx } from "../db";
 import { listKind } from "../guests/queries";
 import { messagesByLocale } from "@/i18n/messages";
 import { categories, duplicateReviews, eventMembers, events, families, seatingChanges } from "../schema";
-import { loadSeatingState } from "./adapter";
+import { loadSeatingRows, loadSeatingState } from "./adapter";
+import { cachedAttention, storeAttention } from "./attention-cache";
 import { type UndoKind, undoKind } from "./hall";
 
 /**
@@ -277,19 +278,30 @@ export async function historyView(db: Db, who: Principal, eventId: string, opts:
   };
 }
 
-/** Red dot at the «Зал» tab (Ф1 `hallAttention`): overflow, unplaced or unreviewed duplicates. */
+/**
+ * Red dot at the «Зал» tab (Ф1 `hallAttention`): overflow, unplaced or unreviewed duplicates.
+ * Ф7b review П1: rendered in a streamed `<Suspense>` slot (never blocks a screen); families are read once; the answer
+ * is cached in memory per `(eventId, seating_version)` — it changes only with the version, except «Екеуі де қалсын»
+ * (`duplicate_reviews`), which calls `invalidateHallAttention`.
+ */
 export async function hallAttention(db: Db, eventId: string): Promise<boolean> {
-  const state = await loadSeatingState(db, eventId);
-  if (!state.hall) return false;
-  const stats = tableStats(state);
-  if (stats.overfull.length || stats.unplaced.length) return true;
-  const rows = await db
-    .select({ id: families.id, name: families.name, rsvp: families.rsvp, tableNo: families.tableNo })
-    .from(families)
-    .where(and(eq(families.eventId, eventId), isNull(families.deletedAt)));
-  const reviews = await db
-    .select({ a: duplicateReviews.familyA, b: duplicateReviews.familyB })
-    .from(duplicateReviews)
-    .where(eq(duplicateReviews.eventId, eventId));
-  return dupPairs(rows, new Set(reviews.map((r) => pairKey(r.a, r.b)))).length > 0;
+  const [ev] = await db.select({ v: events.seatingVersion }).from(events).where(eq(events.id, eventId));
+  if (!ev) return false;
+  const hit = cachedAttention(eventId, ev.v);
+  if (hit !== undefined) return hit;
+  const { state, rows, seatingVersion } = await loadSeatingRows(db, eventId);
+  let value = false;
+  if (state.hall) {
+    const stats = tableStats(state);
+    if (stats.overfull.length || stats.unplaced.length) value = true;
+    else {
+      const reviews = await db
+        .select({ a: duplicateReviews.familyA, b: duplicateReviews.familyB })
+        .from(duplicateReviews)
+        .where(eq(duplicateReviews.eventId, eventId));
+      value = dupPairs(rows, new Set(reviews.map((r) => pairKey(r.a, r.b)))).length > 0;
+    }
+  }
+  storeAttention(eventId, seatingVersion, value);
+  return value;
 }

@@ -59,8 +59,21 @@ export class NotFound extends Error {
 
 /** Load the seating state of an event inside a transaction (call after the `for update` lock). */
 export async function loadSeatingState(tx: Db | Tx, eventId: string): Promise<SeatingState> {
+  return (await loadSeatingRows(tx, eventId)).state;
+}
+
+/** The seating state plus the active family rows it was built from (names for duplicates — one read, Ф7b П1). */
+export async function loadSeatingRows(
+  tx: Db | Tx,
+  eventId: string,
+): Promise<{ state: SeatingState; rows: FamilyRow[]; seatingVersion: number }> {
   const [ev] = await tx
-    .select({ columns: events.hallColumns, tables: events.tablesCount, seats: events.seatsPerTable })
+    .select({
+      columns: events.hallColumns,
+      tables: events.tablesCount,
+      seats: events.seatsPerTable,
+      version: events.seatingVersion,
+    })
     .from(events)
     .where(eq(events.id, eventId));
   if (!ev) throw new NotFound();
@@ -75,9 +88,14 @@ export async function loadSeatingState(tx: Db | Tx, eventId: string): Promise<Se
     .where(and(eq(families.eventId, eventId), isNull(families.deletedAt)))
     .orderBy(asc(families.seatSeq), asc(families.createdAt));
   return {
-    hall: ev.columns && ev.tables ? { columns: ev.columns as 2 | 4, tables: ev.tables, seatsPerTable: ev.seats } : null,
-    categories: cats,
-    families: rows.map(rowToFamily),
+    state: {
+      hall:
+        ev.columns && ev.tables ? { columns: ev.columns as 2 | 4, tables: ev.tables, seatsPerTable: ev.seats } : null,
+      categories: cats,
+      families: rows.map(rowToFamily),
+    },
+    rows,
+    seatingVersion: ev.version,
   };
 }
 

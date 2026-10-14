@@ -448,6 +448,30 @@ describe("undo, reverted_by, undo of undo", () => {
   });
 });
 
+describe("hallAttention (Ф7b review П1): cached per (event, seating_version)", () => {
+  it("answers from the cache until the version changes; «Екеуі де қалсын» invalidates it", async () => {
+    const { s, owner } = await setup();
+    const [pair] = (await hallView(db(), owner, s.eventId, { locale: "kk" })).dups;
+    expect(await hallAttention(db(), s.eventId)).toBe(true); // seed: overflow at 7 and 12, a duplicate pair
+    // nothing left to warn about, written behind the adapter's back (no new version) → still the cached answer
+    await db()
+      .update(families)
+      .set({ rsvp: "no", confirmedCount: null, tableNo: null, seatLocked: false, lockedByMemberId: null })
+      .where(eq(families.eventId, s.eventId));
+    expect(await hallAttention(db(), s.eventId)).toBe(true);
+    await db().update(events).set({ seatingVersion: 99 }).where(eq(events.id, s.eventId));
+    expect(await hallAttention(db(), s.eventId)).toBe(false);
+    // only the duplicate pair is left (seated at table 16, no overflow) → the dot is back with the new version
+    for (const id of pair!)
+      await db().update(families).set({ rsvp: "yes", confirmedCount: 1, tableNo: 16 }).where(eq(families.id, id));
+    await db().update(events).set({ seatingVersion: 100 }).where(eq(events.id, s.eventId));
+    expect(await hallAttention(db(), s.eventId)).toBe(true);
+    // «Екеуі де қалсын» does not change the version: it invalidates the cache itself
+    await guests.keepBothDuplicates(db(), owner, { eventId: s.eventId, familyA: pair![0], familyB: pair![1] });
+    expect(await hallAttention(db(), s.eventId)).toBe(false);
+  });
+});
+
 describe("hall shrink with a locked family on a removed table", () => {
   it("the family loses table and lock (no families_lock_check violation) and is re-placed", async () => {
     const { s, owner } = await setup();

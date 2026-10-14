@@ -36,6 +36,7 @@ export function AppShell({
   isOwner,
   canManageBudget,
   hallAttention = false,
+  hallDot,
   title,
   subtitle,
   back,
@@ -54,6 +55,8 @@ export function AppShell({
   isOwner: boolean;
   canManageBudget: boolean;
   hallAttention?: boolean;
+  /** Streamed attention dot for «Зал» (server component in Suspense); replaces `hallAttention` when given. */
+  hallDot?: ReactNode;
   /** Screen title in the phone top bar. */
   title: string;
   /** Second line under the phone title («Әкесінің тізімі», mockup 01). */
@@ -96,12 +99,14 @@ export function AppShell({
           <Link key={s} href={href(s)} className="nav-item" aria-current={current(s) ? "page" : undefined}>
             <Icon name={ICONS[s]} />
             <span>{label(s)}</span>
-            {s === "hall" && hallAttention && (
-              <>
-                <i className="dot" aria-hidden="true" />
-                <span className="sr-only">{t("a11y.attention")}</span>
-              </>
-            )}
+            {s === "hall" &&
+              (hallDot ??
+                (hallAttention && (
+                  <>
+                    <i className="dot" aria-hidden="true" />
+                    <span className="sr-only">{t("a11y.attention")}</span>
+                  </>
+                )))}
           </Link>
         ))}
         {isOwner && (
@@ -187,12 +192,14 @@ export function AppShell({
               <Icon name={ICONS[s]} />
             </span>
             <span>{label(s)}</span>
-            {s === "hall" && hallAttention && (
-              <>
-                <i className="dot" aria-hidden="true" />
-                <span className="sr-only">{t("a11y.attention")}</span>
-              </>
-            )}
+            {s === "hall" &&
+              (hallDot ??
+                (hallAttention && (
+                  <>
+                    <i className="dot" aria-hidden="true" />
+                    <span className="sr-only">{t("a11y.attention")}</span>
+                  </>
+                )))}
           </Link>
         ))}
       </nav>

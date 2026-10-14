@@ -78,8 +78,7 @@ export function entryText(
     case "full_reseat":
       return out(t("hall.history.fullReseat", { count: num(s.count) }));
     case "auto_place":
-      if (s.reason === "seatUnplaced")
-        return out(t("hall.history.seatUnplaced", { count: Number(s.count ?? 0) }));
+      if (s.reason === "seatUnplaced") return out(t("hall.history.seatUnplaced", { count: Number(s.count ?? 0) }));
       return typeof s.to === "number"
         ? out(t("hall.history.guestAdded", { name: names, number: s.to }))
         : out(t("hall.history.guestAddedUnplaced", { name: names }));

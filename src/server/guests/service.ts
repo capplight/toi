@@ -14,6 +14,7 @@ import { randomToken } from "../crypto";
 import type { Db } from "../db";
 import { activityLog, categories, duplicateReviews, eventMembers, families, seatingChanges } from "../schema";
 import { type Actor, rowToFamily, withSeating } from "../seating/adapter";
+import { invalidateHallAttention } from "../seating/attention-cache";
 
 /**
  * Guest actions (plan 6.3, brief Ф4 2.2). Every function: authz → validation → adapter / transaction.
@@ -569,5 +570,6 @@ export async function keepBothDuplicates(
     .insert(duplicateReviews)
     .values({ eventId: input.eventId, familyA: a, familyB: b, decidedBy: m.memberId })
     .onConflictDoNothing();
+  invalidateHallAttention(input.eventId); // the red dot of «Зал» depends on reviewed pairs (Ф7b П1)
   return { ok: true as const };
 }
