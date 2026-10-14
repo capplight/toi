@@ -101,6 +101,19 @@ export function EventShell({
     );
   }
 
+  if (section === "budget") {
+    // Ф9 (mockup 13): on the phone «Шығындар» opens from «Қорытынды» — «←» goes back there; sticky «Шығын қосу»
+    return (
+      <AppShell
+        {...props}
+        title={t("budget")}
+        back={{ href: `${base}/summary`, label: ta("back"), mobileOnly: true }}
+        hasCta
+        section="budget"
+      />
+    );
+  }
+
   if (section === "settings" && sub === "members") {
     return (
       <AppShell

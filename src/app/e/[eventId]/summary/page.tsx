@@ -4,6 +4,8 @@ import { isLocale } from "@/i18n/config";
 import { requireUser } from "@/server/authz";
 import { db } from "@/server/db";
 import { summaryView } from "@/server/summary/queries";
+import { budgetTotals } from "@/server/budget/service";
+import { formatMoney } from "@/domain/budget";
 import { EmptyState, EventHero, LinkRow, LinkRows, ProgressBar } from "@/ui/components/Display";
 import { Icon, type IconName } from "@/ui/components/Icon";
 import { VersionPoll } from "@/ui/components/VersionPoll";
@@ -66,10 +68,17 @@ export default async function SummaryPage({ params }: PageProps<"/e/[eventId]/su
       venue={v.event.venue ?? undefined}
     />
   );
+  // Ф9: the card shows «Төленді: {paid} / {total}» (total = budget or Σ planned), only with the budget right
+  const sums = v.budget ? await budgetTotals(db(), user, eventId) : null;
+  const money = (n: number) => formatMoney(n, locale);
   const budget = v.budget && (
     <div className="mob-only">
       <LinkRows>
-        <LinkRow href={`${base}/budget`} icon="wallet" title={tn("budget")} />
+        <LinkRow
+          href={`${base}/budget`}
+          icon="wallet"
+          title={sums ? t("budgetLink", { paid: money(sums.paid), total: money(sums.total) }) : tn("budget")}
+        />
       </LinkRows>
     </div>
   );
