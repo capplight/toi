@@ -178,17 +178,21 @@ test.describe("Ф8 table numbers", () => {
     await page.getByRole("link", { name: kk.summary.tableQueueEntry }).click();
     await expect(page).toHaveURL(/table-queue$/);
     await page.getByRole("button", { name: kk.tableQueue.start }).click();
-    const first = (
-      await sql<{ name: string; table_no: number; phone: string | null }>(
-        "select name, table_no, phone from families where event_id = $1 and table_no is not null and rsvp <> 'no' order by table_no, name",
-        [w.eventId],
-      )
-    )[0]!;
+    // the queue order (table, then name); families without a phone are skipped with «Өткізіп жіберу»
+    const queue = await sql<{ name: string; table_no: number; phone: string | null }>(
+      "select name, table_no, phone from families where event_id = $1 and table_no is not null and rsvp <> 'no' order by table_no, name",
+      [w.eventId],
+    );
+    const at = queue.findIndex((f) => f.phone);
+    for (const f of queue.slice(0, at)) {
+      await expect(page.locator(".tq-name")).toHaveText(f.name);
+      await page.getByRole("button", { name: kk.tableQueue.skip }).click();
+    }
+    const first = queue[at]!;
     await expect(page.locator(".tq-name")).toHaveText(first.name);
     await expect(page.locator(".tq-table")).toHaveText(
       kk.tableQueue.current.table.replace("{number}", String(first.table_no)),
     );
-    if (!first.phone) test.skip(true, "first family without a phone in the seed");
     await page.getByRole("button", { name: kk.tableQueue.open }).click();
     await page.waitForURL(/wa\.me/);
     const text = decodeURIComponent(new URL(waUrl).searchParams.get("text") ?? "");
@@ -204,10 +208,13 @@ test.describe("Ф8 table numbers", () => {
       [w.eventId, first.name],
     );
     expect(row!.t).not.toBeNull();
-    // stop and come back: «Тоқтаған жерден жалғастыру (№2)»
+    // stop and come back: «Тоқтаған жерден жалғастыру (№N)» — the next family without table_sent_at that was not
+    // skipped in this session (here: the one after the sent family)
     await page.getByRole("button", { name: kk.tableQueue.stop }).click();
     await page.reload();
-    await expect(page.getByRole("button", { name: kk.tableQueue.resume.replace("{position}", "2") })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: kk.tableQueue.resume.replace("{position}", String(at + 2)) }),
+    ).toBeVisible();
   });
 
   test("guest page: switch on → number and mini-map (360 / 320 / 1440), Ф5 budget kept; axe, 130 %", async ({

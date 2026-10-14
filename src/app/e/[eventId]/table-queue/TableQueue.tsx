@@ -66,29 +66,34 @@ export function TableQueue({ data }: { data: TableQueueView }) {
   const [runningState, setRunningState] = useState(false);
   // back from WhatsApp with a family «opened» → straight to its card
   const running = runningState || opened !== null;
-  // skipped families of this device/session are read when the queue starts (not during render: no hydration gap)
   const setRunning = (on: boolean) => {
-    if (on) setSkipped(readSkipped(data.event.id));
-    else setOpened(null);
+    if (!on) setOpened(null);
     setRunningState(on);
   };
-  const [skipped, setSkipped] = useState<string[]>([]);
+  // skipped families of this session: sessionStorage through the same hydration-safe store as «opened»
+  const skippedRaw = useSyncExternalStore(
+    subscribeOpen,
+    () => JSON.stringify(readSkipped(data.event.id)),
+    () => "[]",
+  );
+  const skipped = useMemo(() => JSON.parse(skippedRaw) as string[], [skippedRaw]);
   const [busy, start] = useTransition();
 
   const saveSkipped = (ids: string[]) => {
-    setSkipped(ids);
     try {
       sessionStorage.setItem(SKIP_KEY(data.event.id), JSON.stringify(ids));
     } catch {
-      // private mode: this session only
+      // private mode: this render only
     }
+    openListeners.forEach((l) => l());
   };
 
   const total = items.length;
   const done = items.filter((i) => i.sentAt).length;
   const left = items.filter((i) => !i.sentAt);
   // the next family: first not sent and not skipped; when only skipped are left — the skipped ones again
-  const current = left.find((i) => !skipped.includes(i.id)) ?? left[0] ?? null;
+  // back from WhatsApp: the family that was opened stays current until «Жіберілді» / «Өткізіп жіберу»
+  const current = left.find((i) => i.id === opened) ?? left.find((i) => !skipped.includes(i.id)) ?? left[0] ?? null;
   const position = current ? items.indexOf(current) + 1 : 0;
 
   const text = useMemo(
@@ -109,10 +114,12 @@ export function TableQueue({ data }: { data: TableQueueView }) {
     start(async () => {
       const r = await markTableSentAction({ familyId: id });
       if (r.ok && "sentAt" in r) setItems((xs) => xs.map((x) => (x.id === id ? { ...x, sentAt: r.sentAt } : x)));
+      setRunningState(true); // stay in the queue (after a return from WhatsApp the page was reloaded)
       setOpened(null);
     });
   const skip = (id: string) => {
     saveSkipped([...skipped.filter((x) => x !== id), id]);
+    setRunningState(true);
     setOpened(null);
   };
 
