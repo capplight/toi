@@ -2,6 +2,8 @@
  * Dates of the guest page (Ф5, DESIGN 8.17): «Жексенбі | 15 | қараша | 18:00» and «Тойға N күн қалды», counted in
  * calendar days of the event time zone (Asia/Almaty). Pure TS (plan 11.1).
  */
+import { asLocale, daysUntil as sharedDaysUntil, formatWeekday, monthName } from "../format";
+
 export type DateParts = { weekday: string; day: string; month: string; time: string | null };
 
 const fmt = new Map<string, Intl.DateTimeFormat>();
@@ -12,33 +14,25 @@ function f(locale: string, opts: Intl.DateTimeFormatOptions): Intl.DateTimeForma
   return x;
 }
 
-/** `startsOn` is a calendar date (YYYY-MM-DD) of the event; noon UTC is the same day in every KZ zone. */
+/** `startsOn` is a calendar date (YYYY-MM-DD) of the event; names from the shared module (Ф10 §4, no `Intl` kk). */
 export function eventDateParts(
   startsOn: string,
   startsAt: string | null,
   locale: string,
   tz = "Asia/Almaty",
 ): DateParts {
-  const d = new Date(`${startsOn}T12:00:00Z`);
-  const weekday = f(locale, { weekday: "long", timeZone: tz }).format(d);
-  const day = f(locale, { day: "numeric", timeZone: tz }).format(d);
-  // Month name as used after the day number («15 қараша», «15 ноября»).
-  const dm = f(locale, { day: "numeric", month: "long", timeZone: tz }).format(d);
-  const month = dm.replace(day, "").replace(/^[\s.]+|[\s.]+$/g, "");
+  const l = asLocale(locale);
   return {
-    weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
-    day,
-    month,
+    weekday: formatWeekday(startsOn, l, tz),
+    day: String(Number(startsOn.slice(8, 10))),
+    month: monthName(startsOn, l, tz),
     time: startsAt ? startsAt.slice(0, 5) : null,
   };
 }
 
 /** Calendar days from `now` to the event day in the event zone: 0 = today, 1 = tomorrow, < 0 = past. */
 export function daysUntil(startsOn: string, now: Date, tz = "Asia/Almaty"): number {
-  const today = f("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
-  const a = Date.UTC(+today.slice(0, 4), +today.slice(5, 7) - 1, +today.slice(8, 10));
-  const b = Date.UTC(+startsOn.slice(0, 4), +startsOn.slice(5, 7) - 1, +startsOn.slice(8, 10));
-  return Math.round((b - a) / 86_400_000);
+  return sharedDaysUntil(startsOn, now, tz);
 }
 
 /** RSVP closes at `rsvp_closes_at`, by default at the start of the event day in Almaty (brief Ф5 §2). */

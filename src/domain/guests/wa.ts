@@ -1,3 +1,4 @@
+import { asLocale, formatDayMonth } from "../format";
 /**
  * WhatsApp texts (CONTENT_REVIEW 6.2–6.4, brief Ф4 2.2). Pure TS: the message function is passed in
  * (server: `translator(locale)` with the `wa.` prefix; client: `useTranslations("wa")`), so the texts
@@ -22,9 +23,7 @@ export type WaKind = "invite" | "reminder";
 export type WaMessages = (key: WaKind, values: Record<string, string>) => string;
 
 export function formatEventDate(ev: Pick<WaEvent, "startsOn" | "tz">, locale: string): string {
-  return new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", timeZone: ev.tz }).format(
-    new Date(`${ev.startsOn}T12:00:00Z`),
-  );
+  return formatDayMonth(ev.startsOn, asLocale(locale), ev.tz); // shared module (Ф10 §4)
 }
 
 export function guestLink(appUrl: string, token: string): string {

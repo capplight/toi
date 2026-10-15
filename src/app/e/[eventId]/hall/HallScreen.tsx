@@ -1,8 +1,10 @@
 "use client";
 
+import { asLocale, formatDateTime, formatTime } from "@/domain/format";
+
 import * as Accordion from "@radix-ui/react-accordion";
 import { useRouter } from "next/navigation";
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useMemo, useState, useSyncExternalStore, useTransition } from "react";
 import type { TableStat } from "@/domain/seating";
 import { moveFamilyAction, seatUnplacedAction, unlockFamilyAction } from "@/server/actions/hall";
@@ -41,7 +43,6 @@ type Confirm = { familyId: string; to: number; reason?: "suggested"; short: numb
  */
 export function HallScreen({ v, tz }: { v: HallView; tz: string }) {
   const t = useTranslations();
-  const format = useFormatter();
   const locale = useLocale();
   const router = useRouter();
   const { view, move } = useHallParams();
@@ -96,14 +97,8 @@ export function HallScreen({ v, tz }: { v: HallView; tz: string }) {
   const lastAt = v.history.recent[0]?.at;
   const lastWhen = lastAt
     ? dayKey(lastAt, tz) === dayKey(new Date(now).toISOString(), tz)
-      ? `${t("common.time.today").toLocaleLowerCase(locale)}, ${format.dateTime(new Date(lastAt), { hour: "2-digit", minute: "2-digit", timeZone: tz })}`
-      : format.dateTime(new Date(lastAt), {
-          day: "numeric",
-          month: "long",
-          hour: "2-digit",
-          minute: "2-digit",
-          timeZone: tz,
-        })
+      ? `${t("common.time.today").toLocaleLowerCase(locale)}, ${formatTime(lastAt, tz)}`
+      : formatDateTime(lastAt, asLocale(locale), tz)
     : null;
 
   const famMeta = (f: HallFamily) =>

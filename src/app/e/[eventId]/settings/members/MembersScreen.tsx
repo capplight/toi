@@ -1,5 +1,7 @@
 "use client";
 
+import { formatNumericDateTime } from "@/domain/format";
+
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { normalizePhone } from "@/domain/guests/phone";
@@ -22,19 +24,8 @@ const WHO: Who[] = ["father", "mother", "couple", "other"];
 const DEFAULT_CAT: Record<Who, string> = { father: "oz", mother: "nagashy", couple: "dos", other: "baska" };
 const PARENT = (w: Who) => w === "father" || w === "mother";
 
-/** «12.11, 14:05» in Almaty time (mockup 11). */
-function stamp(iso: string): string {
-  const p = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Asia/Almaty",
-    day: "2-digit",
-    month: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(new Date(iso));
-  const v = (k: string) => p.find((x) => x.type === k)?.value ?? "";
-  return `${v("day")}.${v("month")}, ${v("hour")}:${v("minute")}`;
-}
+/** «12.11, 14:05» in Almaty time (mockup 11) — the shared module (Ф10 §4). */
+const stamp = (iso: string) => formatNumericDateTime(iso);
 
 /** «Тізімді кім толтырады» (Ф3, mockup 11, DESIGN_v2 8.16). */
 export function MembersScreen({

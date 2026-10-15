@@ -1,6 +1,7 @@
+import { asLocale, formatDayMonth } from "@/domain/format";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getFormatter, getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { consumeLoginLinkAction } from "@/server/actions/auth";
 import { inspectLink } from "@/server/auth/loginLinks";
 import { currentUser } from "@/server/authz";
@@ -16,7 +17,7 @@ export default async function JoinPage({ params, searchParams }: PageProps<"/joi
   const { token } = await params;
   const { limit } = await searchParams;
   const t = await getTranslations();
-  const format = await getFormatter();
+  const locale = asLocale(await getLocale());
 
   if (limit) {
     return (
@@ -64,7 +65,7 @@ export default async function JoinPage({ params, searchParams }: PageProps<"/joi
   const eventLine = ev
     ? t("auth.join.eventKindLine", {
         eventKind: t("events.kind.select", { kind: ev.kind }),
-        date: format.dateTime(new Date(`${ev.startsOn}T12:00:00Z`), { day: "numeric", month: "long" }),
+        date: formatDayMonth(ev.startsOn, locale),
         time: ev.startsAt?.slice(0, 5) ?? "",
         venue: ev.venue ?? "",
       })

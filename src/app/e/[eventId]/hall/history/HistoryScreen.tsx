@@ -1,7 +1,9 @@
 "use client";
 
+import { asLocale, formatDayMonth, formatTime } from "@/domain/format";
+
 import { useRouter } from "next/navigation";
-import { useFormatter, useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { revertAnswerAction } from "@/server/actions/guests";
 import { undoSeatingChangeAction } from "@/server/actions/hall";
@@ -37,7 +39,7 @@ export function HistoryScreen({
   seatingVersion: number;
 }) {
   const t = useTranslations();
-  const format = useFormatter();
+  const locale = asLocale(useLocale());
   const router = useRouter();
   const [pending, start] = useTransition();
   const [busy, setBusy] = useState<number | null>(null);
@@ -47,7 +49,7 @@ export function HistoryScreen({
 
   const tr = (key: string, values?: Record<string, string | number>) => t(key, values);
   const catLabel = (id: string) => categories[id] ?? "";
-  const time = (iso: string) => format.dateTime(new Date(iso), { hour: "2-digit", minute: "2-digit", timeZone: tz });
+  const time = (iso: string) => formatTime(iso, tz);
   const [now] = useState(() => Date.now());
   const today = dayKey(new Date(now).toISOString(), tz);
   const yesterday = dayKey(new Date(now - 86_400_000).toISOString(), tz);
@@ -55,7 +57,7 @@ export function HistoryScreen({
     const k = dayKey(iso, tz);
     if (k === today) return t("common.time.today");
     if (k === yesterday) return t("common.time.yesterday");
-    return format.dateTime(new Date(iso), { day: "numeric", month: "long", timeZone: tz });
+    return formatDayMonth(iso, locale, tz);
   };
 
   const groups: { key: string; title: string; items: HistoryEntry[] }[] = [];

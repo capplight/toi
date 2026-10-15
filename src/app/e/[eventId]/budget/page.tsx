@@ -1,4 +1,5 @@
-import { getFormatter, getTranslations } from "next-intl/server";
+import { asLocale, datePlate, formatDayMonth, formatNumericDay } from "@/domain/format";
+import { getLocale, getTranslations } from "next-intl/server";
 import { budgetView } from "@/server/budget/service";
 import { ForbiddenError, requireUser } from "@/server/authz";
 import { db } from "@/server/db";
@@ -33,17 +34,16 @@ export default async function BudgetPage({ params }: PageProps<"/e/[eventId]/bud
       </div>
     );
   }
-  const f = await getFormatter();
-  const at = (d: string) => new Date(`${d}T12:00:00Z`);
+  // Ф10 §4: the shared formatters (no `Intl` with kk)
+  const locale = asLocale(await getLocale());
   const keys = new Set(v.items.flatMap((i) => [i.dueDate, i.changedAt.slice(0, 10)]).filter((d): d is string => !!d));
   const dates: BudgetDates = Object.fromEntries(
     [...keys].map((d) => [
       d,
       {
-        day: f.dateTime(at(d), { day: "2-digit", timeZone: "UTC" }),
-        mon: f.dateTime(at(d), { month: "short", timeZone: "UTC" }),
-        short: f.dateTime(at(d), { day: "2-digit", month: "2-digit", timeZone: "UTC" }),
-        long: f.dateTime(at(d), { day: "numeric", month: "long", timeZone: "UTC" }),
+        ...datePlate(d, locale),
+        short: formatNumericDay(d),
+        long: formatDayMonth(d, locale),
       },
     ]),
   );

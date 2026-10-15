@@ -180,13 +180,15 @@ export function BudgetScreen({ v, dates }: { v: BudgetView; dates: BudgetDates }
                   {it.dueDate ? ` · ${day(it.dueDate)}` : ""}
                 </span>
                 {it.linked && <span className="m">{formula}</span>}
-                <span className="m">{t("categories.row", { planned: money(it.planned), paid: money(it.paid) })}</span>
                 {it.changedBy && (
                   <span className="by">
                     {t("item.changedBy", { member: it.changedBy, date: day(it.changedAt.slice(0, 10)) })}
                   </span>
                 )}
-                <span className="a">{money(it.planned)}</span>
+                <span className="a">
+                  {money(it.planned)}
+                  <small>{t("item.paidLine", { paid: money(it.paid) })}</small>
+                </span>
               </button>
             </li>
           ))}

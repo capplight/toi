@@ -1,3 +1,4 @@
+import { dayKey } from "../format";
 /**
  * «Шығындар» (Ф9, plan 5 `expenses`, DESIGN 8.20): pure money rules — no React, no DB, no clock (today is a parameter).
  * Money is whole tenge (`bigint` in the DB, safe integers here).
@@ -37,17 +38,8 @@ export function parseAmount(raw: string): number | null {
 export const isAmount = (n: unknown): n is number =>
   typeof n === "number" && Number.isInteger(n) && n >= 0 && n <= MAX_AMOUNT;
 
-/**
- * «6 000 000 ₸» — groups of three digits joined by no-break spaces, a no-break space before ₸ (kk and ru write money
- * the same way). Not `Intl.NumberFormat("kk-KZ")`: browsers without Kazakh locale data fall back to «6,000,000»
- * (found by e2e in Chrome), and the server and the client must print the same text.
- */
-export function formatMoney(n: number): string {
-  const sign = n < 0 ? "−" : "";
-  const digits = String(Math.abs(Math.round(n)));
-  const grouped = digits.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  return `${sign}${grouped} ₸`;
-}
+/** «6 000 000 ₸» — from the shared module (Ф10 §4). */
+export { formatMoney } from "../format";
 
 /** Restaurant plan = price per seat × confirmed seats of «Келеді»; null while there is no price (`priceMissing`). */
 export function restaurantPlanned(pricePerSeat: number | null, confirmedSeats: number): number | null {
@@ -112,9 +104,7 @@ export function budgetSummary(total: number | null, items: readonly BudgetItem[]
   };
 }
 
-/** `YYYY-MM-DD` of a moment in a time zone (the event's «today» for «Мерзімі өтті»). */
+/** `YYYY-MM-DD` of a moment in a time zone (the event's «today» for «Мерзімі өтті») — the shared module. */
 export function dayIn(tz: string, at: Date): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(
-    at,
-  );
+  return dayKey(at, tz);
 }
