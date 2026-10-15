@@ -1085,6 +1085,7 @@
         "due": "Срок оплаты",
         "note": "Заметка"
       },
+      "paidLine": "Оплачено: {paid}",
       "save": "Сохранить",
       "delete": "Удалить",
       "deleteConfirm": "Удалить этот расход?",
@@ -1110,13 +1111,32 @@
       "title": "Имя → стол"
     },
     "generatedAt": "Актуально на {datetime}",
-    "pageOf": "Стр. {page} из {pages}"
+    "pageOf": "Стр. {page} из {pages}",
+    "title": "План рассадки",
+    "map": {
+      "title": "Схема зала"
+    },
+    "mixed": "Смешанный стол",
+    "legend": {
+      "title": "Обозначения",
+      "free": "Свободное место"
+    },
+    "byTables": {
+      "title": "По столам"
+    },
+    "byCategory": {
+      "title": "По категориям",
+      "meta": "{families, plural, one {# семья} few {# семьи} many {# семей} other {# семьи}} · {seats, plural, one {# место} few {# места} many {# мест} other {# места}} · столы {tables}"
+    },
+    "pendingMark": "~ — ответа ещё нет, число мест примерное",
+    "empty": "Пока никто не рассажен."
   },
   "export": {
     "button": "Скачать Excel",
     "sheets": {
       "tables": "Столы",
-      "guests": "Гости"
+      "guests": "Гости",
+      "categories": "Категории"
     },
     "columns": {
       "table": "Стол",
@@ -1124,7 +1144,9 @@
       "category": "Категория",
       "seats": "Места",
       "status": "Ответ",
-      "list": "Чей список"
+      "list": "Чей список",
+      "tables": "Столы",
+      "families": "Семей"
     }
   }
 }

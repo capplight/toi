@@ -304,3 +304,28 @@
 | `hall.move.confirm.routeNew` | Орынсыз → {to}-үстел | Без места → стол {to} |
 
 Заменяют временные составные тексты разработчика (откл. 5–6). `routeNew` — для семьи без стола; прочерк «—» вместо номера больше не нужен.
+
+**2026-10-15 · Ф10 печать и экспорт, Ф9 (14 новых ключей)**
+
+| Ключ | kk | ru |
+|---|---|---|
+| `print.title` | Отырғызу жоспары | План рассадки |
+| `print.map.title` | Зал схемасы | Схема зала |
+| `print.mixed` | Аралас үстел | Смешанный стол |
+| `print.legend.title` | Белгілер | Обозначения |
+| `print.legend.free` | Бос орын | Свободное место |
+| `print.byTables.title` | Үстелдер бойынша | По столам |
+| `print.byCategory.title` | Санаттар бойынша | По категориям |
+| `print.byCategory.meta` | {families} отбасы · {seats} орын · {tables}-үстел | {families, plural, one {# семья} few {# семьи} many {# семей} other {# семьи}} · {seats, plural, one {# место} few {# места} many {# мест} other {# места}} · столы {tables} |
+| `print.pendingMark` | ~ — жауап әлі жоқ, орын саны шамамен | ~ — ответа ещё нет, число мест примерное |
+| `print.empty` | Әзірге ешкім отырғызылмаған. | Пока никто не рассажен. |
+| `export.sheets.categories` | Санаттар | Категории |
+| `export.columns.tables` | Үстелдер | Столы |
+| `export.columns.families` | Отбасы саны | Семей |
+| `budget.item.paidLine` | Төленді: {paid} | Оплачено: {paid} |
+
+- Раздел «Без места» на печати — существующий `hall.unplaced.title` («Отырғызылмағандар / Без места»), отдельный ключ не нужен.
+- Уже есть и подходят: `print.button`, `print.header`, `print.generatedAt`, `print.pageOf`, `print.table.*` (в т. ч. «Келді»), `print.alpha.title` («Аты → үстел»), `export.button`, `export.sheets.tables` / `.guests`, `export.columns.*`.
+- Значения колонки «Жауабы» в Excel — `common.status.*` («Келеді», «Жауап жоқ», «Келмейді», «Жіберілмеген»).
+- Имя файла (`toi-aibek-dana-2026-11-15.xlsx`) — латиница, собирается кодом, ключ не нужен.
+- `print.byCategory.title`: в брифе «Топтар бойынша» (как в образце основателя), принято «Санаттар бойынша / По категориям» — по глоссарию и как на «Қорытынды» (`summary.byCategory.title`). Если основатель хочет «Топтар», менять в обоих местах.

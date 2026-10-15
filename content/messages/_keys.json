@@ -1085,6 +1085,7 @@
         "due": "",
         "note": ""
       },
+      "paidLine": "",
       "save": "",
       "delete": "",
       "deleteConfirm": "",
@@ -1110,13 +1111,32 @@
       "title": ""
     },
     "generatedAt": "",
-    "pageOf": ""
+    "pageOf": "",
+    "title": "",
+    "map": {
+      "title": ""
+    },
+    "mixed": "",
+    "legend": {
+      "title": "",
+      "free": ""
+    },
+    "byTables": {
+      "title": ""
+    },
+    "byCategory": {
+      "title": "",
+      "meta": ""
+    },
+    "pendingMark": "",
+    "empty": ""
   },
   "export": {
     "button": "",
     "sheets": {
       "tables": "",
-      "guests": ""
+      "guests": "",
+      "categories": ""
     },
     "columns": {
       "table": "",
@@ -1124,7 +1144,9 @@
       "category": "",
       "seats": "",
       "status": "",
-      "list": ""
+      "list": "",
+      "tables": "",
+      "families": ""
     }
   }
 }
