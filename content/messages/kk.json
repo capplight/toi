@@ -1085,6 +1085,7 @@
         "due": "Төлеу мерзімі",
         "note": "Ескертпе"
       },
+      "paidLine": "Төленді: {paid}",
       "save": "Сақтау",
       "delete": "Өшіру",
       "deleteConfirm": "Бұл шығынды өшіру керек пе?",
@@ -1110,13 +1111,32 @@
       "title": "Аты → үстел"
     },
     "generatedAt": "Басып шығарылды: {datetime}",
-    "pageOf": "Бет {page} / {pages}"
+    "pageOf": "Бет {page} / {pages}",
+    "title": "Отырғызу жоспары",
+    "map": {
+      "title": "Зал схемасы"
+    },
+    "mixed": "Аралас үстел",
+    "legend": {
+      "title": "Белгілер",
+      "free": "Бос орын"
+    },
+    "byTables": {
+      "title": "Үстелдер бойынша"
+    },
+    "byCategory": {
+      "title": "Санаттар бойынша",
+      "meta": "{families} отбасы · {seats} орын · {tables}-үстел"
+    },
+    "pendingMark": "~ — жауап әлі жоқ, орын саны шамамен",
+    "empty": "Әзірге ешкім отырғызылмаған."
   },
   "export": {
     "button": "Excel-ге жүктеу",
     "sheets": {
       "tables": "Үстелдер",
-      "guests": "Қонақтар"
+      "guests": "Қонақтар",
+      "categories": "Санаттар"
     },
     "columns": {
       "table": "Үстел",
@@ -1124,7 +1144,9 @@
       "category": "Санаты",
       "seats": "Орын",
       "status": "Жауабы",
-      "list": "Кімнің тізімі"
+      "list": "Кімнің тізімі",
+      "tables": "Үстелдер",
+      "families": "Отбасы саны"
     }
   }
 }

@@ -7779,6 +7779,16 @@
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "—"
   },
+  "budget.item.paidLine": {
+    "release": "D",
+    "context": "строка статьи расходов: сколько оплачено (Ф9, по желанию) (добавлено 2026-10-15)",
+    "audience": "Х, Р",
+    "maxLength": "30",
+    "variables": "{paid}",
+    "currentKk": "Төленді: {paid}",
+    "currentRu": "Оплачено: {paid}",
+    "issues": "{paid} — formatMoney"
+  },
   "budget.item.save": {
     "release": "D",
     "context": "(D2 8.20)",
@@ -7949,6 +7959,106 @@
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "—"
   },
+  "print.title": {
+    "release": "D",
+    "context": "заголовок документа печати, как в образце основателя (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "30",
+    "variables": "—",
+    "currentKk": "Отырғызу жоспары",
+    "currentRu": "План рассадки",
+    "issues": "—"
+  },
+  "print.map.title": {
+    "release": "D",
+    "context": "заголовок страницы со схемой зала (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "30",
+    "variables": "—",
+    "currentKk": "Зал схемасы",
+    "currentRu": "Схема зала",
+    "issues": "—"
+  },
+  "print.mixed": {
+    "release": "D",
+    "context": "пометка стола, где сидят разные категории (выбор основателя) (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Аралас үстел",
+    "currentRu": "Смешанный стол",
+    "issues": "—"
+  },
+  "print.legend.title": {
+    "release": "D",
+    "context": "заголовок легенды категорий на схеме (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Белгілер",
+    "currentRu": "Обозначения",
+    "issues": "Как hall.map.legend.label"
+  },
+  "print.legend.free": {
+    "release": "D",
+    "context": "пункт легенды: пустой стул (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Бос орын",
+    "currentRu": "Свободное место",
+    "issues": "—"
+  },
+  "print.byTables.title": {
+    "release": "D",
+    "context": "заголовок раздела «по столам» (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "30",
+    "variables": "—",
+    "currentKk": "Үстелдер бойынша",
+    "currentRu": "По столам",
+    "issues": "В образце основателя — «Үстелдер бойынша тізім»"
+  },
+  "print.byCategory.title": {
+    "release": "D",
+    "context": "заголовок раздела «по категориям» (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "30",
+    "variables": "—",
+    "currentKk": "Санаттар бойынша",
+    "currentRu": "По категориям",
+    "issues": "В брифе «Топтар бойынша». Оставлено «санат» по глоссарию и как summary.byCategory.title"
+  },
+  "print.byCategory.meta": {
+    "release": "D",
+    "context": "строка категории: семьи, места, столы (диапазоны, как в H5) (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "60",
+    "variables": "{families, plural}, {seats, plural}, {tables}",
+    "currentKk": "{families} отбасы · {seats} орын · {tables}-үстел",
+    "currentRu": "{families, plural, one {# семья} few {# семьи} many {# семей} other {# семьи}} · {seats, plural, one {# место} few {# места} many {# мест} other {# места}} · столы {tables}",
+    "issues": "{tables} — готовые диапазоны «1–3, 8»"
+  },
+  "print.pendingMark": {
+    "release": "D",
+    "context": "пояснение к «~» у семей без ответа (под таблицами столов) (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "60",
+    "variables": "—",
+    "currentKk": "~ — жауап әлі жоқ, орын саны шамамен",
+    "currentRu": "~ — ответа ещё нет, число мест примерное",
+    "issues": "—"
+  },
+  "print.empty": {
+    "release": "D",
+    "context": "печать, когда ещё никто не рассажен (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "60",
+    "variables": "—",
+    "currentKk": "Әзірге ешкім отырғызылмаған.",
+    "currentRu": "Пока никто не рассажен.",
+    "issues": "—"
+  },
   "export.button": {
     "release": "D",
     "context": "скачать Excel",
@@ -8038,5 +8148,35 @@
     "currentKk": "[НЕТ ТЕКСТА]",
     "currentRu": "[НЕТ ТЕКСТА]",
     "issues": "Телефоны в экспорт для ресторана — не включать без решения (минимизация ПДн)"
+  },
+  "export.sheets.categories": {
+    "release": "D",
+    "context": "лист Excel «по категориям» (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "31",
+    "variables": "—",
+    "currentKk": "Санаттар",
+    "currentRu": "Категории",
+    "issues": "—"
+  },
+  "export.columns.tables": {
+    "release": "D",
+    "context": "колонка листа «Санаттар»: столы категории (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Үстелдер",
+    "currentRu": "Столы",
+    "issues": "—"
+  },
+  "export.columns.families": {
+    "release": "D",
+    "context": "колонка листа «Санаттар»: число семей (бриф Ф10 §6, добавлено 2026-10-15)",
+    "audience": "С",
+    "maxLength": "20",
+    "variables": "—",
+    "currentKk": "Отбасы саны",
+    "currentRu": "Семей",
+    "issues": "—"
   }
 }
