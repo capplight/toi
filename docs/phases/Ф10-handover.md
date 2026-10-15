@@ -139,9 +139,8 @@ $ pnpm exec vitest run --project integration tests/integration/export.test.ts   
 
 1. **БД:**
    ```powershell
-   Set-Location "D:\My Project	oi-f7b"
-   $env:PATH = "$env:APPDATA
-pm;$env:PATH"
+   Set-Location "D:\My Project\toi-f7b"
+   $env:PATH = "$env:APPDATA\npm;$env:PATH"
    $pg = Start-Process node -ArgumentList "node_modules/tsx/dist/cli.mjs","scripts/db-local.ts","--port","5533","--memory" -WorkingDirectory (Get-Location) -WindowStyle Hidden -PassThru
    ```
 2. **Статические проверки и vitest:**
