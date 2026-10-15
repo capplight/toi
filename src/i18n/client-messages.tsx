@@ -23,6 +23,8 @@ export const SHELL_MESSAGES = [
   "hall.order.title",
   "hall.history.title",
   "hall.move.title",
+  // Ф10: print page title in the top bar
+  "print.title",
 ] as const;
 
 type Tree = { [k: string]: string | Tree };

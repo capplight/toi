@@ -360,6 +360,7 @@ export function HallScreen({ v, tz }: { v: HallView; tz: string }) {
         title={t("hall.map.links.history", { count: v.history.count })}
         subtitle={lastWhen ? t("common.time.lastChange", { when: lastWhen }) : undefined}
       />
+      <LinkRow href={`${base}/print/tables`} icon="printer" title={t("print.title")} subtitle={t("export.button")} />
       {v.canSeat && (
         <LinkRow href={`${base}/hall/setup`} icon="sliders" title={t("hall.map.links.setup")} subtitle={meta} />
       )}

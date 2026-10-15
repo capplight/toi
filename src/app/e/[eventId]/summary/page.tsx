@@ -57,6 +57,8 @@ export default async function SummaryPage({ params }: PageProps<"/e/[eventId]/su
   const tk = await getTranslations("events.kind");
   const tn = await getTranslations("nav");
   const th = await getTranslations("hall.setup");
+  const tpr = await getTranslations("print");
+  const tex = await getTranslations("export");
   const base = `/e/${eventId}`;
 
   const hero = (
@@ -184,6 +186,10 @@ export default async function SummaryPage({ params }: PageProps<"/e/[eventId]/su
                 subtitle={`${tu("families", { count: m.families })} · ${tu("seatsApprox", { count: m.seats })}`}
               />
             ))}
+          </LinkRows>
+          {/* Ф10: the seating plan for print and the Excel file */}
+          <LinkRows>
+            <LinkRow href={`${base}/print/tables`} icon="printer" title={tpr("title")} subtitle={tex("button")} />
           </LinkRows>
           {budget}
         </div>
