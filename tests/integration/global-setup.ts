@@ -30,6 +30,8 @@ export default async function setup() {
     CRON_SECRET: secret(),
     SMS_PROVIDER: "console",
     SMS_DAILY_LIMIT: "300",
+    // PGlite: one pooled connection (concurrent extended-protocol messages mix on its single backend session)
+    DATABASE_POOL_MAX: local ? "1" : "10",
   });
   return async () => {
     await local?.stop();

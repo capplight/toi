@@ -32,6 +32,12 @@ const schema = z.object({
   DATABASE_DRIVER: z.preprocess(empty, z.enum(["neon", "pg"]).default("neon")),
   DATABASE_URL: requiredStr,
   DATABASE_URL_UNPOOLED: optionalStr,
+  /**
+   * Pool size of the `pg` driver. 1 for the local PGlite server (dev / e2e / integration): pglite-socket serves every
+   * connection with ONE backend session, and concurrent extended-protocol messages from several connections mix
+   * («bind message supplies N parameters, but prepared statement "" requires M»). Real Postgres: default 10.
+   */
+  DATABASE_POOL_MAX: z.preprocess(empty, z.coerce.number().int().min(1).max(100).default(10)),
 
   SESSION_SECRET: secret,
   OTP_HMAC_SECRET: secret,

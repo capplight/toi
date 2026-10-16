@@ -22,13 +22,13 @@ let closer: (() => Promise<void>) | undefined;
 
 export function db(): Db {
   if (instance) return instance;
-  const { DATABASE_DRIVER, DATABASE_URL } = env();
+  const { DATABASE_DRIVER, DATABASE_URL, DATABASE_POOL_MAX } = env();
   if (DATABASE_DRIVER === "neon") {
     const pool = new NeonPool({ connectionString: DATABASE_URL });
     instance = drizzleNeon({ client: pool, schema }) as unknown as Db;
     closer = () => pool.end();
   } else {
-    const pool = new pg.Pool({ connectionString: DATABASE_URL, max: 10 });
+    const pool = new pg.Pool({ connectionString: DATABASE_URL, max: DATABASE_POOL_MAX });
     instance = drizzlePg({ client: pool, schema }) as unknown as Db;
     closer = () => pool.end();
   }

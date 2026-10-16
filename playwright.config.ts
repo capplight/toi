@@ -52,6 +52,8 @@ export default defineConfig({
       DATABASE_DRIVER: process.env.DATABASE_DRIVER ?? "pg",
       // Without a DB the app still starts; DB-dependent tests are skipped locally and fail in CI (Н5).
       DATABASE_URL: process.env.DATABASE_URL || "postgres://e2e:e2e@127.0.0.1:1/none",
+      // Local runs use PGlite (one backend session): one pooled connection; CI (Postgres 16) — the default 10
+      DATABASE_POOL_MAX: process.env.DATABASE_POOL_MAX || (process.env.CI ? "10" : "1"),
       SESSION_SECRET: process.env.SESSION_SECRET || testSecret(),
       OTP_HMAC_SECRET: process.env.OTP_HMAC_SECRET || testSecret(),
       CRON_SECRET: process.env.CRON_SECRET || testSecret(),

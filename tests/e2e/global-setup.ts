@@ -37,6 +37,8 @@ export default async function globalSetup() {
   process.env.APP_URL ??= "http://localhost:3100";
   process.env.APP_DOMAIN ??= "toi-pilot.vercel.app";
   process.env.DATABASE_DRIVER ??= "pg";
+  // local PGlite: one pooled connection (see src/server/env.ts DATABASE_POOL_MAX); CI Postgres: default
+  process.env.DATABASE_POOL_MAX ??= process.env.CI ? "10" : "1";
   process.env.SESSION_SECRET ??= secret();
   process.env.OTP_HMAC_SECRET ??= secret();
   process.env.CRON_SECRET ??= secret();
