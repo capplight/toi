@@ -21,7 +21,8 @@ export function miniMapSvg(
 ): string {
   const { tables, levels } = layoutTables(hall);
   const xs = hall.columns === 4 ? X4 : X2;
-  const h = TOP + (levels - 1) * ROW + 45;
+  // room under the last row for «Сіз осында» (+27) before КІРЕБЕРІС
+  const h = TOP + (levels - 1) * ROW + 62;
   let circles = "";
   let me = "";
   for (const t of tables) {

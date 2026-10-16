@@ -153,7 +153,7 @@ $ pnpm exec playwright test tests/e2e/door.spec.ts --workers=1   (до rebase н
 По правилу основателя полные наборы и скриншоты запускает отдельный агент.
 
 **Где и как:**
-- Дерево — `D:/My Project/toi`, ветка `phase/F8-door` (`2938dc2`). Ворктри dev2 `D:/My Project/toi-f7b` не трогать.
+- Дерево — `D:/My Project/toi`, ветка `phase/F8-door` (последний коммит). Ворктри dev2 `D:/My Project/toi-f7b` не трогать.
 - Порты: приложение **3100**, PGlite **5435**. Ворктри dev2 использует 3300 / 3400 / 5533–5535.
 - Не трогать `.env.local` и `.pglite/` основателя: e2e берёт свои переменные.
 
@@ -166,7 +166,11 @@ $ pnpm exec playwright test tests/e2e/door.spec.ts --workers=1   (до rebase н
    - `DATABASE_DRIVER=pg`;
    - `DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5435/postgres?sslmode=disable`;
    - `APP_URL=http://localhost:3100`, `APP_DOMAIN=toi-pilot.vercel.app`;
-   - `SESSION_SECRET` / `OTP_HMAC_SECRET` / `CRON_SECRET` — любые случайные;
+   - `SESSION_SECRET` / `OTP_HMAC_SECRET` / `CRON_SECRET` — случайные, **каждый не короче 32 символов** (иначе `env.ts` не даёт стартовать серверу; так один раз упал запуск webServer у тест-раннера). В PowerShell, например:
+     ```
+     foreach ($v in "SESSION_SECRET","OTP_HMAC_SECRET","CRON_SECRET") { Set-Item "env:$v" ([Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Max 256 }))) }
+     ```
+     (32 случайных байта → 44 символа base64);
    - `SMS_PROVIDER=console`.
    ```
    pnpm build
@@ -234,3 +238,18 @@ $ pnpm exec playwright test tests/e2e/door.spec.ts --workers=1   (до rebase н
 - [x] `src/ui/hall/*`, `undo.ts`, адаптер рассадки, `EventShell` не тронуты; стили Ф8 — в своих файлах.
 - [x] Секретов нет; `.env.local` и `.pglite/` не тронуты и не закоммичены.
 - [x] Серверы, запущенные мной (PGlite 5435, standalone 3100), остановлены.
+
+## 10. После прогона тест-раннера (2026-10-16)
+
+Результат тест-раннера на `ce9ca33`:
+- сборка ✓; check:messages, typecheck, lint, format ✓;
+- unit 181 / 0; integration 134 passed / 2 skipped;
+- **полный последовательный e2e: 176 passed / 30 skipped / 0 failed** (машина перегружена, perf только записан);
+- `guests-perf --repeat-each=3` прошёл (медианы 4,3 / 5,5 / 4,6 с, не проверялись из-за нагрузки).
+
+Исправлено точечно:
+- **`screens-f8.spec.ts:67`.** Во втором размере карточка «Ерлан ағай отбасы» уже была отмечена в первом: «Келді» на сервере, кнопка стала «Белгіні алу». Теперь каждый проход начинается с одинакового состояния: очищаются `door_checkins` события (они решают, какая отметка последняя), «Келді» остаётся только у «Ербол нағашы отбасы». Спека — 1 passed (1,4 мин), **51 скриншот** в `docs/phases/F8-screens/`.
+- **Мини-схема.** Когда свой стол в последнем ряду, «Сіз осында» налезала на «КІРЕБЕРІС» (видно на снимке `G-table_*`). Под последним рядом добавлено место (+17 px); integration `door.test.ts` — 9 passed; снимки пересняты.
+- **Секреты в командах тест-раннера** (раздел 6): каждый не короче 32 символов — так требует `env.ts`, — плюс команда PowerShell для генерации.
+
+**Открыто:** B1 «Зал» на Ф8. Причина — ошибка сервера в представлении рассадки Ф7b (`bind message supplies 1 parameters, but prepared statement requires 2` из `queryWithCache`; есть и в логах `phase/F7b-hall`). Исправляет dev2 на `phase/F7b-hall`; после этого Ф8 перебазируется на исправленную ветку.

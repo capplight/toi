@@ -52,6 +52,13 @@ test("Ф8 handover screenshots", async ({ browser, baseURL }) => {
     const m = msgs(locale);
     for (const size of screenSizes()) {
       const sfx = `${size.name}_${locale}`;
+      // each iteration starts from the same door state: only «Ербол нағашы отбасы» already arrived (the previous
+      // iteration marked «Ерлан ағай отбасы»; check-ins decide the latest mark, so they go too)
+      await sql("delete from door_checkins where event_id = $1", [door.eventId]);
+      await sql(
+        "update families set arrived_at = case when name = $2 then now() - interval '20 minutes' else null end where event_id = $1",
+        [door.eventId, "Ербол нағашы отбасы"],
+      );
       // door helper
       const c = await ctx(browser, baseURL!, locale, size.width, size.height);
       const p = await c.newPage();
