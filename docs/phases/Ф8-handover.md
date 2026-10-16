@@ -165,6 +165,7 @@ $ pnpm exec playwright test tests/e2e/door.spec.ts --workers=1   (до rebase н
 2. Сборка — **из PowerShell**, с переменными из скрипта dev-env:
    - `DATABASE_DRIVER=pg`;
    - `DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5435/postgres?sslmode=disable`;
+   - **`DATABASE_POOL_MAX=1`** — у PGlite одна сессия на все соединения пула, поэтому для него нужен пул из одного соединения (исправление dev2 `31bcc36`);
    - `APP_URL=http://localhost:3100`, `APP_DOMAIN=toi-pilot.vercel.app`;
    - `SESSION_SECRET` / `OTP_HMAC_SECRET` / `CRON_SECRET` — случайные, **каждый не короче 32 символов** (иначе `env.ts` не даёт стартовать серверу; так один раз упал запуск webServer у тест-раннера). В PowerShell, например:
      ```
@@ -178,6 +179,7 @@ $ pnpm exec playwright test tests/e2e/door.spec.ts --workers=1   (до rebase н
 3. Окружение для e2e (Playwright сам поднимет standalone на 3100):
    ```
    DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5435/postgres?sslmode=disable
+   DATABASE_POOL_MAX=1
    E2E_CHANNEL=chrome
    ```
 
