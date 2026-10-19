@@ -1,0 +1,389 @@
+/* «Той» — Ф9 «Шығындар» (DESIGN 8.20, mockup 13; ported from design/v2/mockups/css/ops.css, rem). */
+@layer components {
+  .bud-top {
+    background: var(--paper);
+    border-radius: var(--r-xl);
+    box-shadow: var(--sh-card);
+    padding: 1.125rem;
+  }
+  .bud-top .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 0.75rem;
+    flex-wrap: wrap;
+  }
+  .bud-top .total {
+    font: 600 1.5rem/1.875rem var(--font-ui);
+    font-variant-numeric: tabular-nums;
+  }
+  .bud-top .row .btn {
+    width: auto;
+    min-height: 3rem;
+    padding: 0 0.75rem;
+  }
+  .bigbar {
+    display: flex;
+    height: 1.25rem;
+    border-radius: 0.625rem;
+    overflow: hidden;
+    background: var(--sand);
+    margin-top: 0.875rem;
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+  .bigbar i {
+    display: block;
+    height: 100%;
+    background: var(--success);
+  }
+  .bigbar.over {
+    background: var(--danger);
+  }
+  .bud-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem 1rem;
+    margin-top: 0.625rem;
+    font: 400 1rem/1.375rem var(--font-ui);
+    font-variant-numeric: tabular-nums;
+  }
+  .bud-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+  .bud-legend i {
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 0.25rem;
+    display: inline-block;
+  }
+  .bud-legend .p {
+    background: var(--success);
+  }
+  .bud-legend .l {
+    background: var(--sand);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+  .bud-over {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    color: var(--danger);
+    font: 600 1.0625rem/1.5rem var(--font-ui);
+  }
+  .bud-empty-total {
+    margin: 0.5rem 0 0;
+    color: var(--ink-2);
+    font: 400 1rem/1.5rem var(--font-ui);
+  }
+  .sec-title {
+    margin: 1.75rem 0.125rem 0.625rem;
+    font: 600 1.25rem/1.625rem var(--font-ui);
+  }
+  .cat-bars {
+    background: var(--paper);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-card);
+    padding: 0.25rem 1rem;
+  }
+  .cbar {
+    padding: 0.75rem 0;
+  }
+  .cbar + .cbar {
+    border-top: 1px solid var(--line);
+  }
+  .cbar .h {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.25rem 0.5rem;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+  .cbar .h b {
+    font: 600 1.0625rem/1.5rem var(--font-ui);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .cbar .h span {
+    font: 400 0.9375rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .cbar .track {
+    position: relative;
+    height: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .cbar .track .pl {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 0.375rem;
+    background: var(--sand);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+  .cbar .track .pd {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 0.375rem;
+    background: var(--success);
+  }
+  .autobadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 1.625rem;
+    padding: 0 0.5rem;
+    border-radius: var(--r-pill);
+    background: var(--lapis-soft);
+    color: var(--lapis);
+    font: 600 0.875rem/1 var(--font-ui);
+    white-space: nowrap;
+  }
+  .autobadge .ico {
+    width: 1rem;
+    height: 1rem;
+  }
+  .pay-list,
+  .items {
+    background: var(--paper);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-card);
+    overflow: hidden;
+  }
+  .pay {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.75rem 1rem;
+  }
+  .pay + .pay {
+    border-top: 1px solid var(--line);
+  }
+  .pay .d {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 0.875rem;
+    background: var(--sand);
+    display: grid;
+    place-items: center;
+    align-content: center;
+    text-align: center;
+    font: 600 1.125rem/1.125rem var(--font-ui);
+    font-variant-numeric: tabular-nums;
+  }
+  .pay .d small {
+    display: block;
+    font: 400 0.875rem/1rem var(--font-ui);
+    color: var(--ink-2);
+  }
+  .pay .d.overdue {
+    background: var(--danger-soft);
+    color: var(--danger);
+  }
+  .pay .d.overdue small {
+    color: var(--danger);
+  }
+  .pay b {
+    display: block;
+    font: 600 1.0625rem/1.5rem var(--font-ui);
+  }
+  .pay span {
+    display: block;
+    font: 400 0.9375rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .pay .od {
+    color: var(--danger);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.125rem 0.75rem;
+    padding: 0.875rem 1rem;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .item + .item {
+    border-top: 1px solid var(--line);
+  }
+  .item b {
+    font: 600 1.0625rem/1.5rem var(--font-ui);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .item .m {
+    font: 400 0.9375rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .item .a {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    text-align: right;
+    font: 600 1rem/1.375rem var(--font-ui);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    align-self: center;
+  }
+  .item .a small {
+    display: block;
+    font-weight: 400;
+    color: var(--ink-2);
+  }
+  .item .by {
+    font: 400 0.875rem/1.25rem var(--font-ui);
+    color: var(--ink-2);
+  }
+  .formula {
+    margin-top: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-radius: var(--r-lg);
+    background: var(--lapis-soft);
+  }
+  .formula .f {
+    font: 600 1.25rem/1.75rem var(--font-ui);
+    color: var(--lapis);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  .formula p {
+    margin: 0.25rem 0 0;
+    font: 400 1rem/1.375rem var(--font-ui);
+    color: var(--ink-2);
+  }
+  .input .suffix {
+    color: var(--ink-2);
+    font-weight: 600;
+    padding-left: 0.75rem;
+  }
+  .forbid {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+  .forbid .ico {
+    width: 3rem;
+    height: 3rem;
+    color: var(--ink-2);
+    margin: 0 auto 0.75rem;
+  }
+  .forbid p {
+    margin: 0 auto 1.25rem;
+    max-width: 24rem;
+    font: 400 1.125rem/1.625rem var(--font-ui);
+  }
+  .forbid .btn {
+    width: auto;
+    display: inline-flex;
+    padding: 0 1.5rem;
+  }
+  @media (min-width: 1024px) {
+    .bud-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 1.75rem;
+      align-items: start;
+    }
+  }
+
+  @media (max-width: 599px) {
+    .pay {
+      grid-template-columns: 3.5rem minmax(0, 1fr);
+    }
+    .pay .amt {
+      grid-column: 2;
+      text-align: left;
+      margin-top: -0.25rem;
+    }
+    .item {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .item .a {
+      grid-column: 1;
+      grid-row: auto;
+      text-align: left;
+      margin-top: 0.25rem;
+    }
+    .item .a small {
+      display: inline;
+      margin-left: 0.5rem;
+    }
+  }
+  .budget {
+    display: grid;
+    gap: 0;
+    padding-bottom: 5rem;
+  }
+  .bud-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0.5rem 0 1.25rem;
+  }
+  .bud-head .t-h1 {
+    margin: 0;
+  }
+  .bud-top .row .btn.text {
+    width: auto;
+  }
+  .bud-top h2.total {
+    margin: 0;
+  }
+  .items,
+  .pay-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .items li + li .item {
+    border-top: 1px solid var(--line);
+  }
+  button.item {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+  }
+  button.item:focus-visible {
+    outline: 3px solid var(--lapis);
+    outline-offset: -3px;
+  }
+  .item > span {
+    min-width: 0;
+  }
+  .cbar .track i {
+    display: block;
+  }
+  .bud-form {
+    display: grid;
+    gap: 1rem;
+  }
+  .bud-cats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .bud-cats .cat {
+    justify-content: center;
+    text-align: center;
+  }
+  .input .suffix {
+    margin-left: auto;
+  }
+}

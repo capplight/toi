@@ -71,21 +71,8 @@ export function compareGuests(a: GuestLike, b: GuestLike, locale = "kk"): number
   return ORDER[guestStatus(a)] - ORDER[guestStatus(b)] || collator(locale).compare(a.name, b.name);
 }
 
-/** Calendar days between two instants in a time zone (for «3 күн бұрын жіберілді»). */
-const dayFormats = new Map<string, Intl.DateTimeFormat>();
-export function daysAgo(then: Date, now: Date, timeZone = "Asia/Almaty"): number {
-  let f = dayFormats.get(timeZone);
-  if (!f) {
-    f = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" });
-    dayFormats.set(timeZone, f);
-  }
-  const fmt = f;
-  const day = (d: Date) => {
-    const p = fmt.format(d);
-    return Date.UTC(+p.slice(0, 4), +p.slice(5, 7) - 1, +p.slice(8, 10));
-  };
-  return Math.max(0, Math.round((day(now) - day(then)) / 86_400_000));
-}
+/** Calendar days between two instants in a time zone (for «3 күн бұрын жіберілді») — the shared module (Ф10 §4). */
+export { daysAgo } from "../format";
 
 /** Case-insensitive substring search on the name (design_spec 4.1). */
 export function matchesQuery(name: string, query: string, locale = "kk"): boolean {

@@ -108,9 +108,5 @@ export function entryText(
   }
 }
 
-/** «Бүгін» / «Кеше» / «12 қазан» in the event's time zone. */
-export function dayKey(iso: string, tz: string): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(
-    new Date(iso),
-  );
-}
+/** «YYYY-MM-DD» in the event's time zone (groups «Бүгін» / «Кеше» / «12 қазан») — the shared module (Ф10 §4). */
+export { dayKey } from "@/domain/format";

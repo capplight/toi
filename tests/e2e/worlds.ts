@@ -23,7 +23,11 @@ export type WorldName =
   | "screensF7b"
   // Ф8
   | "door"
-  | "queue";
+  | "queue"
+  // Ф9
+  | "budgetMobile"
+  | "budgetDesktop"
+  | "screensF9";
 
 export type World = {
   eventId: string;

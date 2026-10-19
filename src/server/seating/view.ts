@@ -11,6 +11,7 @@ import {
   type Totals,
 } from "@/domain/seating";
 import type { Locale } from "@/i18n/config";
+import { tableRanges } from "@/domain/print";
 import { authorize, type Principal } from "../auth/access";
 import type { Db, DbOrTx } from "../db";
 import { listKind } from "../guests/queries";
@@ -86,18 +87,8 @@ export type HallView = {
   history: { count: number; recent: HistoryEntry[] };
 };
 
-/** «1, 2, 3, 5, 7, 8» → «1–3, 5, 7–8» */
-export function tableRanges(nums: number[]): string {
-  const xs = [...new Set(nums)].sort((a, b) => a - b);
-  const out: string[] = [];
-  for (let i = 0; i < xs.length;) {
-    let j = i;
-    while (j + 1 < xs.length && xs[j + 1] === xs[j]! + 1) j++;
-    out.push(j > i ? `${xs[i]}–${xs[j]}` : `${xs[i]}`);
-    i = j + 1;
-  }
-  return out.join(", ");
-}
+/** «1, 2, 3, 5, 7, 8» → «1–3, 5, 7–8» (shared with print, Ф10). */
+export { tableRanges } from "@/domain/print";
 
 async function memberLabels(db: DbOrTx, eventId: string) {
   const rows = await db

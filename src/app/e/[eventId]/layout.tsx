@@ -1,8 +1,9 @@
+import { asLocale, formatDayMonth } from "@/domain/format";
 import { Suspense } from "react";
 import { and, eq, isNull } from "drizzle-orm";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getFormatter, getMessages, getTranslations } from "next-intl/server";
+import { getMessages, getTranslations, getLocale } from "next-intl/server";
 import { pickMessages, SHELL_MESSAGES } from "@/i18n/client-messages";
 import { notFound, redirect } from "next/navigation";
 import { logoutAction } from "@/server/actions/auth";
@@ -31,8 +32,7 @@ export default async function EventLayout({ params, children }: LayoutProps<"/e/
   const [ev] = await db().select().from(events).where(eq(events.id, eventId));
   if (!ev) notFound();
   const t = await getTranslations();
-  const format = await getFormatter();
-  const date = format.dateTime(new Date(`${ev.startsOn}T12:00:00Z`), { day: "numeric", month: "long" });
+  const date = formatDayMonth(ev.startsOn, asLocale(await getLocale()));
   const dateLine = ev.startsAt ? `${date}, ${ev.startsAt.slice(0, 5)}` : date;
   const owner = m.role === "owner";
   const roleLabel = owner ? t("roles.owner") : m.label;

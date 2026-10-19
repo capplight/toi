@@ -29,6 +29,7 @@ export function EventShell({
   const tmem = useTranslations("members");
   const ta = useTranslations("common.actions");
   const thall = useTranslations("hall");
+  const tp = useTranslations("print");
   const path = usePathname();
   const query = useSearchParams();
   const parts = path.split("/");
@@ -97,6 +98,31 @@ export function EventShell({
             ]}
           />
         }
+      />
+    );
+  }
+
+  if (section === "print") {
+    // Ф10: «Отырғызу жоспары» for print, «←» back to «Зал» on the phone
+    return (
+      <AppShell
+        {...props}
+        title={tp("title")}
+        back={{ href: `${base}/hall`, label: ta("back"), mobileOnly: true }}
+        section="hall"
+      />
+    );
+  }
+
+  if (section === "budget") {
+    // Ф9 (mockup 13): on the phone «Шығындар» opens from «Қорытынды» — «←» goes back there; sticky «Шығын қосу»
+    return (
+      <AppShell
+        {...props}
+        title={t("budget")}
+        back={{ href: `${base}/summary`, label: ta("back"), mobileOnly: true }}
+        hasCta
+        section="budget"
       />
     );
   }

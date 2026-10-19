@@ -1,6 +1,7 @@
+import { asLocale, formatDayMonth } from "@/domain/format";
 import { and, asc, eq, inArray, isNull, sql } from "drizzle-orm";
 import type { Metadata } from "next";
-import { getFormatter, getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { logoutAction } from "@/server/actions/auth";
 import { sessionEventIds } from "@/server/auth/session";
@@ -24,7 +25,7 @@ export default async function EventsPage() {
   const user = await currentUser();
   if (!user) redirect("/login");
   const t = await getTranslations();
-  const format = await getFormatter();
+  const locale = asLocale(await getLocale());
   // Scope 'events' (member link login): only the events of this session (plan 6.1 v1.5).
   const scoped = await sessionEventIds(db(), user);
   const rows = await db()
@@ -78,7 +79,7 @@ export default async function EventsPage() {
               title={r.title}
               subtitle={t("events.list.item", {
                 eventTitle: r.title,
-                date: format.dateTime(new Date(`${r.startsOn}T12:00:00Z`), { day: "numeric", month: "long" }),
+                date: formatDayMonth(r.startsOn, locale),
                 role: r.role === "owner" ? t("roles.owner") : r.label,
               })}
             />

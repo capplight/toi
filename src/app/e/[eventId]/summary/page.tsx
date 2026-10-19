@@ -4,6 +4,8 @@ import { isLocale } from "@/i18n/config";
 import { requireUser } from "@/server/authz";
 import { db } from "@/server/db";
 import { summaryView } from "@/server/summary/queries";
+import { budgetTotals } from "@/server/budget/service";
+import { formatMoney } from "@/domain/budget";
 import { EmptyState, EventHero, LinkRow, LinkRows, ProgressBar } from "@/ui/components/Display";
 import { Icon, type IconName } from "@/ui/components/Icon";
 import { VersionPoll } from "@/ui/components/VersionPoll";
@@ -55,6 +57,8 @@ export default async function SummaryPage({ params }: PageProps<"/e/[eventId]/su
   const tk = await getTranslations("events.kind");
   const tn = await getTranslations("nav");
   const th = await getTranslations("hall.setup");
+  const tpr = await getTranslations("print");
+  const tex = await getTranslations("export");
   const base = `/e/${eventId}`;
 
   const hero = (
@@ -66,10 +70,17 @@ export default async function SummaryPage({ params }: PageProps<"/e/[eventId]/su
       venue={v.event.venue ?? undefined}
     />
   );
+  // Ф9: the card shows «Төленді: {paid} / {total}» (total = budget or Σ planned), only with the budget right
+  const sums = v.budget ? await budgetTotals(db(), user, eventId) : null;
+  const money = (n: number) => formatMoney(n);
   const budget = v.budget && (
     <div className="mob-only">
       <LinkRows>
-        <LinkRow href={`${base}/budget`} icon="wallet" title={tn("budget")} />
+        <LinkRow
+          href={`${base}/budget`}
+          icon="wallet"
+          title={sums ? t("budgetLink", { paid: money(sums.paid), total: money(sums.total) }) : tn("budget")}
+        />
       </LinkRows>
     </div>
   );
@@ -180,6 +191,10 @@ export default async function SummaryPage({ params }: PageProps<"/e/[eventId]/su
                 subtitle={`${tu("families", { count: m.families })} · ${tu("seatsApprox", { count: m.seats })}`}
               />
             ))}
+          </LinkRows>
+          {/* Ф10: the seating plan for print and the Excel file */}
+          <LinkRows>
+            <LinkRow href={`${base}/print/tables`} icon="printer" title={tpr("title")} subtitle={tex("button")} />
           </LinkRows>
           {budget}
         </div>

@@ -47,7 +47,7 @@ test.describe("Ф1 event frame", () => {
     await expect(page.locator(".sidebar .event-mini")).toContainText("Айбек пен Дана");
   });
 
-  test("«Шығындар»: owner sees it (rail + card on «Қорытынды»); Жастар do not, /budget is 404", async ({
+  test("«Шығындар»: owner sees it (rail + card on «Қорытынды»); Жастар do not, /budget shows #noright (Ф9)", async ({
     page,
     context,
     baseURL,
@@ -69,8 +69,9 @@ test.describe("Ф1 event frame", () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`/e/${eventId}/guests`);
     await expect(page.getByRole("link", { name: kk.nav.budget })).toHaveCount(0);
-    const res = await page.goto(`/e/${eventId}/budget`);
-    expect(res?.status()).toBe(404);
+    // Ф9 brief: a direct visit without the right shows #noright (`errors.forbidden` + «Басты бетке өту»), not 404
+    await page.goto(`/e/${eventId}/budget`);
+    await expect(page.getByTestId("budget-noright")).toContainText(kk.errors.forbidden);
   });
 
   test("language only via «⋯ Той мәзірі»; pilot banner only for the owner", async ({ page, context, baseURL }) => {
