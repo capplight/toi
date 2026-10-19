@@ -49,6 +49,36 @@ test.describe("Ф1 UI kit", () => {
     }
   });
 
+  test("no horizontal scroll at 320 with a wide fallback font (web fonts blocked — like CI on Linux / some Android)", async ({
+    page,
+    context,
+    baseURL,
+  }) => {
+    // CI (Ubuntu) failed /login @ 320 with 348 px: the fallback font is wider than Onest and the phone field's default
+    // size pushed the auth grid column. Verdana here stands in for DejaVu Sans on Linux.
+    await context.route(/\.woff2?(\?.*)?$/, (r) => r.abort());
+    await page.addInitScript(() =>
+      document.addEventListener("DOMContentLoaded", () => {
+        const s = document.createElement("style");
+        s.textContent = `*{font-family: Verdana, "DejaVu Sans", sans-serif !important}`;
+        document.head.appendChild(s);
+      }),
+    );
+    await page.setViewportSize({ width: 320, height: 800 });
+    for (const locale of ["kk", "ru"]) {
+      await context.addCookies([{ name: "locale", value: locale, url: baseURL! }]);
+      for (const path of ["/login", "/join/notatoken", "/privacy", "/terms"]) {
+        await page.goto(path);
+        await page.waitForLoadState("networkidle");
+        const { sw, iw } = await page.evaluate(() => ({
+          sw: document.documentElement.scrollWidth,
+          iw: window.innerWidth,
+        }));
+        expect(sw, `${path} @ 320 ${locale} (fallback font)`).toBeLessThanOrEqual(iw);
+      }
+    }
+  });
+
   test("touch targets ≥ 48 px on /dev/ui (hall labels excluded: they are not buttons)", async ({ page }) => {
     await page.goto("/dev/ui");
     await page.waitForLoadState("networkidle");

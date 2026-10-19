@@ -656,6 +656,9 @@
     background: transparent;
     flex: 1;
     min-width: 0;
+    /* a percentage width makes the field compressible: its default ~20-character size (wider with a fallback
+       font) no longer sets the min-content width of the row and its grid / flex parents */
+    width: 100%;
     height: 100%;
     font-size: 1.125rem;
   }
@@ -2067,6 +2070,8 @@
   .auth {
     min-height: 100vh;
     display: grid;
+    /* the column never grows past the screen (CI on Linux: a wider fallback font made /login 348 px at 320) */
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto 1fr;
   }
   .auth-art {
@@ -2189,7 +2194,7 @@
   }
   @media (min-width: 1024px) {
     .auth {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       grid-template-rows: 1fr;
     }
     .auth-art {

@@ -52,6 +52,12 @@ const ICON = {
 const EXTRA_CSS = `.rsvp .err{margin:.75rem 0 0;color:#B42318;font-weight:600}.inv .lang-pill a{display:inline-grid;place-items:center;min-width:3rem;height:3rem;padding:0 .5rem;border-radius:62.4375rem;text-decoration:none;font:400 1rem/1 var(--font-ui);letter-spacing:.04em;color:var(--ink-2)}.inv .lang-pill a[aria-current="true"]{background:var(--accent);color:var(--on-accent)}.rsvp .closed{margin:0}.preview .inv-bar,.preview .scene{display:none}.preview .invite{opacity:1}.noru{font-size:1rem;color:var(--ink-2)}.is-opening .side-decor{--b:1800ms}.is-opening .side-decor .draw path{animation:draw 1600ms var(--ease-draw) calc(var(--b,0ms) + var(--dd,0ms)) forwards}.is-opening .side-decor .draw .ray{animation-duration:700ms}@media (prefers-reduced-motion: reduce){.opened .reveal{animation:none!important;opacity:1!important}}`;
 
 /** Ф8 table block: the mockup's state classes are not used on the real page; mini-map labels. */
+/**
+ * The date row never grows past a 320 px screen: with a wider fallback font (Linux / some Android) one long weekday
+ * («воскресенье») used to push it to 351 px. Side tracks may shrink, their words may wrap.
+ */
+const NARROW_CSS = `.datebox{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.datebox .side{min-width:0;overflow-wrap:anywhere;hyphens:auto}@media (max-width:360px){.datebox .mid{padding:0 .875rem}}`;
+
 const TABLE_CSS = `.tableno{text-align:center}.tableno .note{margin:12px 0 0}.minimap .mn{fill:var(--on-accent);font-size:12px;letter-spacing:0}.minimap .yh{fill:var(--accent);font-size:11px;letter-spacing:0}`;
 
 function corners(c: string, ks: string[]): SafeHtml {
@@ -360,7 +366,7 @@ export function renderInvite(page: GuestPage, o: RenderOptions): string {
         }
         ${fontPreload}
         <style>
-          ${raw(INVITE_CSS)}${raw(EXTRA_CSS)}${raw(TABLE_CSS)}
+          ${raw(INVITE_CSS)}${raw(EXTRA_CSS)}${raw(TABLE_CSS)}${raw(NARROW_CSS)}
         </style>
       </head>
       <body class="inv ${a.bodyClass}">
