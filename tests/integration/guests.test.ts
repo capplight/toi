@@ -338,6 +338,28 @@ describe("addFamily", () => {
 });
 
 describe("updateFamily", () => {
+  it("Ф8 review Н3: «Жіберілді» marks (markSent, markTableSent) do not bump version — an edit with the old version saves", async () => {
+    const { markTableSent } = await import("@/server/tableQueue/service");
+    const { s, owner, ana } = await setup();
+    const id = s.familyIds.get("f20")!;
+    const row = await fam(id);
+    await svc.markSent(db(), ana, id, "invite");
+    await svc.markSent(db(), ana, id, "reminder");
+    await markTableSent(db(), owner, id);
+    const after = await fam(id);
+    expect(after.version).toBe(row.version);
+    expect(after.sentAt).not.toBeNull();
+    expect(after.tableSentAt).not.toBeNull();
+    const r = await svc.updateFamily(db(), ana, {
+      familyId: id,
+      version: row.version,
+      name: `${row.name} (өзгерді)`,
+      categoryId: row.categoryId,
+      seats: 3,
+    });
+    expect(r.ok).toBe(true);
+  });
+
   it("optimistic lock: a stale version → conflict 'version'; fresh one saves", async () => {
     const { s, cat, ana, owner } = await setup();
     const id = s.familyIds.get("f20")!;

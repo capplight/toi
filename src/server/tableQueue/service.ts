@@ -1,4 +1,4 @@
-import { and, eq, isNull, ne, sql } from "drizzle-orm";
+import { and, eq, isNull, ne } from "drizzle-orm";
 import { collator } from "@/domain/guests/status";
 import { formatEventDate, type WaEvent } from "@/domain/guests/wa";
 import type { Locale } from "@/i18n/config";
@@ -81,7 +81,8 @@ export async function markTableSent(db: Db, who: Principal, familyId: string, no
   await authorize(db, who, f.eventId, "seating");
   await db
     .update(families)
-    .set({ tableSentAt: now, version: sql`${families.version} + 1`, updatedAt: now })
+    // Ф8 review Н3: a send mark is not an edit — no version bump (same as Ф4 markSent)
+    .set({ tableSentAt: now, updatedAt: now })
     .where(eq(families.id, familyId));
   await db.insert(activityLog).values({ eventId: f.eventId, familyId, kind: "table_sent", meta: { table: f.tableNo } });
   return { ok: true as const, sentAt: now.toISOString() };

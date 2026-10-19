@@ -352,7 +352,8 @@ export async function markSent(
     kind === "invite" ? { sentAt: current.sentAt ?? now } : { remindedAt: now, sentAt: current.sentAt ?? now };
   const [row] = await db
     .update(families)
-    .set({ ...set, version: sql`${families.version} + 1`, updatedAt: now })
+    // Ф8 review Н3: a send mark is not an edit — no version bump, so an open edit form does not get a 409
+    .set({ ...set, updatedAt: now })
     .where(and(eq(families.id, familyId), isNull(families.deletedAt)))
     .returning();
   return { ok: Boolean(row), family: row ?? null };

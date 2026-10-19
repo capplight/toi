@@ -299,7 +299,12 @@ $ pnpm exec playwright test tests/e2e/door.spec.ts --workers=1   (до rebase н
   - перед `git worktree remove --force` проверить ссылки наружу;
   - другую ветку проверять в отдельном worktree со своей установкой, а не `checkout` в основном дереве;
   - внутри транзакции — только `tx`.
-- **Н3** (`markTableSent` увеличивает `version`): сверил с отметкой отправки приглашений Ф4 — `markSent` тоже увеличивает `version`, поведение одинаковое. Если менять, то обе вместе — вопрос к архитектору; пока не трогал.
+- **Н3 — решение архитектора «менять обе»** (`Ф8-review.md` §8): отметки «Жіберілді» больше **не увеличивают `families.version`**.
+  - Это касается и `table_sent_at` (очередь Ф8, `markTableSent`), и Ф4 `markSent` (`sent_at` / `reminded_at`). `updated_at` по-прежнему обновляется.
+  - Ответы гостей и настоящие правки `version` увеличивают, как раньше.
+  - `GuestSheet` монтируется по ключу `${id}-${version}`, но статус «Жіберілді» в шторке вычисляется из свойств при каждом рендере (`guestStatus(g)`, `sentAgo(g…)`), без перемонтирования. Своё состояние шторки (ответ, места) к отправке не относится.
+  - Тестов, ожидавших `version + 1` после отметки отправки, не было.
+  - Новый integration в `guests.test.ts`: после `markSent` (приглашение и напоминание) и `markTableSent` версия семьи прежняя, а `updateFamily` со старой `version` сохраняется (не 409).
 - **Н1** (старые чанки в кэше SW) и **Н4** (заметка в очереди при выключенном показе номеров, ключ у контент-лида) — позже, как в ревью.
 
 ### Проверки (точечно)
@@ -307,9 +312,10 @@ $ pnpm exec playwright test tests/e2e/door.spec.ts --workers=1   (до rebase н
 $ pnpm typecheck; pnpm lint; pnpm format:check                → чисто
 $ pnpm test                                                   → Test Files 26 passed · Tests 183 passed (+2 door-flush)
 $ pnpm vitest run --project integration tests/integration/door.test.ts   → 11 passed (+2: П2, Н2)
+$ pnpm vitest run --project integration tests/integration/guests.test.ts tests/integration/door.test.ts   → 40 passed (с тестом Н3)
 $ pnpm exec playwright test tests/e2e/door.spec.ts --workers=1        → 8 passed · 5 skipped · 1 failed
     failed: новый тест П3 — селектор находил три кнопки «Жаңа сілтеме» (ещё в карточках составителей);
     сужен до блока помощника `.door-card`:
 $ pnpm exec playwright test tests/e2e/door.spec.ts --project=desktop -g "Жаңа сілтеме"   → 1 passed
 ```
-**Тест-раннеру** (раздел 6, команды без изменений, `DATABASE_POOL_MAX=1`, секреты ≥ 32 символов) — на итоговом коммите `phase/F8-door`: п. 1 (статика, unit, integration), п. 2 (полный последовательный e2e), п. 5 (`guests-perf --repeat-each=3`). Скриншоты Ф8 переснимать не нужно: правки П1–П3 их не меняют, кроме диалога «Жаңа сілтеме» (его нет на снимках).
+**Тест-раннеру** (раздел 6, команды без изменений, `DATABASE_POOL_MAX=1`, секреты ≥ 32 символов) — на **итоговом коммите `phase/F8-door`** (после правки Н3; e2e Ф4 «WhatsApp → Жіберілді ме? → Жауап жоқ» особенно важен, отметка больше не меняет `version`): п. 1 (статика, unit, integration), п. 2 (полный последовательный e2e), п. 5 (`guests-perf --repeat-each=3`). Скриншоты Ф8 переснимать не нужно: правки П1–П3 их не меняют, кроме диалога «Жаңа сілтеме» (его нет на снимках).
