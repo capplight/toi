@@ -233,6 +233,9 @@ test.describe("Ф8 table numbers", () => {
     page.on("response", async (r) => {
       if (r.request().resourceType() === "document") bytes.push((await r.body().catch(() => Buffer.alloc(0))).length);
     });
+    // as in Ф5 invite.spec: the scroll-driven reveal (animation-timeline: view()) keeps a section that is just
+    // entering the viewport partly transparent; axe reads it as low contrast. Reduced motion turns the reveal off.
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(`/i/${f!.token}?answered=1#table`);
     const block = page.locator("#table");
     await expect(block.getByText(kk.invite.table.title)).toBeVisible();
