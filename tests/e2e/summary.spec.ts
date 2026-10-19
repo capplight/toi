@@ -100,8 +100,12 @@ test.describe("Ф6 summary", () => {
     const gp = await guest.newPage();
     await gp.goto(`/i/${g.token}?answered=1`);
     await gp.getByLabel(kk.invite.rsvp.no).check();
+    // wait for the POST itself: the URL already has ?answered=1 (closing early could abort the answer)
+    const answered = gp.waitForResponse(
+      (r) => r.request().method() === "POST" && new URL(r.url()).pathname === `/i/${g.token}`,
+    );
     await gp.getByRole("button", { name: kk.invite.rsvp.submit }).click();
-    await expect(gp).toHaveURL(/answered=1/);
+    expect((await answered).status()).toBeLessThan(400);
     await guest.close();
     await expect.poll(() => count(page, "no"), { timeout: 25_000, intervals: [1000] }).toBe(no0 + 1);
   });

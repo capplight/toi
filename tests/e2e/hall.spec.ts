@@ -263,7 +263,12 @@ test.describe("Ф7b hall: two parents and B1", () => {
     // «Анасы: 1 жаңа өзгеріс» with «Тарих» (DESIGN 8.7)
     await pa.waitForTimeout(8500); // the father's own toast is gone (8 s)
     await pb.goto(`/e/${w.eventId}/hall/history`);
-    await pb.locator(".he").first().getByRole("button", { name: kk.common.actions.undo }).click();
+    // her own record: with real concurrency (Postgres, pool 10) the father's move may be the newest one
+    await pb
+      .locator(".he", { hasText: "Анасы", has: pb.getByRole("button", { name: kk.common.actions.undo }) })
+      .first()
+      .getByRole("button", { name: kk.common.actions.undo })
+      .click();
     await expect(pb.locator(".toast").last()).toBeVisible();
     await pa.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
     const others = pa.locator(".toast", { hasText: "Анасы" });

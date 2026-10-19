@@ -165,8 +165,13 @@ test.describe("Ф9 budget", () => {
     const gp = await guest.newPage();
     await gp.goto(`/i/${g.token}?answered=1`);
     await gp.getByLabel(kk.invite.rsvp.yes).check();
+    // wait for the answer itself (the URL already has ?answered=1, and closing the context earlier could abort the
+    // POST — CI on Postgres reloaded before the answer was saved)
+    const answered = gp.waitForResponse(
+      (r) => r.request().method() === "POST" && new URL(r.url()).pathname === `/i/${g.token}`,
+    );
     await gp.getByRole("button", { name: kk.invite.rsvp.submit }).click();
-    await expect(gp).toHaveURL(/answered=1/);
+    expect((await answered).status()).toBeLessThan(400);
     await guest.close();
     await page.reload();
     const text = nb(await page.locator(".item", { hasText: "Шаңырақ" }).innerText());
