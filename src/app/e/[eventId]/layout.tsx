@@ -58,6 +58,7 @@ export default async function EventLayout({ params, children }: LayoutProps<"/e/
         user={{ name: m.label, roleLabel, permissionLabel, initial: (m.label[0] ?? "?").toUpperCase() }}
         isOwner={owner}
         canManageBudget={owner || m.canManageBudget}
+        tableQueue={owner || m.canEditSeating}
         hallDot={
           // Ф7b review П1: streamed, never blocks the screen
           <Suspense fallback={null}>

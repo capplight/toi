@@ -142,6 +142,13 @@ export default async function PrintTablesPage({ params }: PageProps<"/e/[eventId
                   {t("byCategory.meta", { families: c.families, seats: c.seats, tables: c.tables || "—" })}
                 </p>
                 <table>
+                  <thead>
+                    <tr>
+                      <th>{t("table.colFamily")}</th>
+                      <th className="n">{t("table.colSeats")}</th>
+                      <th className="n">{te("columns.table")}</th>
+                    </tr>
+                  </thead>
                   <tbody>
                     {c.list.map((f) => (
                       <tr key={f.id}>

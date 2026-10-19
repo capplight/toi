@@ -168,6 +168,10 @@
     border-radius: 0.5rem;
     padding: 0.5rem 0.625rem;
   }
+  /* Ф10 review Н1: the category name next to its colour mark, on the left */
+  .pr-group h3 {
+    justify-content: flex-start;
+  }
   .pr-group + .pr-group {
     margin-top: 0.625rem;
   }

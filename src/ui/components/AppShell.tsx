@@ -37,6 +37,7 @@ export function AppShell({
   canManageBudget,
   hallAttention = false,
   hallDot,
+  tableQueue = false,
   title,
   subtitle,
   back,
@@ -57,6 +58,8 @@ export function AppShell({
   hallAttention?: boolean;
   /** Streamed attention dot for «Зал» (server component in Suspense); replaces `hallAttention` when given. */
   hallDot?: ReactNode;
+  /** Ф8 «Үстел нөмірлерін жіберу» (owner or the seating right): sidebar item and «⋯ Той мәзірі» row. */
+  tableQueue?: boolean;
   /** Screen title in the phone top bar. */
   title: string;
   /** Second line under the phone title («Әкесінің тізімі», mockup 01). */
@@ -109,6 +112,16 @@ export function AppShell({
                 )))}
           </Link>
         ))}
+        {tableQueue && (
+          <Link
+            href={`${base}/table-queue`}
+            className="nav-item"
+            aria-current={pathname.startsWith(`${base}/table-queue`) ? "page" : undefined}
+          >
+            <Icon name="send" />
+            <span>{t("tableQueue")}</span>
+          </Link>
+        )}
         {isOwner && (
           <Link
             href={`${base}/settings`}
@@ -209,6 +222,7 @@ export function AppShell({
         onOpenChange={setMenu}
         isOwner={isOwner}
         settingsHref={`${base}/settings`}
+        tableQueueHref={tableQueue ? `${base}/table-queue` : undefined}
         actions={actions}
       />
       <Toaster hasCta={hasCta} />
@@ -272,12 +286,15 @@ export function EventMenu({
   onOpenChange,
   isOwner,
   settingsHref,
+  tableQueueHref,
   actions,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   isOwner: boolean;
   settingsHref: string;
+  /** Ф8: «Үстел нөмірлерін жіберу» (owner or the seating right). */
+  tableQueueHref?: string;
   actions: ShellActions;
 }) {
   const t = useTranslations("nav");
@@ -316,6 +333,12 @@ export function EventMenu({
           <Icon name="list" />
           {t("myEvents")}
         </Link>
+        {tableQueueHref && (
+          <Link className="row" href={tableQueueHref} onClick={() => onOpenChange(false)}>
+            <Icon name="send" />
+            {t("tableQueue")}
+          </Link>
+        )}
         {isOwner && (
           <Link className="row" href={settingsHref} onClick={() => onOpenChange(false)}>
             <Icon name="gear" />

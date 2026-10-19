@@ -3,6 +3,7 @@
 import { type IDBPDatabase, openDB } from "idb";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { formatTime } from "@/domain/format";
 import { Icon } from "@/ui/components/Icon";
 import { flushOutbox } from "./flush";
 import { doorMatch, type DoorMatch } from "./search";
@@ -42,8 +43,8 @@ function db(token: string): Promise<IDBPDatabase> {
   });
 }
 
-const timeOf = (iso: string) =>
-  new Date(iso).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit", hour12: false });
+/** «18:42» in the event zone (Asia/Almaty) — the shared formatter (Ф10 §4), not the device clock's locale. */
+const timeOf = (iso: string) => formatTime(iso);
 
 function deviceId(): string {
   try {

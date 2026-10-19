@@ -114,6 +114,18 @@ export function EventShell({
     );
   }
 
+  if (section === "table-queue") {
+    // Ф8 «Үстел нөмірлерін жіберу»: its own title, «←» back to «Қорытынды» on the phone
+    return (
+      <AppShell
+        {...props}
+        title={t("tableQueue")}
+        back={{ href: `${base}/summary`, label: ta("back"), mobileOnly: true }}
+        section="summary"
+      />
+    );
+  }
+
   if (section === "budget") {
     // Ф9 (mockup 13): on the phone «Шығындар» opens from «Қорытынды» — «←» goes back there; sticky «Шығын қосу»
     return (
