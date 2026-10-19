@@ -172,6 +172,37 @@ $ pnpm exec vitest run --project integration tests/integration/export.test.ts   
    ```
 9. **Вручную** (основатель или архитектор): открыть скачанный `toi-aibek-dana-….xlsx` в Excel и в Google Sheets; распечатать `seating-kk-bw-check.pdf` в Ч/Б.
 
+### 9.1 Результаты тест-раннера (первый прогон, `08724a7`) и правка
+
+Тест-раннер:
+```
+typecheck, lint, format:check, check:messages (818)   ✓
+pnpm test:all                                          328 passed | 2 skipped
+pnpm build                                             ✓
+tests/e2e/print.spec.ts                                6 passed, 2 failed (mobile + desktop)
+  print.spec.ts:69 «xlsx downloads … a stranger gets 403»: expect(res.status()).toBe(401), received 200
+```
+Полный e2e и скриншоты в этом прогоне не запускались.
+
+**Причина — ошибка теста, не дыра в доступе.** `src/proxy.ts` для `/e/*` без cookie сессии отвечает редиректом на `/login` ещё до маршрута. `request.get` прошёл по редиректу и получил HTML `/login` со статусом 200. Сам маршрут проверяет доступ (`requireUser` → 401, чужое событие → 403) и без сессии не вызывается.
+
+**Правка теста:**
+- без сессии — `maxRedirects: 0`, ожидается `307` и `location: /login`;
+- добавлен настоящий случай «чужой»: вошедший владелец другого события (мир `events`) получает от маршрута `403` с JSON, книги нет.
+
+После правки (точечно, сборка из PowerShell):
+```
+$ pnpm test:e2e tests/e2e/print.spec.ts -g "xlsx" --workers=1
+  ok 1 [mobile]  › xlsx downloads with a Latin file name; no session → /login; a member of another event gets 403
+  ok 2 [desktop] › xlsx downloads with a Latin file name; no session → /login; a member of another event gets 403
+  2 passed (17.5s)
+```
+**Для тест-раннера осталось:** шаги 6 (полный последовательный e2e) и 7 (скриншоты и PDF) раздела 9. `print.spec` целиком можно не повторять.
+
+### 9.2 Ожидает мержа Ф8
+
+По ревью Ф8: в меню хозяина в `EventShell` (и «⋯ Той мәзірі») добавить пункт очереди «Үстел нөмірлерін жіберу» (маршрут и ключ — из Ф8). Ф8 ещё не смержена, поэтому пункта в этой ветке нет. Добавлю, когда Ф10 будет перебазирована на Ф8.
+
 ## 10. Самопроверка (13.6)
 
 - [x] `src/domain/{format,print}` — чистый TS, unit-тесты; Server Actions / route handler тонкие (`requireUser` → `authorize` через `hallView` → данные).

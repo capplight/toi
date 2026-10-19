@@ -66,14 +66,29 @@ test.describe("Ф10 print and export", () => {
     expect(r.violations.map((v) => v.id)).toEqual([]);
   });
 
-  test("xlsx downloads with a Latin file name; a stranger gets 403", async ({ page, context, baseURL, request }) => {
+  test("xlsx downloads with a Latin file name; no session → /login; a member of another event gets 403", async ({
+    page,
+    context,
+    baseURL,
+    request,
+  }) => {
     await as(context, baseURL!, "ake", "kk");
     await page.goto(`/e/${seed().eventId}/print/tables`);
     const download = page.waitForEvent("download");
     await page.getByRole("link", { name: kk.export.button }).click();
     const d = await download;
     expect(d.suggestedFilename()).toMatch(/^toi-aibek-dana-\d{4}-\d{2}-\d{2}\.xlsx$/);
-    const res = await request.get(`/e/${seed().eventId}/export/tables.xlsx`); // no session cookie
-    expect(res.status()).toBe(401);
+    const url = `/e/${seed().eventId}/export/tables.xlsx`;
+    // no session cookie: the proxy sends `/e/*` to /login before the route runs (not followed here)
+    const anon = await request.get(url, { maxRedirects: 0 });
+    expect(anon.status()).toBe(307);
+    expect(anon.headers()["location"]).toMatch(/\/login$/);
+    // a logged-in member of ANOTHER event (owner of world `events`): the route itself answers 403, no workbook
+    const stranger = await request.get(url, {
+      maxRedirects: 0,
+      headers: { cookie: `toi_session=${world("events").sessions.ake}` },
+    });
+    expect(stranger.status()).toBe(403);
+    expect(stranger.headers()["content-type"]).toContain("application/json");
   });
 });
