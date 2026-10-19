@@ -31,7 +31,9 @@ test("Ф10 handover screenshots and PDFs", async ({ browser, baseURL }) => {
     if (width === 1440) {
       await page.emulateMedia({ media: "print" });
       await page.pdf({ path: `${OUT}/seating-${locale}.pdf`, format: "A4", printBackground: true });
-      await page.pdf({ path: `${OUT}/seating-${locale}-bw-check.pdf`, format: "A4", printBackground: false });
+      // B/W check: SVG fills always print, so emulate a mono printer with a grayscale filter (Ф10 review П1).
+      await page.addStyleTag({ content: "html{filter:grayscale(1)}" });
+      await page.pdf({ path: `${OUT}/seating-${locale}-bw-check.pdf`, format: "A4", printBackground: true });
     }
     await c.close();
   }
