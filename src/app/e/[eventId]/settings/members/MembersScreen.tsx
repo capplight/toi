@@ -55,6 +55,8 @@ export function MembersScreen({
   const te = useTranslations("errors");
   const [adding, setAdding] = useState(false);
   const [confirm, setConfirm] = useState<{ kind: "signOut" | "remove"; m: MemberView } | null>(null);
+  // Ф8 review П3: a new helper link cuts the phones at the entrance at once — ask first
+  const [rotateAsk, setRotateAsk] = useState(false);
   const [freshLinks, setFreshLinks] = useState<Record<string, string>>({});
   const [busy, start] = useTransition();
 
@@ -214,17 +216,26 @@ export function MembersScreen({
                 <Icon name="wa" />
                 {t("door.send")}
               </a>
-              <Button
-                variant="secondary"
-                size="row"
-                onClick={() => run(async () => void (await rotateDoorTokenAction({ eventId })))}
-              >
+              <Button variant="secondary" size="row" onClick={() => setRotateAsk(true)}>
                 {t("door.rotate")}
               </Button>
             </div>
           </section>
         </div>
       )}
+
+      <AlertDialog
+        open={rotateAsk}
+        onOpenChange={setRotateAsk}
+        title={t("door.rotate")}
+        description={t("door.rotateConfirm")}
+        confirmLabel={t("door.rotate")}
+        cancelLabel={ta("cancel")}
+        onConfirm={() => {
+          setRotateAsk(false);
+          run(async () => void (await rotateDoorTokenAction({ eventId })));
+        }}
+      />
 
       <AddMemberSheet open={adding} onOpenChange={setAdding} eventId={eventId} categories={categories} />
 

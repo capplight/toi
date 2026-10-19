@@ -250,4 +250,26 @@ test.describe("Ф8 table numbers", () => {
       await noScroll(page);
     }
   });
+
+  test("«Жаңа сілтеме» of the helper asks first (review П3): cancel keeps the link, confirm rotates it", async ({
+    page,
+    context,
+    baseURL,
+  }, info) => {
+    test.skip(info.project.name !== "desktop", "once (the queue world is shared)");
+    const w = world("queue");
+    await asOwner(context, baseURL!);
+    await page.goto(`/e/${w.eventId}/settings/members`);
+    const token = async () =>
+      (await sql<{ t: string }>("select door_token as t from events where id = $1", [w.eventId]))[0]!.t;
+    const before = await token();
+    await page.locator(".door-card").getByRole("button", { name: kk.members.door.rotate }).click();
+    const dialog = page.getByRole("alertdialog");
+    await expect(dialog).toContainText(kk.members.door.rotateConfirm);
+    await dialog.getByRole("button", { name: kk.common.actions.cancel }).click();
+    expect(await token()).toBe(before);
+    await page.locator(".door-card").getByRole("button", { name: kk.members.door.rotate }).click();
+    await page.getByRole("alertdialog").getByRole("button", { name: kk.members.door.rotate }).click();
+    await expect.poll(token).not.toBe(before);
+  });
 });

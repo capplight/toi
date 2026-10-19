@@ -5,7 +5,8 @@ import { DOOR_MAX_OPS, recordCheckins } from "@/server/door/service";
 
 /**
  * Ф8 door helper: «Келді» marks from a device's outbox (plan 6.6). Idempotent by `opId`; the latest `clientAt`
- * wins; answers the current arrivals. 600 ops per hour per token (429); unknown / rotated token → 404.
+ * wins; answers the current arrivals. 600 requests with marks per hour per token (429; empty syncs do not count);
+ * unknown / rotated token → 404.
  */
 export const dynamic = "force-dynamic";
 
