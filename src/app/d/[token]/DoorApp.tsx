@@ -4,6 +4,7 @@ import { type IDBPDatabase, openDB } from "idb";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@/ui/components/Icon";
+import { flushOutbox } from "./flush";
 import { doorMatch, type DoorMatch } from "./search";
 
 /**
@@ -11,7 +12,7 @@ import { doorMatch, type DoorMatch } from "./search";
  * - snapshot and outbox in IndexedDB (`idb`), per token;
  * - search on the device: 2–3 letters, start of any word, highlighted;
  * - «Келді» → outbox + instant update; «Белгіні алу»; toast at the top for 4 s with «Қайтару»;
- * - sync when online, every 30 s and on open; snapshot refreshed silently when older than 2 h and online;
+ * - sync when online, every 30 s and on open, in batches of ≤ 200 (`flush.ts`); snapshot refreshed silently when older than 2 h and online;
  * - service worker `/d/sw.js` (scope /d/) keeps the page and its assets for offline reloads.
  */
 type Family = {
@@ -123,27 +124,33 @@ export function DoorApp({ token, title }: { token: string; title: string }) {
       const ops = (await d.getAll("outbox")) as Op[];
       const cur = (await d.get("kv", "snapshot")) as Snapshot | undefined;
       if (cur && Date.now() - new Date(cur.generatedAt).getTime() > STALE_MS) await fetchSnapshot();
-      if (!ops.length && cur) {
-        // nothing to send: still pull other devices' marks
-      }
       setSyncing(ops.length > 0);
-      const res = await fetch(`/api/door/${token}/checkins`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ deviceId: deviceId(), ops }),
-      });
-      if (res.status === 404) {
+      type Arrivals = { familyId: string; arrivedAt: string }[];
+      const r = await flushOutbox<Op, Arrivals>(
+        ops,
+        async (batch) => {
+          const res = await fetch(`/api/door/${token}/checkins`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ deviceId: deviceId(), ops: batch }),
+          });
+          if (res.status === 404) return { kind: "revoked" };
+          if (!res.ok) return { kind: "error" };
+          return { kind: "ok", arrivals: ((await res.json()) as { arrivals: Arrivals }).arrivals };
+        },
+        async (batch) => {
+          const tx = d.transaction("outbox", "readwrite");
+          for (const o of batch) await tx.store.delete(o.opId);
+          await tx.done;
+        },
+      );
+      if (r.revoked) {
         setState("revoked");
         return;
       }
-      if (!res.ok) return;
-      const r = (await res.json()) as { arrivals: { familyId: string; arrivedAt: string }[] };
-      const tx = d.transaction("outbox", "readwrite");
-      for (const o of ops) await tx.store.delete(o.opId);
-      await tx.done;
       const left = (await d.getAll("outbox")) as Op[];
       setOutbox(left);
-      await applyArrivals(r.arrivals, left);
+      if (r.arrivals) await applyArrivals(r.arrivals, left);
     } catch {
       // offline or server error: the outbox stays, next tick tries again
     } finally {

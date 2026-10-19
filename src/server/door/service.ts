@@ -12,7 +12,10 @@ import { activityLog, categories, doorCheckins, events, families } from "../sche
  * synced from the helper's devices. Access is the event's `door_token` only (no session); an unknown or rotated
  * token is 404. The snapshot never contains phone numbers.
  */
+/** 600 requests with marks per hour per link (empty syncs are not counted; one request carries ≤ 200 ops). */
 export const DOOR_OPS_PER_HOUR = 600;
+/** Ф8 review Н2: a device clock in the future must not win every later mark. */
+export const CLIENT_AHEAD_MS = 2 * 60_000;
 export const DOOR_MAX_OPS = 200;
 
 export type DoorFamily = {
@@ -94,7 +97,9 @@ export type CheckinResult =
 /**
  * `POST /api/door/{token}/checkins`: idempotent by `opId` (a repeated op is ignored); for each family the op with
  * the latest `clientAt` wins (ties: received later), so two devices converge. Writes `door_checkins` and
- * `families.arrived_at`. Answers the event's current arrivals. 600 ops per hour per token.
+ * `families.arrived_at`. Answers the event's current arrivals. 600 requests with marks per hour per token.
+ * Ф8 review П2: the families' rows are locked first (`for update`, ordered by id — no deadlocks), so two parallel
+ * requests about the same family recompute one after the other. Н2: `clientAt` is capped at server time + 2 min.
  */
 export async function recordCheckins(
   db: Db,
@@ -114,7 +119,20 @@ export async function recordCheckins(
       .where(and(eq(families.eventId, eventId), inArray(families.id, ids), isNull(families.deletedAt)));
     const ok = new Set(own.map((r) => r.id));
     const ops = input.ops.filter((o) => ok.has(o.familyId));
+    const latest = new Date(now.getTime() + CLIENT_AHEAD_MS);
+    const clamp = (iso: string) => {
+      const d = new Date(iso);
+      return d > latest ? latest : d;
+    };
     await db.transaction(async (tx) => {
+      const touched = [...new Set(ops.map((o) => o.familyId))].sort();
+      if (touched.length)
+        await tx
+          .select({ id: families.id })
+          .from(families)
+          .where(inArray(families.id, touched))
+          .orderBy(asc(families.id))
+          .for("update");
       if (ops.length)
         await tx
           .insert(doorCheckins)
@@ -124,13 +142,13 @@ export async function recordCheckins(
               eventId,
               familyId: o.familyId,
               arrived: o.arrived,
-              clientAt: new Date(o.clientAt),
+              clientAt: clamp(o.clientAt),
               receivedAt: now,
               deviceId: input.deviceId,
             })),
           )
           .onConflictDoNothing({ target: doorCheckins.opId });
-      for (const familyId of new Set(ops.map((o) => o.familyId))) {
+      for (const familyId of touched) {
         const [last] = await tx
           .select({ arrived: doorCheckins.arrived, clientAt: doorCheckins.clientAt })
           .from(doorCheckins)

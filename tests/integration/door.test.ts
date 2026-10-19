@@ -17,7 +17,7 @@ import { renderInvite } from "@/server/invite/render";
 import { resetDb } from "./helpers";
 
 beforeEach(resetDb);
-const NOW = new Date("2026-11-15T12:00:00Z");
+const NOW = new Date("2026-11-15T14:00:00Z"); // after every clientAt below (the server caps device time at now + 2 min)
 
 async function setup() {
   const s = await seedSample(db(), new Date("2026-10-11T08:00:00Z"));
@@ -119,6 +119,49 @@ describe("Ф8 door helper: «Келді» marks", () => {
         NOW,
       ),
     ).toEqual({ ok: false, error: "rateLimited" });
+  });
+});
+
+describe("Ф8 review П2 / Н2: concurrent requests and device clocks", () => {
+  it("two parallel requests about one family: the later clientAt wins (rows locked in id order)", async () => {
+    const { s, token } = await setup();
+    const fam = s.familyIds.get("f30")!;
+    const fam2 = s.familyIds.get("f31")!;
+    await Promise.all([
+      recordCheckins(
+        db(),
+        token,
+        {
+          deviceId: "device-A",
+          ops: [op(fam, true, "2026-11-15T13:00:00.000Z"), op(fam2, true, "2026-11-15T13:09:00.000Z")],
+        },
+        NOW,
+      ),
+      recordCheckins(
+        db(),
+        token,
+        {
+          deviceId: "device-B",
+          ops: [op(fam2, false, "2026-11-15T13:01:00.000Z"), op(fam, false, "2026-11-15T13:05:00.000Z")],
+        },
+        NOW,
+      ),
+    ]);
+    const rows = await db().select({ id: families.id, a: families.arrivedAt }).from(families);
+    expect(rows.find((r) => r.id === fam)!.a).toBeNull(); // B unmarked later
+    expect(rows.find((r) => r.id === fam2)!.a?.toISOString()).toBe("2026-11-15T13:09:00.000Z"); // A marked later
+  });
+
+  it("a clock in the future is capped at server time + 2 min, so a later real mark still wins", async () => {
+    const { s, token } = await setup();
+    const fam = s.familyIds.get("f30")!;
+    await recordCheckins(db(), token, { deviceId: "device-A", ops: [op(fam, true, "2027-01-01T00:00:00.000Z")] }, NOW);
+    const [c] = await db().select({ at: doorCheckins.clientAt }).from(doorCheckins);
+    expect(c!.at.toISOString()).toBe(new Date(NOW.getTime() + 2 * 60_000).toISOString());
+    const later = new Date(NOW.getTime() + 5 * 60_000);
+    await recordCheckins(db(), token, { deviceId: "device-B", ops: [op(fam, false, later.toISOString())] }, later);
+    const [f] = await db().select({ a: families.arrivedAt }).from(families).where(eq(families.id, fam));
+    expect(f!.a).toBeNull();
   });
 });
 
