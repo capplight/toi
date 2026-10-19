@@ -1,0 +1,118 @@
+/* Ф8 «Үстел нөмірлерін жіберу» (DESIGN 8.18, mockup 12-table-queue.html). Own file; tokens only. */
+.tq {
+  display: grid;
+  gap: 16px;
+  padding: 8px 0 32px;
+}
+.tq-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tq-progress {
+  flex: 1;
+  display: grid;
+  gap: 6px;
+}
+.tq-progress .num {
+  font: 600 1.25rem/1.5rem var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
+.tq-card {
+  padding: 20px 16px;
+  display: grid;
+  gap: 10px;
+  background: var(--paper);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-card);
+}
+.tq-card p {
+  margin: 0;
+}
+.tq-name {
+  margin: 0;
+  font: 600 1.5rem/1.875rem var(--font-ui);
+  overflow-wrap: anywhere;
+}
+.tq-table {
+  font: 600 2rem/2.25rem var(--font-display);
+  color: var(--lapis);
+}
+.tq-phone {
+  color: var(--ink-2);
+}
+.tq-preview {
+  border-radius: var(--r-md, 14px);
+  background: var(--sand);
+  padding: 12px 14px;
+}
+.tq-preview .lbl {
+  display: block;
+  font: 600 0.9375rem/1.25rem var(--font-ui);
+  color: var(--ink-2);
+  margin-bottom: 4px;
+}
+.tq-preview p {
+  white-space: pre-line;
+  font: 400 1rem/1.4375rem var(--font-ui);
+  overflow-wrap: anywhere;
+}
+.tq-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 6px;
+}
+.tq-done .ico {
+  width: 32px;
+  height: 32px;
+  color: var(--success);
+}
+.tq-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-card);
+  overflow: hidden;
+}
+.tq-list li {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  gap: 10px;
+  align-items: center;
+  min-height: 3.25rem;
+  padding: 8px 14px;
+  border-top: 1px solid var(--line);
+  font: 400 1rem/1.375rem var(--font-ui);
+}
+.tq-list li:first-child {
+  border-top: 0;
+}
+.tq-list li.cur {
+  background: var(--lapis-soft);
+  font-weight: 600;
+}
+.tq-n {
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+.tq-st {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--success-ink);
+  white-space: nowrap;
+}
+@media (min-width: 1024px) {
+  .tq-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .tq-actions {
+    grid-auto-flow: column;
+    justify-content: start;
+  }
+}

@@ -1,0 +1,218 @@
+/* =====================================================================
+   «Той» — design tokens (Ф1). Source: design/v2/mockups/css/tokens.css (DESIGN_v2 §3, v2.2).
+   Names match the design. The ONLY file in src/ui with literal colours (Ф1 criterion 1).
+   ===================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---------- 3.1 Colour: base ---------- */
+  --ivory: #f7f2e9;
+  --paper: #fffdf8;
+  --sand: #eee6d6;
+  --sand-pressed: #e3d8c2;
+  --line: #e3d9c7;
+  --line-strong: #857760;
+  --ink: #17202c;
+  --ink-2: #535c69;
+
+  /* ---------- 3.1 Colour: brand ---------- */
+  --lapis: #1c3b5e;
+  --lapis-pressed: #142d49;
+  --lapis-soft: #e6edf5;
+  --night: #0f2338;
+  --night-2: #16304b;
+  --night-glow: #1f4569;
+  --night-auth: #24496f;
+  --on-night: #f4ebda;
+  --on-night-2: #e9dfcc;
+  --gold: #b48a3e;
+  --gold-bright: #d8b26a;
+  --gold-ink: #7a5200;
+  --gold-soft: #fbf0d9;
+  --white: #ffffff;
+
+  /* ---------- 3.1 Colour: status ---------- */
+  --success: #1d7447;
+  --success-ink: #155c38;
+  --success-soft: #e5f3ea;
+  --danger: #b3261e;
+  --danger-soft: #fcebe8;
+  --dup: #5b3fa8;
+  --dup-soft: #efeafb;
+  --neutral-soft: #eceef1;
+  --seat-taken: #6e7480;
+  --seat-free: var(--success);
+  --scrim: rgba(15, 25, 38, 0.52);
+  --toast-link: #f2d49b;
+
+  /* banner / chip accents (were inline hex in the mockups) */
+  --remind-icon-bg: #f5dfae;
+  --error-icon-bg: #f8d3cd;
+  --dup-icon-bg: #ded4f6;
+  --view-icon-bg: #e2d8c4;
+  --chip-error-border: #f1c4be;
+  --chip-dup-border: #d9cef4;
+
+  /* translucent tints (graphics, shadows) */
+  --disc-stroke: rgba(23, 32, 44, 0.28);
+  --sw-stroke: rgba(23, 32, 44, 0.18);
+  --focus-halo: rgba(28, 59, 94, 0.1);
+  --on-night-muted: rgba(244, 235, 218, 0.88);
+  --gold-glow: rgba(216, 178, 106, 0.2);
+  --stage-glow: rgba(180, 138, 62, 0.13);
+  --lang-on-dark: rgba(255, 255, 255, 0.12);
+
+  /* ---------- 3.2 Category tints (table disc) ---------- */
+  --cat-kuda: #f1dfb0;
+  --cat-oz: #d3e4ee;
+  --cat-nagashy: #e2ddf2;
+  --cat-dos: #f6dccb;
+  --cat-ariptes: #e5e0d5;
+  --cat-korshi: #f2d8e0;
+  --cat-synyp: #d5ece5;
+  --cat-baska: #e8e8e6;
+
+  /* ---------- 3.4 Typography (fonts are set by next/font in src/ui/fonts.ts) ---------- */
+  --font-ui: var(--font-onest), "Noto Sans", system-ui, sans-serif;
+  --font-display: var(--font-cormorant), "Noto Serif", Georgia, serif;
+
+  /* ---------- 3.5 Spacing (step 4) ---------- */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --s8: 32px;
+  --s10: 40px;
+  --s12: 48px;
+  --s16: 64px;
+  --gutter: 16px;
+
+  /* ---------- 3.5 Radii ---------- */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* ---------- 3.5 Shadows (warm, low) ---------- */
+  --sh-card: 0 1px 2px rgba(23, 32, 44, 0.05), 0 4px 14px rgba(23, 32, 44, 0.05);
+  --sh-raised: 0 2px 4px rgba(23, 32, 44, 0.06), 0 10px 28px rgba(23, 32, 44, 0.1);
+  --sh-bar: 0 -1px 0 rgba(23, 32, 44, 0.06), 0 -6px 20px rgba(23, 32, 44, 0.07);
+  --sh-sheet: 0 -10px 40px rgba(15, 25, 38, 0.2);
+  --sh-btn: 0 1px 0 rgba(255, 255, 255, 0.12) inset, 0 6px 16px -8px rgba(28, 59, 94, 0.55);
+  --sh-btn-wa: 0 6px 16px -8px rgba(29, 116, 71, 0.6);
+  --sh-toggle: 0 1px 3px rgba(23, 32, 44, 0.12);
+  --sh-hero: 0 14px 30px -18px rgba(15, 35, 56, 0.8);
+
+  /* ---------- 6 Motion ---------- */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-draw: cubic-bezier(0.45, 0.05, 0.25, 1);
+  --t-press: 80ms;
+  --t-fast: 150ms;
+  --t-base: 220ms;
+  --t-sheet: 260ms;
+  --t-max: 300ms;
+  --t-toast: 8s;
+  /* Ф1 review П1: every height that contains text is in rem (grows with the system text size). */
+
+  /* ---------- 3.5 Sizes ---------- */
+  --h-btn: 3.5rem;
+  --h-btn-2: 3.25rem;
+  --h-btn-row: 3rem;
+  --h-field: 3.5rem;
+  --h-tabbar: 4.5rem;
+  --h-top: 3.75rem;
+  --w-rail: 104px;
+  --w-sidebar: 272px;
+  --w-panel: 480px;
+  --w-dialog: 500px;
+  --h-toast: 3.5rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+
+/* Tailwind v4: tokens as utilities (bg-lapis, text-ink-2, rounded-lg, shadow-card, font-display …). */
+@theme inline {
+  --color-ivory: var(--ivory);
+  --color-paper: var(--paper);
+  --color-sand: var(--sand);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-lapis: var(--lapis);
+  --color-lapis-pressed: var(--lapis-pressed);
+  --color-lapis-soft: var(--lapis-soft);
+  --color-night: var(--night);
+  --color-night-2: var(--night-2);
+  --color-on-night: var(--on-night);
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+  --color-gold-ink: var(--gold-ink);
+  --color-gold-soft: var(--gold-soft);
+  --color-success: var(--success);
+  --color-success-ink: var(--success-ink);
+  --color-success-soft: var(--success-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-dup: var(--dup);
+  --color-dup-soft: var(--dup-soft);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-white: var(--white);
+  --font-ui: var(--font-ui);
+  --font-display: var(--font-display);
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+  --shadow-card: var(--sh-card);
+  --shadow-raised: var(--sh-raised);
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+/* Invitation template colours for the wizard mini-envelopes and preview (Ф3; the full templates are Ф5). */
+.tpl-ak-shanyrak {
+  --tpl-bg: linear-gradient(180deg, #f3e7d1, #e8d6b6);
+  --tpl-ink: #2b2116;
+  --tpl-arch: #f7eedc;
+  --flap: #f7eedc;
+  --s1: #d9b46c;
+  --s2: #9c6f22;
+}
+.tpl-kok-tun {
+  --tpl-bg: linear-gradient(180deg, #1a3a5c, #132c47);
+  --tpl-ink: #f4ecdd;
+  --tpl-arch: #23476e;
+  --flap: #23476e;
+  --s1: #e2c27f;
+  --s2: #a57c2e;
+}
+.tpl-kyzgaldak {
+  --tpl-bg: linear-gradient(180deg, #f6e3da, #ebcfc2);
+  --tpl-ink: #3a1a1f;
+  --tpl-arch: #f9ece5;
+  --flap: #f9ece5;
+  --s1: #9b2a3a;
+  --s2: #5e1621;
+}
+
+/* Mini envelope «Шақыру қалай барады?» on S2 (Ф5, mockup 02 / screens.css) */
+.mini-env {
+  --menv-bg: linear-gradient(160deg, #fbf6ec, #efe4cf);
+  --menv-flap: #f5ecdb;
+  --menv-line: rgb(180 138 62 / 0.35);
+  --menv-seal: radial-gradient(circle at 35% 30%, #d9b46c, #a87a2c 70%);
+  --menv-seal-ink: #fff6e2;
+  --menv-shadow: 0 0.625rem 1.5rem -14px rgb(23 32 44 / 0.45);
+}

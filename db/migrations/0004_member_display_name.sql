@@ -1,0 +1,2 @@
+ALTER TABLE "event_members" ADD COLUMN "display_name" text;--> statement-breakpoint
+ALTER TABLE "event_members" ADD CONSTRAINT "event_members_display_name_check" CHECK (length("event_members"."display_name") <= 40);

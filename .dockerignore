@@ -1,0 +1,21 @@
+.git
+.github
+node_modules
+.next
+out
+coverage
+playwright-report
+test-results
+.vercel
+.env*
+!.env.example
+*.log
+
+# Documents are not part of the image (content/messages IS needed at build time — keep content/).
+architecture
+design
+docs
+prototype
+research
+HANDOVER_v2.md
+tests
