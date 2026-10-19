@@ -19,3 +19,5 @@ prototype
 research
 HANDOVER_v2.md
 tests
+# /dev/ui demo data imports the shared fixture at build time (route is 404 in production).
+!tests/fixtures
