@@ -1,0 +1,14 @@
+# Not needed to build or run the app — keep uploads to Vercel small.
+architecture
+design
+docs
+prototype
+research
+HANDOVER_v2.md
+HANDOVER_toi_invitations_seating.md
+test-results
+playwright-report
+coverage
+.pglite
+.local-storage
+*.log
