@@ -7,7 +7,7 @@ h1: Частые вопросы
 primary_keyword: — (поискового спроса нет; страница доверия)
 brief: docs/seo/briefs/sluzhebnye.md
 wave: 1
-status: draft
+status: needs_fix
 needs_tradition_review: false
 ---
 

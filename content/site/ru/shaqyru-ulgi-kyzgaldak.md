@@ -7,7 +7,7 @@ h1: Шаблон приглашения «Қызғалдақ»
 primary_keyword: шаблон приглашения на свадьбу / той
 brief: docs/seo/briefs/shaqyru-ulgi.md
 wave: 1
-status: draft
+status: edited
 needs_tradition_review: false
 ---
 

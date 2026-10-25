@@ -7,7 +7,7 @@ h1: Связаться с нами
 primary_keyword: — (поискового спроса нет)
 brief: docs/seo/briefs/sluzhebnye.md
 wave: 1
-status: draft
+status: edited
 needs_tradition_review: false
 ---
 

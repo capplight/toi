@@ -7,7 +7,7 @@ h1: Список гостей на той вместе с родителями
 primary_keyword: список гостей на свадьбу
 brief: docs/seo/briefs/funkcii.md (§1)
 wave: 3
-status: draft
+status: needs_fix
 needs_tradition_review: false
 ---
 

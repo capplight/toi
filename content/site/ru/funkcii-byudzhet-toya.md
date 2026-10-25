@@ -7,7 +7,7 @@ h1: "Бюджет тоя: сколько стоит той и как вести 
 primary_keyword: бюджет тоя
 brief: docs/seo/briefs/funkcii.md (§2)
 wave: 3
-status: draft
+status: needs_fix
 needs_tradition_review: false
 ---
 
