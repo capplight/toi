@@ -6,7 +6,7 @@ h1: "Той дәстүрлері: құдалықтан беташарға дей
 primary_keyword: қазақ той дәстүрлері
 brief: docs/seo/briefs/dastur-hub.md
 wave: 2
-status: draft
+status: edited
 needs_tradition_review: true
 ---
 

@@ -6,7 +6,7 @@ h1: "{BRAND} туралы"
 primary_keyword: —
 brief: docs/seo/briefs/sluzhebnye.md
 wave: 1
-status: draft
+status: needs_fix
 needs_tradition_review: false
 ---
 

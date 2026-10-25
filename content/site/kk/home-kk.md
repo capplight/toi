@@ -6,7 +6,7 @@ h1: "Тойға шақыру — тізімнен үстел нөміріне д
 primary_keyword: тойға шақыру
 brief: docs/seo/briefs/home-kk.md
 wave: 1
-status: draft
+status: edited
 needs_tradition_review: false
 ---
 
