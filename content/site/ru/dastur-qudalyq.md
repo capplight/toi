@@ -90,7 +90,7 @@ reviewedBy: "{REVIEWER}"
 
 После сватовства часто проходит сырға салу — о нём в статье [«Сырға салу: что это за обряд»](/ru/traditsii/syrga-salu). Как встречают сватов на проводах невесты — в статье [«Что такое қыз ұзату»](/ru/traditsii/kyz-uzatu). Все обряды — в разделе [«Традиции казахского тоя»](/ru/traditsii).
 
-### Источники
+## Источники
 
 - Қазақша Википедия, «Құда түсу» — https://kk.wikipedia.org/wiki/Құда_түсу
 - inbusiness.kz, «Құдалыққа кімдер барады?», 2024 — https://www.inbusiness.kz/kz/last/kudalykka-kimder-barady

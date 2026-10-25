@@ -107,7 +107,7 @@ reviewedBy: "{REVIEWER}"
 
 <!-- BLOCK: CTA soft "Создать приглашение" href="/e/new?kind=kyz_uzatu" -->
 
-### Источники
+## Источники
 
 - nur.kz, «Какие свадебные обряды и традиции казахского народа дошли до наших дней», 2025 — https://www.nur.kz/society/2233625-kakie-svadebnye-obryady-i-tradicii-kazahskogo-naroda-doshli-do-nashih-dney/
 - nur.kz, «Кыз узату: что собой представляет обряд», 2023 — https://www.nur.kz/leisure/holidays/1555585-priglasitelnye-na-kyz-uzatu-svoimi-r/

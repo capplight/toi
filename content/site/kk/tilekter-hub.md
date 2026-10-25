@@ -25,13 +25,14 @@ needs_tradition_review: false
 - [Жастарға](/kk/tilekter/uilenu-toi)
 - [Қыз ұзатуға](/kk/tilekter/qyz-uzatu)
 - [Құдаларға](/kk/tilekter/qudalarga)
-- Келінге <!-- /kk/tilekter/kelinge — ссылка после публикации -->
-- Сүндет тойға <!-- /kk/tilekter/sundet-toi — после публикации -->
-- Бесік тойға <!-- /kk/tilekter/besik-toi — после публикации -->
-- 50 жасқа <!-- /kk/tilekter/50-jas — после публикации -->
-- 70 жасқа <!-- /kk/tilekter/70-jas — после публикации -->
-- Мерейтойға <!-- /kk/tilekter/mereitoi — после публикации -->
-- Ақ бата <!-- /kk/tilekter/bata — после публикации -->
+- [Келінге](/kk/tilekter/kelinge)
+- [Сүндет тойға](/kk/tilekter/sundet-toi)
+- [Бесік тойға](/kk/tilekter/besik-toi)
+- [50 жасқа](/kk/tilekter/50-jas)
+- [70 жасқа](/kk/tilekter/70-jas)
+- [Мерейтойға](/kk/tilekter/mereitoi)
+- [Ақ бата](/kk/tilekter/bata)
+<!-- SEO: ссылки на страницы волны 2 включены (тексты готовы). Если хаб публикуется раньше волны 2, сборка должна показывать ссылку на неопубликованную страницу простым текстом (SEO-07/SEO-13). -->
 <!-- /BLOCK -->
 
 <!-- BLOCK: tilek-list filter="who|length|poem" -->

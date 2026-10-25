@@ -140,7 +140,7 @@ needs_tradition_review: true
 
 <!-- BLOCK: CTA primary "Составить план рассадки" href="/e/new" -->
 
-### Источники
+## Источники
 
 - Қазақша Википедия, «Төр» — https://kk.wikipedia.org/wiki/Төр
 - pricom.kz, Кайрат Сатаев, «Почетной вам посадки!», 2019 — https://pricom.kz/obshhestvo/pochetnoj-vam-posadki.html

@@ -100,7 +100,7 @@ reviewedBy: "{REVIEWER}"
 
 <!-- BLOCK: CTA soft "Создать приглашение" href="/e/new?kind=uilenu_toi" -->
 
-### Источники
+## Источники
 
 - ЮНЕСКО, «Betashar, traditional wedding ritual», 2024 — https://ich.unesco.org/en/RL/betashar-traditional-wedding-ritual-01746
 - ЮНЕСКО, решение 19.COM 7.B.45 — https://ich.unesco.org/en/decisions/19.COM/7.B.45

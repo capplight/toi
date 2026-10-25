@@ -36,7 +36,7 @@ reviewedBy: "{REVIEWER}"
 
 Единого порядка нет: семьи договариваются сами. О сватовстве — в статье [«Құдалық: казахское сватовство»](/ru/traditsii/kudalyk).
 
-## Как проходит
+## Как проходит сырға салу
 
 Порядок ниже — по рассказу этнографа, с деталями из других источников.
 
@@ -93,7 +93,7 @@ reviewedBy: "{REVIEWER}"
 
 Следующий большой шаг — қыз ұзату, проводы невесты. О нём — в статье [«Что такое қыз ұзату»](/ru/traditsii/kyz-uzatu). Все обряды — в разделе [«Традиции казахского тоя»](/ru/traditsii).
 
-### Источники
+## Источники
 
 - nur.kz, Л. Варзилова, интервью с этнографом Назгуль Байгабатовой, 2025 — https://www.nur.kz/society/2303097-obryad-syr-a-salu-etnograf-nazgul-baygabatova-rasskazala-o-tom-kakoe-znachenie-sohranil-obryad-v-xxi-veke/
 - nur.kz, «Какие свадебные обряды и традиции казахского народа дошли до наших дней», 2025 — https://www.nur.kz/society/2233625-kakie-svadebnye-obryady-i-tradicii-kazahskogo-naroda-doshli-do-nashih-dney/
