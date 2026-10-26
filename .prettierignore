@@ -19,4 +19,4 @@ playwright-report/
 test-results/
 next-env.d.ts
 src/server/invite/assets.generated.ts
-src/app/(legal)/legal.generated.ts
+src/app/(app)/(legal)/legal.generated.ts

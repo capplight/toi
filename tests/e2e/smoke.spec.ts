@@ -9,25 +9,20 @@ const kk = read("kk");
 const ru = read("ru");
 
 test.describe("Ф0 smoke", () => {
-  test("/ opens in Kazakh by default with html[lang=kk]", async ({ page }) => {
+  // Site handover: `/` is no longer the Ф0 sample page — it redirects to the public site in the visitor's language.
+  test("/ opens the Kazakh site by default with html[lang=kk]", async ({ page }) => {
     await page.goto("/");
+    await expect(page).toHaveURL(/\/kk$/);
     await expect(page.locator("html")).toHaveAttribute("lang", "kk");
-    await expect(page.getByText(kk.common.actions.save, { exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: kk.site.cta }).first()).toBeVisible();
   });
 
-  test("locale cookie ru → html[lang=ru] and Russian strings", async ({ page, context, baseURL }) => {
+  test("locale cookie ru → /ru with html[lang=ru] and Russian strings", async ({ page, context, baseURL }) => {
     await context.addCookies([{ name: "locale", value: "ru", url: baseURL! }]);
     await page.goto("/");
+    await expect(page).toHaveURL(/\/ru$/);
     await expect(page.locator("html")).toHaveAttribute("lang", "ru");
-    await expect(page.getByText(ru.common.actions.save, { exact: true })).toBeVisible();
-  });
-
-  test("temporary switcher sets the cookie and switches language", async ({ page }) => {
-    await page.goto("/");
-    await page.getByRole("button", { name: kk.common.lang.ru }).click();
-    await expect(page.locator("html")).toHaveAttribute("lang", "ru");
-    await page.getByRole("button", { name: ru.common.lang.kk }).click();
-    await expect(page.locator("html")).toHaveAttribute("lang", "kk");
+    await expect(page.getByRole("link", { name: ru.site.cta }).first()).toBeVisible();
   });
 
   test("/api/health answers db: ok", async ({ request }) => {

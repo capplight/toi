@@ -1,5 +1,5 @@
 /**
- * RA Л5: `content/legal/{privacy,terms}.{kk,ru}.md` → `src/app/(legal)/legal.generated.ts` (HTML strings).
+ * RA Л5: `content/legal/{privacy,terms}.{kk,ru}.md` → `src/app/(app)/(legal)/legal.generated.ts` (HTML strings).
  * The generated file is committed (like `assets.generated.ts`); `check:messages` runs `--check`, so CI fails if it is
  * stale. Also warns (does not fail) about `[ЮРИСТ` notes left in the texts — blocking production on them is the
  * founder's decision (CONTENT_REVIEW §8).
@@ -10,7 +10,7 @@ import { resolve } from "node:path";
 import { lawyerNotes, markdownToHtml } from "./lib/legal-markdown";
 
 const ROOT = resolve(import.meta.dirname, "..");
-const OUT = resolve(ROOT, "src/app/(legal)/legal.generated.ts");
+const OUT = resolve(ROOT, "src/app/(app)/(legal)/legal.generated.ts");
 const PAGES = ["privacy", "terms"] as const;
 const LOCALES = ["kk", "ru"] as const;
 
@@ -41,7 +41,7 @@ if (process.argv.includes("--check")) {
     current = readFileSync(OUT, "utf8");
   } catch {}
   if (current !== source) {
-    console.error("check:legal: src/app/(legal)/legal.generated.ts is stale — run pnpm tsx scripts/build-legal.ts");
+    console.error("check:legal: src/app/(app)/(legal)/legal.generated.ts is stale — run pnpm tsx scripts/build-legal.ts");
     process.exit(1);
   }
   if (notes && process.argv.includes("--strict")) {

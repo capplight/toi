@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BATCH, flushOutbox } from "@/app/d/[token]/flush";
+import { BATCH, flushOutbox } from "@/app/(app)/d/[token]/flush";
 
 const op = (i: number) => ({ opId: `op-${i}`, clientAt: new Date(Date.UTC(2026, 10, 15, 13, 0, i)).toISOString() });
 

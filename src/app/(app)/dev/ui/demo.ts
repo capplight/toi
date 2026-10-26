@@ -1,6 +1,6 @@
 import { fullReseat, type SeatingState, tableStats } from "@/domain/seating";
 import { dupPairs } from "@/domain/guests/duplicates";
-import { sampleEvent, sampleFamilies } from "../../../../tests/fixtures/sample-event";
+import { sampleEvent, sampleFamilies } from "../../../../../tests/fixtures/sample-event";
 
 /** Demo data for /dev/ui only: the shared fixture (design_spec 5.2) through the Ф7a engine. */
 export function demoState(opts: { tables?: number; seats?: number; columns?: 2 | 4 } = {}): SeatingState {
