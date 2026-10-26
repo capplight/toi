@@ -41,7 +41,9 @@ if (process.argv.includes("--check")) {
     current = readFileSync(OUT, "utf8");
   } catch {}
   if (current !== source) {
-    console.error("check:legal: src/app/(app)/(legal)/legal.generated.ts is stale — run pnpm tsx scripts/build-legal.ts");
+    console.error(
+      "check:legal: src/app/(app)/(legal)/legal.generated.ts is stale — run pnpm tsx scripts/build-legal.ts",
+    );
     process.exit(1);
   }
   if (notes && process.argv.includes("--strict")) {
