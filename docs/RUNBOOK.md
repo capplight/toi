@@ -16,7 +16,7 @@
 1. Ветки сливаются в `main` **по порядку цепочки**: F0 → F7a → F2 → F1 → F4 → F3 → F5 → F6 → RA → …
    - Каждая — после зелёного CI: unit, integration, e2e на Postgres 16, `guests-perf` ×3, Docker, gitleaks.
    - Защита `main` требует CI.
-2. Пуш в `main` запускает `.github/workflows/deploy-prod.yml`:
+2. Пуш в `main` запускает `.github/workflows/deploy-prod.yml`, если в репозитории есть переменная `PROD_DEPLOY_ENABLED = true` (GitHub → Settings → Secrets and variables → Actions → Variables). Пока её нет, пуш деплой пропускает, ручной запуск (Run workflow) работает всегда:
    1. `pnpm check:messages` (тексты, готовые тексты приглашений, свежесть `legal.generated.ts`) и **`pnpm check:legal:strict`**: пока в `content/legal` есть пометки `[ЮРИСТ …]`, деплой прода **падает** (ревью РА, П3). Локально и в preview — только предупреждение;
    2. **миграции** прода (`pnpm db:migrate` с `PROD_DATABASE_URL_UNPOOLED`). Миграции только расширяющие: старый код работает с новой схемой;
    3. сборка `vercel build --prod` и деплой готовой сборки.
@@ -38,7 +38,7 @@
 
 ## 3. Восстановление из бэкапа
 
-Бэкап: `.github/workflows/backup.yml`, ежедневно в 02:30 по Алматы.
+Бэкап: `.github/workflows/backup.yml`, ежедневно в 02:30 по Алматы, когда в репозитории есть переменная `BACKUP_ENABLED = true` (включить после секретов R2 и ключа age).
 - `pg_dump -Fc` → шифрование `age` → отдельный бакет R2 `daily/toi-<время>.dump.age`;
 - хранение 30 дней;
 - закрытый ключ `age` — только у основателя, вне репозитория и вне GitHub.

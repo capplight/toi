@@ -20,6 +20,7 @@ on:
       - "CLAUDE.md"
       - "README.md"
       - "content/*.md"
+      - "content/site/**"
   workflow_dispatch:
 
 concurrency:
@@ -37,6 +38,10 @@ env:
 
 jobs:
   deploy:
+    # Until the legal pages are final and real R2/SMSC keys are set, pushes would only fail at the strict legal
+    # check and email the founder. Push deploys start once the repository variable PROD_DEPLOY_ENABLED = true;
+    # a manual run (workflow_dispatch) always goes ahead.
+    if: github.event_name == 'workflow_dispatch' || vars.PROD_DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 20

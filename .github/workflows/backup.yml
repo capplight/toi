@@ -26,6 +26,9 @@ permissions:
 
 jobs:
   backup:
+    # Switched on by the repository variable BACKUP_ENABLED = true once the backup R2 bucket and age key exist;
+    # until then the nightly run would fail on the missing secrets and email the founder. Manual runs always go ahead.
+    if: github.event_name == 'workflow_dispatch' || vars.BACKUP_ENABLED == 'true'
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 20

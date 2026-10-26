@@ -299,6 +299,7 @@ html[data-state="notyet"] .st-answered, html[data-state="notyet"] .st-notyet { d
   .is-opening .seal, .is-opening .flap, .is-opening .letter, .is-opening .env { animation: none !important; }
   .is-opening .scene { animation: scene-out 250ms linear forwards !important; }
   .is-opening .invite { animation: fade-in 250ms linear 200ms forwards !important; }
+  .is-open .invite { animation: none !important; }
   .is-open .reveal { animation: none !important; opacity: 1 !important; }
   .tableno .n { animation: none; }
   .check-draw path { stroke-dashoffset: 0; animation: none; }
