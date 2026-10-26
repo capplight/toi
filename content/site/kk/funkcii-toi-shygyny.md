@@ -7,7 +7,7 @@ h1: "Той шығыны"
 primary_keyword: той шығыны
 brief: docs/seo/briefs/funkcii.md
 wave: 3
-status: draft
+status: needs_fix
 needs_tradition_review: false
 ---
 

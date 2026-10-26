@@ -7,7 +7,7 @@ h1: "Тойға қонақтар тізімі"
 primary_keyword: қонақтар тізімі
 brief: docs/seo/briefs/funkcii.md
 wave: 3
-status: draft
+status: edited
 needs_tradition_review: false
 ---
 
