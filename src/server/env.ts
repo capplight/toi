@@ -155,3 +155,12 @@ export function env(): Env {
   cached ??= parseEnv(process.env);
   return cached;
 }
+
+/**
+ * Public site origin for canonical / hreflang / sitemap (SEO-04: `SITE_URL`, falls back to `APP_URL`). Read on its
+ * own, without validating the whole server env, because the site pages are rendered statically at build time.
+ */
+export function siteOrigin(): string | undefined {
+  const v = (process.env.SITE_URL || process.env.APP_URL || "").trim();
+  return v ? v.replace(/\/+$/, "") : undefined;
+}
