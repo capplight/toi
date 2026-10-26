@@ -1148,5 +1148,241 @@
       "tables": "",
       "families": ""
     }
+  },
+  "site": {
+    "skip": "",
+    "home": "",
+    "brandHome": "",
+    "menu": "",
+    "cta": "",
+    "soon": "",
+    "crumbs": "",
+    "toc": "",
+    "nav": {
+      "invites": {
+        "label": "",
+        "desc": ""
+      },
+      "tilek": {
+        "label": "",
+        "desc": ""
+      },
+      "traditions": {
+        "label": "",
+        "desc": ""
+      },
+      "seating": {
+        "label": "",
+        "desc": ""
+      },
+      "prices": {
+        "label": ""
+      },
+      "faq": {
+        "label": "",
+        "desc": ""
+      },
+      "guests": {
+        "label": ""
+      },
+      "budget": {
+        "label": ""
+      },
+      "about": {
+        "label": ""
+      },
+      "contacts": {
+        "label": ""
+      },
+      "seatingPlan": {
+        "label": ""
+      }
+    },
+    "footer": {
+      "about": "",
+      "sections": "",
+      "useful": "",
+      "docs": "",
+      "privacy": "",
+      "terms": "",
+      "copyright": ""
+    },
+    "trust": {
+      "whatsapp": "",
+      "noInstall": "",
+      "offline": ""
+    },
+    "art": {
+      "invite": "",
+      "answer": "",
+      "table": "",
+      "family1": "",
+      "family2": "",
+      "family3": "",
+      "listFather": "",
+      "listMother": "",
+      "listYoung": "",
+      "listClassmates": "",
+      "people": "",
+      "listTotal": "",
+      "yes": "",
+      "noAnswer": "",
+      "restaurant": "",
+      "restaurantTotal": "",
+      "door": "",
+      "arrived": ""
+    },
+    "tip": {
+      "label": "",
+      "sub": ""
+    },
+    "folk": {
+      "label": "",
+      "tag": "",
+      "bata": ""
+    },
+    "tilek": {
+      "copy": "",
+      "copied": "",
+      "wa": "",
+      "waFull": "",
+      "lengthLabel": "",
+      "len": {
+        "qysqa": "",
+        "ortasha": "",
+        "uzaq": ""
+      },
+      "poem": "",
+      "bata": "",
+      "translit": "",
+      "translation": "",
+      "number": ""
+    },
+    "toast": {
+      "copied": "",
+      "fail": ""
+    },
+    "filter": {
+      "title": "",
+      "who": "",
+      "type": "",
+      "poem": "",
+      "bata": "",
+      "all": "",
+      "reset": "",
+      "empty": "",
+      "sections": "",
+      "total": "",
+      "shown": "",
+      "lenQysqa": "",
+      "lenOrtasha": "",
+      "lenUzaq": ""
+    },
+    "invite": {
+      "useText": "",
+      "appTag": ""
+    },
+    "demo": {
+      "badge": "",
+      "open": "",
+      "use": "",
+      "music": "",
+      "kind": "",
+      "names": "",
+      "date": "",
+      "openWord": "",
+      "alt": "",
+      "caption": "",
+      "frameTitle": "",
+      "live": "",
+      "venue": "",
+      "address": ""
+    },
+    "templates": {
+      "ak": {
+        "name": "",
+        "mood": ""
+      },
+      "kok": {
+        "name": "",
+        "mood": ""
+      },
+      "kyz": {
+        "name": "",
+        "mood": ""
+      }
+    },
+    "related": {
+      "title": "",
+      "dastur": "",
+      "shaqyru": "",
+      "tilek": "",
+      "feature": ""
+    },
+    "banner": {
+      "default": {
+        "title": "",
+        "text": ""
+      },
+      "sundet": {
+        "title": "",
+        "text": ""
+      },
+      "kyzUzatu": {
+        "title": "",
+        "text": ""
+      },
+      "uilenuToi": {
+        "title": "",
+        "text": ""
+      },
+      "merey": {
+        "title": "",
+        "text": ""
+      },
+      "besik": {
+        "title": "",
+        "text": ""
+      },
+      "seating": {
+        "title": "",
+        "text": ""
+      },
+      "tilek": {
+        "title": "",
+        "text": ""
+      }
+    },
+    "meta": {
+      "updated": "",
+      "reviewed": ""
+    },
+    "print": "",
+    "hall": {
+      "caption": ""
+    },
+    "screenshot": {
+      "alt": "",
+      "caption": ""
+    },
+    "calc": {
+      "title": "",
+      "guests": "",
+      "perTable": "",
+      "submit": "",
+      "result": ""
+    },
+    "soonPage": {
+      "title": "",
+      "text": "",
+      "description": ""
+    },
+    "notFound": {
+      "title": "",
+      "text": ""
+    },
+    "share": {
+      "text": ""
+    }
   }
 }
